@@ -10,12 +10,12 @@ export const ALLOWED_EMAIL_DOMAIN = 'research-square.com';
 // Replace every value below with this project's config from
 // Firebase console > Project settings > General > Your apps > SDK setup.
 export const firebaseConfig = {
-  apiKey: 'REPLACE_ME',
-  authDomain: 'REPLACE_ME.firebaseapp.com',
-  projectId: 'REPLACE_ME',
-  storageBucket: 'REPLACE_ME.appspot.com',
-  messagingSenderId: 'REPLACE_ME',
-  appId: 'REPLACE_ME',
+  apiKey: 'AIzaSyAL4WVelJqYtSDXQo8y5l7IMErF9tB6158',
+  authDomain: 'impact-ledger-96be2.firebaseapp.com',
+  projectId: 'impact-ledger-96be2',
+  storageBucket: 'impact-ledger-96be2.firebasestorage.app',
+  messagingSenderId: '829716155001',
+  appId: '1:829716155001:web:a39abc73ff7d2cfbfea2a8',
 };
 
 const app = initializeApp(firebaseConfig);
