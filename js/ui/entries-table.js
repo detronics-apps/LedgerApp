@@ -11,6 +11,8 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
   if (onEdit || onDelete) headers.push('');
 
   const rows = entries.map((entry) => {
+    // Never build an anchor from an unvalidated href - only http(s) links render as a link.
+    const evidenceHref = /^https?:\/\//i.test(entry.evidenceUrl || '') ? entry.evidenceUrl : null;
     const cells = [
       el('td', { text: formatDate(entry.date) }),
       el('td', { text: entry.categoryName }),
@@ -23,14 +25,17 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
       el('td', { class: 'value', text: formatPoints(entry.points) }),
       el('td', {}, [
         entry.description,
-        entry.evidenceUrl ? el('a', { href: entry.evidenceUrl, target: '_blank', rel: 'noopener', text: ' [evidence]' }) : null,
+        evidenceHref ? el('a', { href: evidenceHref, target: '_blank', rel: 'noopener', text: ' [evidence]' }) : null,
       ]),
     ];
     if (showOwner) cells.splice(1, 0, el('td', { text: entry.displayName }));
     if (onEdit || onDelete) {
       cells.push(el('td', {}, [
         onEdit ? el('button', { type: 'button', class: 'btn', text: 'Edit', on: { click: () => onEdit(entry) } }) : null,
-        onDelete ? el('button', { type: 'button', class: 'btn btn-danger', text: 'Delete', on: { click: () => onDelete(entry) } }) : null,
+        onDelete ? el('button', {
+          type: 'button', class: 'btn btn-danger', text: 'Delete',
+          on: { click: () => { if (confirm('Delete this entry? This cannot be undone.')) onDelete(entry); } },
+        }) : null,
       ]));
     }
     return el('tr', {}, cells);

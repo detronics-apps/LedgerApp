@@ -96,7 +96,7 @@ export function buildLogForm({ categories, tasks, initialValues = null, onSubmit
   });
 
   const evidenceInput = el('input', {
-    type: 'text', placeholder: 'Link, document, or MoM (optional)', value: draft.evidenceUrl,
+    type: 'url', placeholder: 'Link, document, or MoM (optional)', value: draft.evidenceUrl,
     on: { input: (e) => { draft.evidenceUrl = e.target.value; } },
   });
 

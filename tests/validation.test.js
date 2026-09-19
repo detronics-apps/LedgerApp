@@ -59,3 +59,21 @@ test('a missing date is reported', () => {
   const result = validateEntryDraft({ ...baseDraft, date: '' });
   assert.equal(result.errors.date, 'Pick a date.');
 });
+
+test('a http(s) evidence link is valid', () => {
+  const result = validateEntryDraft({ ...baseDraft, evidenceUrl: 'https://example.com/doc' });
+  assert.equal(result.valid, true);
+  assert.equal(result.errors.evidenceUrl, undefined);
+});
+
+test('a javascript: evidence URL is rejected', () => {
+  const result = validateEntryDraft({ ...baseDraft, evidenceUrl: 'javascript:alert(1)' });
+  assert.equal(result.valid, false);
+  assert.equal(result.errors.evidenceUrl, 'Evidence must be a http(s) link, or left blank.');
+});
+
+test('an empty evidence URL is valid (optional)', () => {
+  const result = validateEntryDraft({ ...baseDraft, evidenceUrl: '' });
+  assert.equal(result.valid, true);
+  assert.equal(result.errors.evidenceUrl, undefined);
+});

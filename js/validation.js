@@ -14,6 +14,9 @@ export function validateEntryDraft(draft) {
     errors.proof = 'Choose a proof level.';
   }
   if (!(draft.description || '').trim()) errors.description = 'Add a short description.';
+  if ((draft.evidenceUrl || '').trim() && !/^https?:\/\//i.test(draft.evidenceUrl.trim())) {
+    errors.evidenceUrl = 'Evidence must be a http(s) link, or left blank.';
+  }
 
   return { valid: Object.keys(errors).length === 0, errors };
 }
