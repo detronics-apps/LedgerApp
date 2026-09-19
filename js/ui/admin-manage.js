@@ -1,38 +1,46 @@
 import { el, field, select, clear, toast } from './dom.js';
 
+function textField(value) {
+  return el('textarea', { rows: '2', text: value });
+}
+
+function rowActions(item, onSave, onToggleArchive, onDelete) {
+  return el('td', {}, el('div', { class: 'row-actions' }, [
+    el('button', { type: 'button', class: 'btn', text: 'Save', on: { click: onSave } }),
+    el('button', {
+      type: 'button', class: 'btn', text: item.archived ? 'Unarchive' : 'Archive',
+      on: { click: onToggleArchive },
+    }),
+    onDelete ? el('button', {
+      type: 'button', class: 'btn btn-danger', text: 'Delete',
+      disabled: item.entryCount > 0,
+      title: item.entryCount > 0 ? 'Has logged entries - archive instead of deleting.' : '',
+      on: { click: onDelete },
+    }) : null,
+  ]));
+}
+
 function editableRow(item, fields, onUpdate, onDelete) {
   const inputs = {};
   const row = el('tr', {}, [
     ...fields.map(({ key, type = 'text' }) => {
-      const input = el('input', { type, value: item[key], title: type === 'text' ? item[key] : undefined });
+      const input = type === 'text' ? textField(item[key]) : el('input', { type, value: item[key] });
       inputs[key] = input;
       return el('td', {}, input);
     }),
     el('td', { text: item.archived ? 'Archived' : 'Active' }),
-    el('td', {}, [
-      el('button', {
-        type: 'button', class: 'btn', text: 'Save',
-        on: {
-          click: () => {
-            const patch = {};
-            for (const { key, type } of fields) {
-              patch[key] = type === 'number' ? Number(inputs[key].value) : inputs[key].value;
-            }
-            onUpdate(item.id, patch).then(() => toast('Saved.'));
-          },
-        },
-      }),
-      el('button', {
-        type: 'button', class: 'btn', text: item.archived ? 'Unarchive' : 'Archive',
-        on: { click: () => onUpdate(item.id, { archived: !item.archived }).then(() => toast('Updated.')) },
-      }),
-      onDelete ? el('button', {
-        type: 'button', class: 'btn btn-danger', text: 'Delete',
-        disabled: item.entryCount > 0,
-        title: item.entryCount > 0 ? 'Has logged entries - archive instead of deleting.' : '',
-        on: { click: () => onDelete(item.id).then(() => toast('Deleted.')) },
-      }) : null,
-    ]),
+    rowActions(
+      item,
+      () => {
+        const patch = {};
+        for (const { key, type } of fields) {
+          patch[key] = type === 'number' ? Number(inputs[key].value) : inputs[key].value;
+        }
+        onUpdate(item.id, patch).then(() => toast('Saved.'));
+      },
+      () => onUpdate(item.id, { archived: !item.archived }).then(() => toast('Updated.')),
+      onDelete ? () => onDelete(item.id).then(() => toast('Deleted.')) : null,
+    ),
   ]);
   return row;
 }
@@ -69,8 +77,8 @@ function categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDel
 }
 
 function taskRow(task, categories, onUpdateTask, onDeleteTask) {
-  const nameInput = el('input', { type: 'text', value: task.name, title: task.name });
-  const descInput = el('input', { type: 'text', value: task.description, title: task.description });
+  const nameInput = textField(task.name);
+  const descInput = textField(task.description);
   const weightInput = el('input', { type: 'number', value: task.weight });
   const categorySelect = select(categories.map((c) => ({ value: c.id, label: c.name })), task.categoryId, () => {});
 
@@ -80,27 +88,15 @@ function taskRow(task, categories, onUpdateTask, onDeleteTask) {
     el('td', {}, categorySelect),
     el('td', {}, weightInput),
     el('td', { text: task.archived ? 'Archived' : 'Active' }),
-    el('td', {}, [
-      el('button', {
-        type: 'button', class: 'btn', text: 'Save',
-        on: {
-          click: () => onUpdateTask(task.id, {
-            name: nameInput.value, description: descInput.value,
-            categoryId: categorySelect.value, weight: Number(weightInput.value),
-          }).then(() => toast('Saved.')),
-        },
-      }),
-      el('button', {
-        type: 'button', class: 'btn', text: task.archived ? 'Unarchive' : 'Archive',
-        on: { click: () => onUpdateTask(task.id, { archived: !task.archived }).then(() => toast('Updated.')) },
-      }),
-      el('button', {
-        type: 'button', class: 'btn btn-danger', text: 'Delete',
-        disabled: task.entryCount > 0,
-        title: task.entryCount > 0 ? 'Has logged entries - archive instead of deleting.' : '',
-        on: { click: () => onDeleteTask(task.id).then(() => toast('Deleted.')) },
-      }),
-    ]),
+    rowActions(
+      task,
+      () => onUpdateTask(task.id, {
+        name: nameInput.value, description: descInput.value,
+        categoryId: categorySelect.value, weight: Number(weightInput.value),
+      }).then(() => toast('Saved.')),
+      () => onUpdateTask(task.id, { archived: !task.archived }).then(() => toast('Updated.')),
+      () => onDeleteTask(task.id).then(() => toast('Deleted.')),
+    ),
   ]);
 }
 
