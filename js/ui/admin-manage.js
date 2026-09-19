@@ -100,9 +100,35 @@ function tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTas
   ]);
 }
 
-export function buildManageView({ categories, tasks, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask }) {
+function adminsPanel(onAddAdmin) {
+  const emailInput = el('input', { type: 'email', placeholder: 'name@research-square.com' });
+  const addBtn = el('button', {
+    type: 'button', class: 'btn btn-primary', text: 'Make admin',
+    on: {
+      click: () => {
+        const email = emailInput.value.trim();
+        if (!email) return;
+        onAddAdmin(email).then(() => {
+          emailInput.value = '';
+          toast(`${email} is now an admin.`);
+        }).catch((err) => {
+          toast(err.message || 'Could not add admin.');
+        });
+      },
+    },
+  });
+
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: 'Admins' }),
+    el('p', { class: 'muted', text: 'Grant admin access by email. The person must have signed in at least once already.' }),
+    el('div', { class: 'field' }, [emailInput, addBtn]),
+  ]);
+}
+
+export function buildManageView({ categories, tasks, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask, onAddAdmin = null }) {
   return el('div', {}, [
     categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDeleteCategory }),
     tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTask }),
+    onAddAdmin ? adminsPanel(onAddAdmin) : null,
   ]);
 }

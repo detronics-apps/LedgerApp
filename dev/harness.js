@@ -63,6 +63,7 @@ document.getElementById('mount').appendChild(buildManageView({
   onCreateTask: (t) => { console.log('create task', t); return Promise.resolve(); },
   onUpdateTask: (id, patch) => { console.log('update task', id, patch); return Promise.resolve(); },
   onDeleteTask: (id) => { console.log('delete task', id); return Promise.resolve(); },
+  onAddAdmin: (email) => { console.log('add admin', email); return Promise.resolve(); },
 }));
 
 const mockCustomEntries = [

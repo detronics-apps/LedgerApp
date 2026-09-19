@@ -125,9 +125,12 @@ users/{uid}
 
 admins/{uid}
   email
-  (presence of a doc = admin. Seeded manually via the Firebase console.
-  No client, including an existing admin, can create/update/delete this
-  collection — enforced in rules.)
+  (presence of a doc = admin. The first admin is seeded manually via the
+  Firebase console; after that, any existing admin can grant admin access
+  to someone who has already signed in, from the app itself. No client,
+  including an existing admin, can update or delete a doc in this
+  collection once created — enforced in rules. Post-implementation change:
+  see section 6, rule 6, and the implementation plan's ledger.)
 ```
 
 Denormalizing `taskWeight`/`categoryWeight`/`categoryName`/`taskName` onto
@@ -167,10 +170,24 @@ Enforced rules, to be delivered as a ready-to-deploy `firestore.rules` file:
    logged, so restricting the `users` directory to admins-only would add no
    real privacy and would block the participation-rate stat (which needs
    the full headcount) from being computed by a regular employee's client.
-6. `admins/{uid}`: `read` allowed only for `uid == request.auth.uid` (so the
-   client can check "am I an admin" to show/hide the admin nav, without
-   being able to list all admins). No `write` from any client, ever —
-   verified by testing this rule explicitly (see section 9).
+6. `admins/{uid}`: `read` allowed for `uid == request.auth.uid` (so the
+   client can check "am I an admin" to show/hide the admin nav) or for an
+   admin (so the admin UI could list current admins, though this pilot
+   doesn't build that screen). `create` allowed only for an existing admin,
+   only when `uid` has a `users` doc (has signed in at least once) and the
+   submitted `email` matches that user's real email exactly. `update` and
+   `delete` are denied unconditionally, for everyone, always — an admin
+   doc, once created, can never be changed or removed by any client. This
+   means an admin can add new admins but never edit or de-admin an existing
+   one; de-admin-ing stays a manual Firebase-console step, same as
+   bootstrapping the very first admin (nobody can grant admin before at
+   least one exists). Post-implementation change from the original design
+   ("no write from any client, ever") — the original all-manual approach
+   proved unnecessarily restrictive for onboarding a pilot team; the
+   tightened create-only, target-verified version preserves the same
+   core guarantee (no self-escalation, no silent tampering) while letting
+   admins onboard each other. Verified by testing this rule explicitly
+   (see section 9).
 
 ## 7. Scoring
 
@@ -235,10 +252,17 @@ pilot notes' explicit "don't ask them to calculate points" requirement.
   so an admin can see what employees are calling "Other" and optionally
   promote one into a real Task (pre-filled from the free text).
 
-Promoting a user to admin is **not** a UI action anywhere in the app — it
+Promoting the *first* admin is not a UI action anywhere in the app — it
 requires manually adding a doc to `admins` via the Firebase console, because
-the rules deliberately block every client write to that collection. This
-will be documented step by step in the setup README.
+nobody can grant admin access before at least one admin exists. Every admin
+after that can be granted from the "Manage Tasks & Categories" tab (enter
+an email, click "Make admin") by any existing admin, as long as the target
+has signed in at least once — the rules verify their `users` doc exists and
+the email matches exactly. There is deliberately no "remove admin" UI
+anywhere: de-admin-ing someone is still a manual Firebase-console step,
+since the rules make an existing `admins` doc permanently un-editable and
+un-deletable by any client. This is documented step by step in the setup
+README.
 
 ## 9. Testing plan
 
@@ -253,8 +277,10 @@ will be documented step by step in the setup README.
   - a regular @research-square.com user can create an entry under their own
     uid, cannot create one under another uid, can read any entry, cannot
     write to `categories`/`tasks`/`admins`
-  - a user in `admins` can write `categories`/`tasks` but still cannot
-    write to the `admins` collection itself
+  - a user in `admins` can write `categories`/`tasks`, and can grant admin
+    access to a user who has signed in before with a matching email, but
+    cannot grant it to a made-up uid or a mismatched email, and can never
+    update or delete an existing `admins` doc
   This is how the brief's "prove the rules reject bad actors" requirement
   gets satisfied concretely, not just by inspection.
 - **UI modules** are thin (DOM + Firestore calls) and are verified manually

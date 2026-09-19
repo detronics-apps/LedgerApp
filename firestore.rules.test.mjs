@@ -117,12 +117,48 @@ test('an admin can write to categories', async () => {
   await assertSucceeds(setDoc(doc(db, 'categories', 'c1'), { name: 'x', weight: 1, archived: false }));
 });
 
-test('no client, including an admin, can write to admins', async () => {
+test('a non-admin cannot grant admin access to anyone', async () => {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), 'users', 'bob'), { email: 'bob@research-square.com', displayName: 'Bob' });
+  });
+  const db = companyDb('alice', 'alice@research-square.com');
+  await assertFails(setDoc(doc(db, 'admins', 'bob'), { email: 'bob@research-square.com' }));
+});
+
+test('an admin can grant admin access to a user who has signed in before, with a matching email', async () => {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), 'admins', 'admin1'), { email: 'admin1@research-square.com' });
+    await setDoc(doc(ctx.firestore(), 'users', 'bob'), { email: 'bob@research-square.com', displayName: 'Bob' });
+  });
+  const db = companyDb('admin1', 'admin1@research-square.com');
+  await assertSucceeds(setDoc(doc(db, 'admins', 'bob'), { email: 'bob@research-square.com' }));
+});
+
+test('an admin cannot grant admin access to a uid with no users doc (never signed in)', async () => {
   await testEnv.withSecurityRulesDisabled(async (ctx) => {
     await setDoc(doc(ctx.firestore(), 'admins', 'admin1'), { email: 'admin1@research-square.com' });
   });
   const db = companyDb('admin1', 'admin1@research-square.com');
+  await assertFails(setDoc(doc(db, 'admins', 'ghost'), { email: 'ghost@research-square.com' }));
+});
+
+test('an admin cannot grant admin access with an email that does not match the target user\'s real email', async () => {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), 'admins', 'admin1'), { email: 'admin1@research-square.com' });
+    await setDoc(doc(ctx.firestore(), 'users', 'bob'), { email: 'bob@research-square.com', displayName: 'Bob' });
+  });
+  const db = companyDb('admin1', 'admin1@research-square.com');
+  await assertFails(setDoc(doc(db, 'admins', 'bob'), { email: 'someone-else@research-square.com' }));
+});
+
+test('no client, including an admin, can update or delete an existing admin doc', async () => {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), 'admins', 'admin1'), { email: 'admin1@research-square.com' });
+    await setDoc(doc(ctx.firestore(), 'admins', 'admin2'), { email: 'admin2@research-square.com' });
+  });
+  const db = companyDb('admin1', 'admin1@research-square.com');
   await assertFails(setDoc(doc(db, 'admins', 'admin2'), { email: 'admin2@research-square.com' }));
+  await assertFails(deleteDoc(doc(db, 'admins', 'admin2')));
 });
 
 test('a company user can create their own users doc', async () => {

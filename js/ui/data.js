@@ -57,3 +57,12 @@ export function updateTask(id, patch) {
 export function deleteTask(id) {
   return deleteDoc(doc(db, 'tasks', id));
 }
+
+/** Grants admin access to an existing user (by uid). The rules only allow this
+ * when the caller is already an admin and `uid` has a `users` doc - i.e. the
+ * target has signed in at least once. There is no corresponding "remove admin"
+ * - that stays a manual Firebase-console step, same as bootstrapping the very
+ * first admin. */
+export function addAdmin(uid, email) {
+  return setDoc(doc(db, 'admins', uid), { email });
+}

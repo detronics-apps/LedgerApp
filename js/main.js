@@ -138,6 +138,13 @@ function renderAdminManage() {
     onCreateTask: data.createTask,
     onUpdateTask: data.updateTask,
     onDeleteTask: data.deleteTask,
+    onAddAdmin: (email) => {
+      const user = state.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+      if (!user) {
+        return Promise.reject(new Error('No signed-in user found with that email - they need to sign in once first.'));
+      }
+      return data.addAdmin(user.id, user.email);
+    },
   });
 }
 

@@ -55,7 +55,13 @@ app's JS):
   and `users` (the full ledger and directory are intentionally open to
   everyone - see the design spec, section 2.B)
 - only a UID listed in `admins` may write `categories`/`tasks`
-- **no client can ever write to `admins`**, including an existing admin
+- an existing admin may **grant** admin access to someone else, but only if
+  that person has signed in at least once (their `users` doc must exist)
+  and the granted email matches their real one exactly - **no client, not
+  even an admin, can ever update or delete an `admins` doc**, so an admin
+  can add new admins but can never edit or remove an existing one (that
+  stays a manual Firebase-console step, same as bootstrapping the very
+  first admin)
 
 **Known limitation - entry weights are not cross-checked against the source
 documents.** The rules validate that a logged entry's `taskWeight` and
@@ -76,8 +82,9 @@ the measurement-instrument purpose it's built for.
 
 ## 3. Seed the first admin
 
-There is no UI for this by design - the rules block every client write to
-`admins`, so it has to be done once, by hand, in the Firebase console:
+Nobody can grant admin access before at least one admin exists, so the
+*very first* admin has to be set up once, by hand, in the Firebase console
+(every admin after that can be added from the app itself - see below):
 
 1. Sign in to the deployed app once with the intended admin's
    `@research-square.com` account (so their `users` doc and UID exist).
@@ -86,6 +93,16 @@ There is no UI for this by design - the rules block every client write to
    **document ID is that person's UID** (find it under **Authentication >
    Users**) with a single field `email: "their@research-square.com"`.
 3. Reload the app signed in as that person - the admin tabs should appear.
+
+**Adding further admins after that** doesn't need the console: on the
+**Manage Tasks & Categories** tab, any existing admin can enter another
+person's email under "Admins" and click "Make admin" - it only works for
+someone who has already signed in at least once (the rules check their
+`users` doc exists and the email matches exactly). There's no "remove
+admin" button anywhere in the app; de-admin-ing someone is still a manual
+Firebase-console step (delete their doc from the `admins` collection), by
+design - the rules make an existing `admins` doc permanently un-editable
+and un-deletable by any client.
 
 ## 4. Seed the task/category list
 
@@ -147,7 +164,10 @@ touched) and asserts, per the brief's non-negotiable requirement:
 - a regular user can create an entry only under their own UID, cannot forge
   another user's UID or a tampered points value, and cannot write to
   `categories`/`tasks`/`admins`
-- an admin can write `categories`/`tasks` but still cannot write `admins`
+- an admin can write `categories`/`tasks`, and can grant admin access to a
+  user who has signed in before with a matching email, but cannot grant it
+  to a made-up UID or with a mismatched email, and can never update or
+  delete an existing `admins` doc
 
 These emulator-based rules tests, and the live-Firebase steps in the manual
 QA checklist below, have not been executed in this development environment
@@ -180,6 +200,12 @@ regular employee and an admin):
 - [ ] An admin sees the admin tabs, can add/edit/archive a category or task
       and set its weight, and can promote a custom "Other" entry into a
       real task.
+- [ ] An admin can grant admin access to a second account that has already
+      signed in once (their email, under "Admins" on the Manage tab), and
+      that account then sees the admin tabs on its next reload. Confirm
+      granting it to an email that has never signed in fails with a clear
+      message, and confirm there's no way in the UI to remove an admin
+      once granted.
 - [ ] Attempt an unauthenticated read via `curl` against the Firestore REST
       API for this project and confirm it is rejected (403), proving the
       rule is enforced server-side and not just hidden in this app's JS.
