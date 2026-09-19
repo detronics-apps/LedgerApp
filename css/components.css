@@ -71,9 +71,9 @@ input, select, textarea {
 table.table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; }
 table.table th, table.table td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); }
 table.table th { color: var(--text-faint); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-table.table td textarea { width: 100%; min-width: 160px; box-sizing: border-box; font: inherit; resize: vertical; }
+table.table td textarea { width: 100%; min-width: 260px; box-sizing: border-box; font: inherit; resize: vertical; }
 table.table td input[type="number"] { width: 60px; min-width: 0; }
-table.table td select { min-width: 140px; }
+table.table td select { width: 100px; min-width: 0; }
 
 .row-actions { display: flex; flex-wrap: wrap; gap: var(--space-1); max-width: 90px; }
 .row-actions .btn { padding: var(--space-1) var(--space-2); font-size: 12px; }

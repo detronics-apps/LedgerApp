@@ -19,6 +19,7 @@ export const APP_VERSION = '0.2.0';
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
 const THEME_LABEL = { system: 'Theme: System (system, light or dark)', light: 'Theme: Light (system, light or dark)', dark: 'Theme: Dark (system, light or dark)' };
+const THEME_ICON = { system: '◐', light: '☀', dark: '☾' };
 
 function loadTheme() {
   try {
@@ -342,7 +343,7 @@ function buildThemeToggle() {
         renderShell();
       },
     },
-  }, el('span', { 'aria-hidden': 'true', text: '◐' }));
+  }, el('span', { 'aria-hidden': 'true', text: THEME_ICON[state.theme] }));
 }
 
 function buildSignedInHeader() {
