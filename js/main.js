@@ -7,14 +7,18 @@ import { buildEntriesTable } from './ui/entries-table.js';
 import { buildStatsView, buildUserBreakdownTable } from './ui/stats-view.js';
 import { buildManageView } from './ui/admin-manage.js';
 import { buildReviewView } from './ui/admin-review.js';
+import { buildHowTo } from './ui/how-to.js';
+import { buildSettingsView } from './ui/admin-settings.js';
 import { summarizeEntries, summarizeParticipation, summarizeByUser } from './stats.js';
 import { computePoints } from './scoring.js';
+import { checkSubmissionLimits, DEFAULT_SETTINGS } from './limits.js';
+import { formatDate } from './format.js';
 
 export const APP_VERSION = '0.2.0';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
-const THEME_LABEL = { system: 'Theme: Auto', light: 'Theme: Light', dark: 'Theme: Dark' };
+const THEME_LABEL = { system: 'Theme: System (system, light or dark)', light: 'Theme: Light (system, light or dark)', dark: 'Theme: Dark (system, light or dark)' };
 
 function loadTheme() {
   try {
@@ -32,6 +36,7 @@ function applyTheme(theme) {
 const state = {
   user: null, isAdmin: false,
   categories: [], tasks: [], entries: [], users: [],
+  settings: DEFAULT_SETTINGS,
   activeTab: 'log',
   wrongDomainEmail: null,
   editingEntry: null,
@@ -44,6 +49,43 @@ function sortedByDateDesc(entries) {
   return [...entries].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
+function startOfWeek(d) {
+  const date = new Date(d);
+  const day = (date.getDay() + 6) % 7; // Monday = 0
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() - day);
+  return date;
+}
+
+function toJsDate(value) {
+  if (!value) return null;
+  if (typeof value.toDate === 'function') return value.toDate();
+  return new Date(value);
+}
+
+/** How many entries the signed-in user has already submitted today/this
+ * week, keyed on when they actually hit submit (createdAt), not the
+ * back-datable "when did you do it" field - otherwise the caps below would
+ * be trivial to dodge by backdating. */
+function myRecentActivity() {
+  const own = state.entries.filter((e) => e.uid === state.user.uid);
+  const now = new Date();
+  const weekStart = startOfWeek(now);
+  const todayCount = own.filter((e) => {
+    const created = toJsDate(e.createdAt) ?? now;
+    return created.toDateString() === now.toDateString();
+  }).length;
+  const thisWeek = own.filter((e) => {
+    const created = toJsDate(e.createdAt) ?? now;
+    return created >= weekStart;
+  });
+  return {
+    todayCount,
+    weekPoints: thisWeek.reduce((sum, e) => sum + e.points, 0),
+    weekUsedFiveImpact: thisWeek.some((e) => e.impact === 5),
+  };
+}
+
 const dom = {};
 
 const EMPLOYEE_TABS = [
@@ -52,11 +94,13 @@ const EMPLOYEE_TABS = [
   { id: 'ledger', label: 'Company Ledger' },
   { id: 'my-stats', label: 'My Stats' },
   { id: 'company-stats', label: 'Company Stats' },
+  { id: 'how-to', label: 'How to use' },
 ];
 const ADMIN_TABS = [
   { id: 'admin-dashboard', label: 'Admin Dashboard' },
   { id: 'admin-manage', label: 'Manage Tasks & Categories' },
   { id: 'admin-review', label: 'Custom Task Review' },
+  { id: 'admin-settings', label: 'Settings' },
 ];
 
 function tabsFor(state) {
@@ -76,9 +120,9 @@ function withEntryCounts(items, key) {
 function renderView() {
   clear(dom.main);
   const view = { log: renderLog, 'my-logs': renderMyLogs, ledger: renderLedger,
-    'my-stats': renderMyStats, 'company-stats': renderCompanyStats,
+    'my-stats': renderMyStats, 'company-stats': renderCompanyStats, 'how-to': () => buildHowTo(state.settings),
     'admin-dashboard': renderAdminDashboard, 'admin-manage': renderAdminManage,
-    'admin-review': renderAdminReview }[state.activeTab];
+    'admin-review': renderAdminReview, 'admin-settings': renderAdminSettings }[state.activeTab];
   dom.main.appendChild(view());
 }
 
@@ -91,6 +135,19 @@ function renderLog() {
     onSubmit: (draft) => {
       const category = state.categories.find((c) => c.id === draft.categoryId);
       const task = state.tasks.find((t) => t.id === draft.taskId);
+      const taskWeight = task?.weight ?? 1;
+      const categoryWeight = category?.weight ?? 1;
+      const prospectivePoints = computePoints(draft.impact, draft.proof, taskWeight, categoryWeight);
+
+      if (!editing) {
+        const isExcluded = !!state.users.find((u) => u.id === state.user.uid)?.excludedFromLedger;
+        const { allowed, errors } = checkSubmissionLimits({
+          impact: draft.impact, prospectivePoints, isExcluded, settings: state.settings,
+          ...myRecentActivity(),
+        });
+        if (!allowed) return Promise.reject(new Error(errors[0]));
+      }
+
       const payload = {
         uid: state.user.uid, email: state.user.email, displayName: state.user.displayName,
         date: draft.date, categoryId: draft.categoryId, categoryName: draft.categoryName,
@@ -98,13 +155,13 @@ function renderLog() {
         taskName: draft.isCustomTask ? '' : draft.taskName,
         isCustomTask: draft.isCustomTask, customTaskName: draft.customTaskName,
         impact: draft.impact, proof: draft.proof,
-        taskWeight: task?.weight ?? 1, categoryWeight: category?.weight ?? 1,
+        taskWeight, categoryWeight,
         description: draft.description, evidenceUrl: draft.evidenceUrl,
       };
       const write = editing ? data.updateEntry(editing.id, payload) : data.createEntry(payload);
       return write.then(() => {
         if (editing) state.editingEntry = null;
-        return { points: computePoints(draft.impact, draft.proof, task?.weight ?? 1, category?.weight ?? 1) };
+        return { points: prospectivePoints };
       });
     },
   });
@@ -120,7 +177,9 @@ function renderMyLogs() {
 }
 
 function renderLedger() {
-  return buildEntriesTable(sortedByDateDesc(state.entries));
+  return buildEntriesTable(sortedByDateDesc(state.entries), {
+    anonymize: state.settings.anonymizeLedgerEnabled && !state.isAdmin,
+  });
 }
 
 function renderMyStats() {
@@ -134,17 +193,51 @@ function renderCompanyStats() {
   return buildStatsView(summary, participation);
 }
 
+function renderNeedsValidation() {
+  if (!state.settings.managementValidationEnabled) return null;
+  const flagged = state.entries.filter((e) => !e.validated && e.points >= state.settings.managementValidationThreshold);
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: 'Needs validation' }),
+    el('p', { class: 'muted', text: `Entries worth ${state.settings.managementValidationThreshold}+ points, not yet validated.` }),
+    flagged.length === 0
+      ? el('p', { class: 'muted', text: 'Nothing waiting.' })
+      : el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+          el('thead', {}, el('tr', {}, ['Date', 'Person', 'Task', 'Points', ''].map((h) => el('th', { text: h })))),
+          el('tbody', {}, flagged.map((entry) => el('tr', {}, [
+            el('td', { text: formatDate(entry.date) }),
+            el('td', { text: entry.displayName }),
+            el('td', { text: entry.isCustomTask ? (entry.customTaskName || 'Other') : entry.taskName }),
+            el('td', { class: 'value', text: String(entry.points) }),
+            el('td', {}, el('button', {
+              type: 'button', class: 'btn btn-primary', text: 'Validate',
+              on: { click: () => data.validateEntry(entry.id).catch((err) => toast(err.message || 'Could not validate.')) },
+            })),
+          ]))),
+        ])),
+  ]);
+}
+
 function renderAdminDashboard() {
   const summary = summarizeEntries(state.entries);
   const participation = summarizeParticipation(state.entries, state.users.map((u) => u.id));
-  const userBreakdown = summarizeByUser(state.entries, state.users);
+  const userBreakdown = summarizeByUser(state.entries, state.users).map((row) => ({
+    ...row,
+    excludedFromLedger: !!state.users.find((u) => u.id === row.uid)?.excludedFromLedger,
+  }));
   return el('div', {}, [
     buildStatsView(summary, participation),
     el('div', { class: 'panel' }, [
       el('h3', { text: 'By person' }),
-      buildUserBreakdownTable(userBreakdown),
+      buildUserBreakdownTable(userBreakdown, {
+        onToggleExclusion: (uid, excluded) => data.setUserExclusion(uid, excluded).catch((err) => toast(err.message || 'Could not update.')),
+      }),
     ]),
-  ]);
+    renderNeedsValidation(),
+  ].filter(Boolean));
+}
+
+function renderAdminSettings() {
+  return buildSettingsView(state.settings, data.updateSettings);
 }
 
 function renderAdminManage() {
@@ -173,12 +266,23 @@ function renderAdminReview() {
     onPromote: (entry) => data.createTask({
       categoryId: entry.categoryId, name: entry.customTaskName, description: entry.description,
     }),
+    onLink: (entry, categoryId, taskId) => {
+      const category = state.categories.find((c) => c.id === categoryId);
+      const task = state.tasks.find((t) => t.id === taskId);
+      if (!category || !task) return;
+      data.relinkEntry(entry, category, task).catch((err) => toast(err.message || 'Could not link - try again.'));
+    },
+    categories: activeCategories(),
+    tasks: activeTasks(),
   });
 }
 
 function buildThemeToggle() {
   return el('button', {
-    class: 'btn', type: 'button', text: THEME_LABEL[state.theme],
+    class: 'btn btn-icon', type: 'button',
+    'data-field': 'theme',
+    'aria-label': `${THEME_LABEL[state.theme]} - click to change`,
+    title: THEME_LABEL[state.theme],
     on: {
       click: () => {
         state.theme = THEME_ORDER[(THEME_ORDER.indexOf(state.theme) + 1) % THEME_ORDER.length];
@@ -187,7 +291,7 @@ function buildThemeToggle() {
         renderShell();
       },
     },
-  });
+  }, el('span', { 'aria-hidden': 'true', text: '◐' }));
 }
 
 function buildSignedInHeader() {
@@ -265,6 +369,7 @@ function subscribeToData() {
   unsubscribers.push(data.listenTasks((tasks) => { state.tasks = tasks; renderView(); }));
   unsubscribers.push(data.listenEntries((entries) => { state.entries = entries; renderView(); }));
   unsubscribers.push(data.listenUsers((users) => { state.users = users; renderView(); }));
+  unsubscribers.push(data.listenSettings((settings) => { state.settings = settings ? { ...DEFAULT_SETTINGS, ...settings } : DEFAULT_SETTINGS; renderView(); }));
 }
 
 initAuth({

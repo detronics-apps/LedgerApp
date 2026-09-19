@@ -84,6 +84,32 @@ is immediately visible to the whole team, not hidden in a private total.
 This is worth hardening before this pilot's data is used for anything beyond
 the measurement-instrument purpose it's built for.
 
+**Known limitation - the optional pilot rules (daily/weekly caps, R&R
+exclusion) are enforced in this app's own JavaScript, not independently
+re-checked by the rules.** An admin can turn on a daily entry cap, a weekly
+points cap, a once-per-week limit on impact-5 entries, and an exclusion flag
+for people with a formal R&R role, from Admin > Settings. All of these are
+checked client-side before a submission is sent (`js/limits.js`) - a
+technical user could bypass them by calling Firestore directly. Two related
+pieces genuinely are rules-enforced: "management validation" (marking a
+high-scoring entry as validated) only allows an admin to change the
+`validated`/`validatedAt` fields, nothing else; and the R&R exclusion flag
+itself can only be toggled by an admin. Hardening the caps into real
+server-side limits would need a maintained per-user counter document written
+transactionally alongside each entry (a known Firestore pattern, just more
+machinery than this pilot needed on day one) - worth doing before these
+limits matter for anything beyond shaping pilot behaviour.
+
+**Known limitation - "hide names in the Company Ledger" is a display choice,
+not a security boundary.** When an admin enables it, this app's own UI stops
+showing employee names to non-admins in the Company Ledger. The underlying
+Firestore documents still contain `displayName`/`email` in full - the rules
+don't hide fields (only whole-document read/write is possible), so a
+technical user reading Firestore directly still sees names either way. Real
+anonymization would mean not storing names on entries at all and resolving
+them via a `users` lookup gated by the same setting - a bigger schema change
+than this pilot needed for its first version.
+
 ## 3. Provisioning employee accounts
 
 There is no self-service signup - an admin creates every account by hand:
@@ -228,6 +254,16 @@ regular employee and an admin):
 - [ ] Attempt an unauthenticated read via `curl` against the Firestore REST
       API for this project and confirm it is rejected (403), proving the
       rule is enforced server-side and not just hidden in this app's JS.
+- [ ] Admin > Settings: turn on the daily entry cap (set to 1) and confirm a
+      second submission the same day is blocked with a clear message; turn
+      it back off and confirm submissions work normally again. Flag someone
+      as R&R-excluded on the Admin Dashboard and confirm they can no longer
+      submit while it's on. Turn on management validation with a low
+      threshold, log a qualifying entry, and confirm it appears in "Needs
+      validation" and disappears once clicked "Validate". Remember: the
+      caps are enforced in this app's JS only (see "Known limitation"
+      above) - this checklist confirms the UI behaves correctly, not that
+      the caps survive a direct Firestore write.
 
 ## Code layout
 
@@ -241,11 +277,13 @@ js/scoring.js                pure: points formula, impact/proof level text
 js/validation.js             pure: entry-draft validation
 js/format.js                 pure: date/number/percent formatting
 js/stats.js                  pure: participation and breakdown aggregation
+js/limits.js                 pure: pilot-rule checks (daily/weekly caps, R&R exclusion) - client-side only, see "Known limitation"
 js/firebase-config.js        Firebase app/auth/db init (public config)
 js/ui/dom.js                  small DOM helpers (vendored from the detronics-app skill)
 js/ui/auth.js                  sign-in/out, domain check, admin check
 js/ui/data.js                  Firestore reads/writes
-js/ui/nav.js, log-form.js, entries-table.js, stats-view.js, admin-manage.js, admin-review.js
+js/ui/nav.js, log-form.js, entries-table.js, stats-view.js, admin-manage.js, admin-review.js,
+js/ui/admin-settings.js, how-to.js
                                view modules - each takes plain data + callbacks, no Firebase import
 js/main.js                    composition root: auth gate, nav, view routing
 tests/                        node --test over the pure modules

@@ -4,23 +4,6 @@ import { validateEntryDraft } from '../validation.js';
 
 const CUSTOM_TASK_ID = '__custom__';
 
-function buildHowItWorks() {
-  return el('details', { class: 'panel explain' }, [
-    el('summary', { text: 'How does this work?' }),
-    el('p', {}, 'Pick the category that best matches what you did, then the specific task under it. Nothing fits? Choose "Other - not listed" and describe it - an admin reviews those and can add it to the list or link it to an existing task.'),
-    el('p', {}, 'Impact and Proof are about the actual thing you did, not how impressive it sounds - be honest, this is a measurement tool, not a leaderboard. You never have to calculate anything: points = impact x proof x the task\'s weight, and they only show up after you submit.'),
-    el('h4', { text: 'Worked examples' }),
-    el('p', {}, [
-      el('strong', { text: 'A 15-30 minute chat helping a colleague' }),
-      ' (mentoring, a design question, general advice) - pick whichever category fits the conversation (Technical Coaching, Leadership Development, or Culture). Impact: 1 (small help) or 2 (noticeable help), depending on how much it actually helped them. Proof: 1 ("trust me") if it was just a chat, or 2 if you wrote it up afterwards - e.g. minutes of the meeting saying what you helped with and why.',
-    ]),
-    el('p', {}, [
-      el('strong', { text: 'Helping with a design, and writing up why in a short note or minutes of meeting' }),
-      ' - Impact: up to 2 (noticeable help). Proof: up to 2 (here is the data), since the write-up is real evidence. That\'s impact 2 x proof 2 = 4 points, and the write-up can become a reusable guide for the next person.',
-    ]),
-  ]);
-}
-
 function pickerRow(levels, selectedValue, onPick) {
   return el('div', { class: 'picker' }, levels.map((lvl) => el('button', {
     type: 'button',
@@ -121,7 +104,7 @@ export function buildLogForm({ categories, tasks, initialValues = null, onSubmit
 
   form.append(
     el('h3', { text: initialValues ? 'Edit entry' : 'What did you do?' }),
-    buildHowItWorks(),
+    el('p', { class: 'muted', text: 'New here? See the "How to use" tab for a walkthrough and scoring examples.' }),
     errorBanner,
     field('Category', categorySelect),
     taskFieldHost,

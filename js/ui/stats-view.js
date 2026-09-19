@@ -10,14 +10,14 @@ function statCard(value, label) {
 
 function breakdownList(rows, nameKey) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
-  return el('table', { class: 'table' }, [
+  return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
     el('thead', {}, el('tr', {}, [el('th', { text: 'Name' }), el('th', { text: 'Count' }), el('th', { text: 'Points' })])),
     el('tbody', {}, rows.map((r) => el('tr', {}, [
       el('td', { text: r[nameKey] }),
       el('td', { text: String(r.count) }),
       el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
     ]))),
-  ]);
+  ]));
 }
 
 function distributionList(distribution) {
@@ -25,18 +25,29 @@ function distributionList(distribution) {
     el('li', { text: `${value}: ${count}` })));
 }
 
-export function buildUserBreakdownTable(rows) {
+export function buildUserBreakdownTable(rows, { onToggleExclusion = null } = {}) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
-  return el('table', { class: 'table' }, [
-    el('thead', {}, el('tr', {}, ['Name', 'Email', 'Entries', 'Points', 'Last activity'].map((h) => el('th', { text: h })))),
-    el('tbody', {}, rows.map((r) => el('tr', {}, [
-      el('td', { text: r.displayName }),
-      el('td', { text: r.email }),
-      el('td', { text: String(r.entryCount) }),
-      el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
-      el('td', { text: formatDate(r.lastActivity) }),
-    ]))),
-  ]);
+  const headers = ['Name', 'Email', 'Entries', 'Points', 'Last activity'];
+  if (onToggleExclusion) headers.push('Excluded from ledger');
+  return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+    el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
+    el('tbody', {}, rows.map((r) => {
+      const cells = [
+        el('td', { text: r.displayName }),
+        el('td', { text: r.email }),
+        el('td', { text: String(r.entryCount) }),
+        el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
+        el('td', { text: formatDate(r.lastActivity) }),
+      ];
+      if (onToggleExclusion) {
+        cells.push(el('td', {}, el('input', {
+          type: 'checkbox', checked: !!r.excludedFromLedger,
+          on: { change: (e) => onToggleExclusion(r.uid, e.target.checked) },
+        })));
+      }
+      return el('tr', {}, cells);
+    })),
+  ]));
 }
 
 export function buildStatsView(summary, participation = null) {

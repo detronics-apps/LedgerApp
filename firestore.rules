@@ -36,15 +36,54 @@ service cloud.firestore {
         data.points == computedPoints(data);
     }
 
+    // An admin re-linking a custom ("Other") entry to a real task: only the
+    // categorization fields (category/task id+name, isCustomTask, weights,
+    // points) may change - the employee's own uid, impact, proof,
+    // description, evidence, and date must come through untouched. This is
+    // strictly narrower than a normal edit: it can only ever start from an
+    // isCustomTask entry and land on isCustomTask == false, never touch
+    // someone's actual assessment of what they did.
+    function isRecategorizationOnly(before, after) {
+      return before.uid == after.uid &&
+        before.impact == after.impact &&
+        before.proof == after.proof &&
+        before.description == after.description &&
+        before.evidenceUrl == after.evidenceUrl &&
+        before.date == after.date &&
+        before.isCustomTask == true &&
+        after.isCustomTask == false &&
+        isValidEntry(after);
+    }
+
+    // An admin marking an entry as validated (see settings.managementValidation):
+    // only `validated`/`validatedAt`/`validatedBy` may change. This never
+    // touches impact/proof/points/category/task - validation is an
+    // acknowledgement, not a re-scoring.
+    function isValidationOnly(before, after) {
+      return before.uid == after.uid &&
+        before.impact == after.impact &&
+        before.proof == after.proof &&
+        before.points == after.points &&
+        before.categoryId == after.categoryId &&
+        before.taskId == after.taskId &&
+        before.isCustomTask == after.isCustomTask &&
+        before.description == after.description &&
+        before.evidenceUrl == after.evidenceUrl &&
+        before.date == after.date;
+    }
+
     match /entries/{entryId} {
       allow read: if isCompanyUser();
       allow create: if isCompanyUser() &&
         request.resource.data.uid == request.auth.uid &&
         isValidEntry(request.resource.data);
-      allow update: if isCompanyUser() &&
-        resource.data.uid == request.auth.uid &&
-        request.resource.data.uid == request.auth.uid &&
-        isValidEntry(request.resource.data);
+      allow update: if isCompanyUser() && (
+        (resource.data.uid == request.auth.uid &&
+          request.resource.data.uid == request.auth.uid &&
+          isValidEntry(request.resource.data)) ||
+        (isAdmin() && isRecategorizationOnly(resource.data, request.resource.data)) ||
+        (isAdmin() && isValidationOnly(resource.data, request.resource.data))
+      );
       allow delete: if isCompanyUser() && resource.data.uid == request.auth.uid;
     }
 
@@ -58,13 +97,32 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // An admin toggling someone's R&R-exclusion flag (settings.rrExclusion):
+    // only `excludedFromLedger` may change - an admin still can't touch a
+    // user's own email/displayName via this path.
+    function isExclusionFlagOnly(before, after) {
+      return before.email == after.email && before.displayName == after.displayName;
+    }
+
     // Every company user can read the directory (names are already visible on
     // every ledger entry, so this adds no new exposure) but may only write
-    // their own profile doc.
+    // their own profile doc - except an admin may flip the exclusion flag on
+    // someone else's doc (see isExclusionFlagOnly above).
     match /users/{userId} {
       allow read: if isCompanyUser();
       allow create, update: if isCompanyUser() && request.auth.uid == userId;
+      allow update: if isAdmin() && isExclusionFlagOnly(resource.data, request.resource.data);
       allow delete: if false;
+    }
+
+    // A single shared settings document. Any company user can read it (the
+    // app needs it to know which limits are currently on); only an admin can
+    // change it. See README "Known limitations" - the caps here are enforced
+    // in this app's own JS, not re-checked against these values in rules, so
+    // they are a guide for honest use, not a hard security boundary yet.
+    match /settings/{settingsId} {
+      allow read: if isCompanyUser();
+      allow write: if isAdmin();
     }
 
     // An existing admin may grant admin access to someone who has already

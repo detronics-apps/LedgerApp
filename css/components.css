@@ -26,6 +26,7 @@
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
 .btn-danger { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); }
+.btn-icon { width: 32px; min-height: 32px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; line-height: 1; }
 
 .tabbar { display: flex; gap: var(--space-2); }
 .tab {
@@ -66,7 +67,8 @@ input, select, textarea {
 .picker__option strong { display: block; color: var(--text-heading); }
 .picker__option span { font-size: 12px; color: var(--text-faint); }
 
-table.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; }
 table.table th, table.table td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); }
 table.table th { color: var(--text-faint); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
 

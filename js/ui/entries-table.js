@@ -1,7 +1,7 @@
 import { el } from './dom.js';
 import { formatDate, formatPoints } from '../format.js';
 
-export function buildEntriesTable(entries, { showOwner = true, onEdit = null, onDelete = null } = {}) {
+export function buildEntriesTable(entries, { showOwner = true, onEdit = null, onDelete = null, anonymize = false } = {}) {
   if (entries.length === 0) {
     return el('p', { class: 'muted', text: 'Nothing logged yet.' });
   }
@@ -28,7 +28,10 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
         evidenceHref ? el('a', { href: evidenceHref, target: '_blank', rel: 'noopener', text: ' [evidence]' }) : null,
       ]),
     ];
-    if (showOwner) cells.splice(1, 0, el('td', { text: entry.displayName }));
+    if (showOwner) {
+      const personLabel = anonymize ? `Employee ${(entry.uid || '').slice(-4)}` : entry.displayName;
+      cells.splice(1, 0, el('td', { text: personLabel }));
+    }
     if (onEdit || onDelete) {
       cells.push(el('td', {}, [
         onEdit ? el('button', { type: 'button', class: 'btn', text: 'Edit', on: { click: () => onEdit(entry) } }) : null,
@@ -41,8 +44,8 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
     return el('tr', {}, cells);
   });
 
-  return el('table', { class: 'table' }, [
+  return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
     el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
     el('tbody', {}, rows),
-  ]);
+  ]));
 }

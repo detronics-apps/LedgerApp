@@ -71,4 +71,7 @@ const mockCustomEntries = [
 ];
 document.getElementById('mount').appendChild(buildReviewView(mockCustomEntries, {
   onPromote: (entry) => { console.log('promote', entry); return Promise.resolve(); },
+  onLink: (entry, categoryId, taskId) => { console.log('link', entry, categoryId, taskId); return Promise.resolve(); },
+  categories: mockCategories,
+  tasks: mockTasks,
 }));

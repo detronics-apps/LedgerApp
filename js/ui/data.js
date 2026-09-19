@@ -38,6 +38,16 @@ export const listenCategories = (cb) => listen('categories', cb);
 export const listenTasks = (cb) => listen('tasks', cb);
 export const listenUsers = (cb) => listen('users', cb);
 
+export function listenSettings(cb) {
+  return onSnapshot(doc(db, 'settings', 'global'), (snap) => {
+    cb(snap.exists() ? snap.data() : null);
+  });
+}
+
+export function updateSettings(patch) {
+  return setDoc(doc(db, 'settings', 'global'), patch, { merge: true });
+}
+
 export function createCategory(data) {
   return addDoc(collection(db, 'categories'), { weight: 1, archived: false, ...data });
 }
@@ -65,4 +75,37 @@ export function deleteTask(id) {
  * first admin. */
 export function addAdmin(uid, email) {
   return setDoc(doc(db, 'admins', uid), { email });
+}
+
+/** Admin re-links a custom ("Other") entry to a real task/category. Only
+ * category/task/weights/points change - impact, proof, description,
+ * evidence, and the employee's own uid stay exactly as they logged it. The
+ * rules independently enforce this same boundary (isRecategorizationOnly in
+ * firestore.rules), so this is a convenience wrapper, not the real gate. */
+export function relinkEntry(entry, category, task) {
+  const taskWeight = task.weight ?? 1;
+  const categoryWeight = category.weight ?? 1;
+  return updateDoc(doc(db, 'entries', entry.id), {
+    categoryId: category.id, categoryName: category.name,
+    taskId: task.id, taskName: task.name,
+    isCustomTask: false, customTaskName: '',
+    taskWeight, categoryWeight,
+    points: computePoints(entry.impact, entry.proof, taskWeight, categoryWeight),
+    updatedAt: serverTimestamp(),
+  });
+}
+
+/** Admin sets or clears someone's "formal R&R" exclusion flag (settings
+ * .rrExclusionEnabled) - when set, this app's own submit flow blocks them
+ * from logging entries. Rules independently only allow this exact field to
+ * change (isExclusionFlagOnly). */
+export function setUserExclusion(uid, excludedFromLedger) {
+  return updateDoc(doc(db, 'users', uid), { excludedFromLedger });
+}
+
+/** Admin marks a high-scoring entry as validated (settings
+ * .managementValidationEnabled). Rules independently only allow
+ * validated/validatedAt to change on this path (isValidationOnly). */
+export function validateEntry(entryId) {
+  return updateDoc(doc(db, 'entries', entryId), { validated: true, validatedAt: serverTimestamp() });
 }

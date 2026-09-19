@@ -55,7 +55,7 @@ function categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDel
 
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Categories' }),
-    el('table', { class: 'table' }, [
+    el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
       el('thead', {}, el('tr', {}, ['Name', 'Description', 'Weight', 'Status', ''].map((h) => el('th', { text: h })))),
       el('tbody', {}, categories.map((c) => editableRow(
         c,
@@ -63,7 +63,7 @@ function categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDel
         onUpdateCategory,
         onDeleteCategory,
       ))),
-    ]),
+    ])),
     el('div', { class: 'field' }, [nameInput, descInput, addBtn]),
   ]);
 }
@@ -87,7 +87,7 @@ function tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTas
 
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Tasks' }),
-    el('table', { class: 'table' }, [
+    el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
       el('thead', {}, el('tr', {}, ['Name', 'Description', 'Weight', 'Status', ''].map((h) => el('th', { text: h })))),
       el('tbody', {}, tasks.map((t) => editableRow(
         t,
@@ -95,7 +95,7 @@ function tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTas
         onUpdateTask,
         onDeleteTask,
       ))),
-    ]),
+    ])),
     el('div', { class: 'field' }, [categorySelect, nameInput, descInput, addBtn]),
   ]);
 }
