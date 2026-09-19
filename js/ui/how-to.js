@@ -28,7 +28,64 @@ function activeRules(settings) {
   return rules;
 }
 
-export function buildHowTo(settings = DEFAULT_SETTINGS) {
+function adminSections(isFullAdmin) {
+  const sections = [
+    section('Admin: adding and editing categories & tasks', [
+      el('p', {}, 'Go to "Manage Tasks & Categories".'),
+      el('ul', {}, [
+        el('li', { text: 'Add a category with the name/description fields at the bottom of the Categories panel, then "Add category".' }),
+        el('li', { text: 'Add a task the same way in the Tasks panel - pick which category it belongs to from the dropdown next to the name/description fields before clicking "Add task".' }),
+        el('li', { text: 'To change an existing task\'s category, use the Category dropdown directly on its row, then click "Save".' }),
+        el('li', { text: 'Use "Filter by category" above the Tasks table to narrow a long list down to one category.' }),
+        el('li', { text: '"Archive" hides a category/task from the log-entry form without deleting its history; "Delete" is only available once nothing has ever been logged against it.' }),
+      ]),
+    ]),
+    section('Admin: adding users and assigning passwords', [
+      el('p', {}, 'There\'s no self-service signup - every account is created by hand in the Firebase console (not in this app):'),
+      el('ol', {}, [
+        el('li', { text: 'Firebase console -> Authentication -> Users -> "Add user".' }),
+        el('li', { text: 'Enter their @research-square.com email and set an initial password yourself - Firebase does not email it to them, so you share that password with them directly (in person, over chat, however your team normally shares a first-time password).' }),
+        el('li', { text: 'They sign in at the app with that email/password. Nothing else to set up - their profile is created automatically on first sign-in.' }),
+        el('li', { text: 'If someone forgets their password, an admin resets it from the same Authentication -> Users list in the Firebase console - there is no "forgot password" link in the app itself.' }),
+      ]),
+    ]),
+  ];
+
+  if (isFullAdmin) {
+    sections.push(
+      section('Admin: granting admin access', [
+        el('p', {}, 'On "Manage Tasks & Categories", the Admins panel lets you grant access by email (the person must have signed in at least once already).'),
+        el('ul', {}, [
+          el('li', { text: 'Leave every category checkbox unchecked to grant a full admin - they get every admin tab, including Settings and granting further admins.' }),
+          el('li', { text: 'Tick one or more categories instead to grant a category-scoped admin - they only see "Manage Tasks & Categories", and only their assigned categories/tasks appear there. They can\'t create brand-new categories or grant admin access to anyone else.' }),
+          el('li', { text: 'There\'s no "remove admin" button - de-admin-ing someone is a manual step in the Firebase console (delete their doc from the admins collection).' }),
+        ]),
+      ]),
+      section('Admin: how scoring works and how to change it', [
+        el('p', {}, 'Points = Impact x Proof x Task weight x Category weight.'),
+        el('ul', {}, [
+          el('li', { text: 'Impact (1-5) and Proof (1-3) are fixed scales everyone uses the same way - the employee picks these when logging, and they aren\'t admin-adjustable per entry.' }),
+          el('li', { text: 'Task weight and Category weight ARE admin-adjustable - edit the "Weight" field on any row in "Manage Tasks & Categories" and click Save to make that task or category worth more or less. A weight of 1 means no change; 2 doubles the points for anything logged under it, and so on.' }),
+          el('li', { text: 'The other pilot rules (daily entry caps, weekly point caps, once-a-week limit on impact-5 entries, R&R exclusion, ledger anonymization, and management validation of high-scoring entries) are all toggled and tuned from the "Settings" tab. Turning any of these on updates what non-admins see on this How-to page automatically.' }),
+        ]),
+      ]),
+    );
+  }
+
+  sections.push(
+    section('Admin: reviewing "Other" (custom) task entries', [
+      el('p', {}, 'Go to "Custom Task Review" to see every entry someone logged under "Other - not listed".'),
+      el('ul', {}, [
+        el('li', { text: 'If it\'s a genuinely new kind of task, click "Promote" to turn it into a real task under its category - it\'ll then show up on the log-entry form for everyone.' }),
+        el('li', { text: 'If it actually matches a task that already exists (maybe worded differently), use "Link to existing" to pick the category and task it should count as instead - this recalculates its points using that task\'s weight, without changing anything the employee entered (their description, evidence, impact, proof, date, all stay exactly as logged).' }),
+      ]),
+    ]),
+  );
+
+  return sections;
+}
+
+export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isScopedAdmin = false } = {}) {
   const rules = activeRules(settings);
 
   return el('div', {}, [
@@ -47,5 +104,6 @@ export function buildHowTo(settings = DEFAULT_SETTINGS) {
     section('What happens to "Other" entries?', [
       el('p', {}, 'If what you did doesn\'t match any task on the list, log it under "Other - not listed" with a short description anyway - it still counts. An admin reviews these in the Custom Task Review queue and either adds it as a real task (so it\'s on the list for everyone next time) or links your entry to an existing task that already covers it.'),
     ]),
+    ...(isAdmin || isScopedAdmin ? adminSections(isAdmin) : []),
   ]);
 }

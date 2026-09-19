@@ -124,7 +124,7 @@ function withEntryCounts(items, key) {
 function renderView() {
   clear(dom.main);
   const view = { log: renderLog, 'my-logs': renderMyLogs, ledger: renderLedger,
-    'my-stats': renderMyStats, 'company-stats': renderCompanyStats, 'how-to': () => buildHowTo(state.settings),
+    'my-stats': renderMyStats, 'company-stats': renderCompanyStats, 'how-to': () => buildHowTo(state.settings, { isAdmin: state.isAdmin, isScopedAdmin: isScopedAdmin() }),
     'admin-dashboard': renderAdminDashboard, 'admin-manage': renderAdminManage,
     'admin-review': renderAdminReview, 'admin-settings': renderAdminSettings }[state.activeTab];
   dom.main.appendChild(view());
