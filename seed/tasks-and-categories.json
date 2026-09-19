@@ -1,0 +1,689 @@
+{
+  "categories": [
+    {
+      "id": "client-success",
+      "name": "Client Success",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 0
+    },
+    {
+      "id": "communication-transparency",
+      "name": "Communication & Transparency",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 1
+    },
+    {
+      "id": "culture",
+      "name": "Culture",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 2
+    },
+    {
+      "id": "engineering-excellence",
+      "name": "Engineering Excellence",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 3
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 4
+    },
+    {
+      "id": "governance",
+      "name": "Governance",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 5
+    },
+    {
+      "id": "learning-capability",
+      "name": "Learning & Capability",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 6
+    },
+    {
+      "id": "operations-workplace-it",
+      "name": "Operations, Workplace & IT",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 7
+    },
+    {
+      "id": "people",
+      "name": "People",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 8
+    },
+    {
+      "id": "strategy-growth",
+      "name": "Strategy & Growth",
+      "description": "",
+      "weight": 1,
+      "archived": false,
+      "order": 9
+    }
+  ],
+  "tasks": [
+    {
+      "id": "client-success--business-development-sales",
+      "categoryId": "client-success",
+      "name": "Business Development & Sales",
+      "description": "Route for engineers who spot an opportunity or want to help win work. Take it forward to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 0
+    },
+    {
+      "id": "client-success--client-relationship-management",
+      "categoryId": "client-success",
+      "name": "Client Relationship Management",
+      "description": "Route for anything affecting a relationship with an existing client. Raise what needs action with management.",
+      "weight": 1,
+      "archived": false,
+      "order": 1
+    },
+    {
+      "id": "client-success--social-media-content-creation",
+      "categoryId": "client-success",
+      "name": "Social Media & Content Creation",
+      "description": "Route for content and posts engineers want published. Propose what goes out to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 2
+    },
+    {
+      "id": "client-success--events-industry-exposure-merchandise",
+      "categoryId": "client-success",
+      "name": "Events, Industry Exposure & Merchandise",
+      "description": "Route for event, conference and branded-merchandise requests. Put proposals to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 3
+    },
+    {
+      "id": "client-success--voice-of-the-customer",
+      "categoryId": "client-success",
+      "name": "Voice of the Customer",
+      "description": "Collect client feedback engineers pick up and pass it to management to shape our services.",
+      "weight": 1,
+      "archived": false,
+      "order": 4
+    },
+    {
+      "id": "client-success--building-partnerships",
+      "categoryId": "client-success",
+      "name": "Building Partnerships",
+      "description": "Route for suggested partners, suppliers and university links that could bring in work. Propose to management. Not community outreach.",
+      "weight": 1,
+      "archived": false,
+      "order": 5
+    },
+    {
+      "id": "communication-transparency--internal-communication-direction-setting",
+      "categoryId": "communication-transparency",
+      "name": "Internal Communication & Direction-Setting",
+      "description": "Route for gaps in what the company is being told. Propose to management how direction and decisions get communicated.",
+      "weight": 1,
+      "archived": false,
+      "order": 6
+    },
+    {
+      "id": "communication-transparency--business-transparency-updates",
+      "categoryId": "communication-transparency",
+      "name": "Business Transparency / Updates",
+      "description": "Collect what the team wants visibility of on performance and finances. Ask management what can be shared.",
+      "weight": 1,
+      "archived": false,
+      "order": 7
+    },
+    {
+      "id": "communication-transparency--change-management-communication",
+      "categoryId": "communication-transparency",
+      "name": "Change Management Communication",
+      "description": "Route for concerns about a change under way. Propose to management how it should be communicated.",
+      "weight": 1,
+      "archived": false,
+      "order": 8
+    },
+    {
+      "id": "communication-transparency--feedback-channels",
+      "categoryId": "communication-transparency",
+      "name": "Feedback Channels",
+      "description": "Route for ideas on how staff can raise things upward. Propose workable channels to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 9
+    },
+    {
+      "id": "communication-transparency--alignment-across-teams",
+      "categoryId": "communication-transparency",
+      "name": "Alignment Across Teams",
+      "description": "Route for engineers at different clients or sites who are out of step. Propose a fix to management. Outward-facing, not internal handoffs.",
+      "weight": 1,
+      "archived": false,
+      "order": 10
+    },
+    {
+      "id": "culture--employee-wellbeing",
+      "categoryId": "culture",
+      "name": "Employee Wellbeing",
+      "description": "Confidential first stop for wellbeing concerns. Raise what needs action with management.",
+      "weight": 1,
+      "archived": false,
+      "order": 11
+    },
+    {
+      "id": "culture--conflict-resolution",
+      "categoryId": "culture",
+      "name": "Conflict Resolution",
+      "description": "First stop for interpersonal or team conflict. Help resolve it, or escalate to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 12
+    },
+    {
+      "id": "culture--team-culture",
+      "categoryId": "culture",
+      "name": "Team Culture",
+      "description": "Route for ideas and concerns about how we work together day to day. Propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 13
+    },
+    {
+      "id": "culture--recognition-engagement",
+      "categoryId": "culture",
+      "name": "Recognition & Engagement",
+      "description": "Route for recognition ideas and engagement activities. Propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 14
+    },
+    {
+      "id": "engineering-excellence--quality-management",
+      "categoryId": "engineering-excellence",
+      "name": "Quality Management",
+      "description": "Route for quality concerns about what we deliver to clients. Propose review steps to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 15
+    },
+    {
+      "id": "engineering-excellence--engineering-standards-best-practices",
+      "categoryId": "engineering-excellence",
+      "name": "Engineering Standards & Best Practices",
+      "description": "Route for questions and gaps in how engineering work should be done. Propose standards to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 16
+    },
+    {
+      "id": "engineering-excellence--technical-knowledge-management",
+      "categoryId": "engineering-excellence",
+      "name": "Technical Knowledge Management",
+      "description": "Route for engineers wanting to find or record how we solved something. Propose to management how knowledge is kept.",
+      "weight": 1,
+      "archived": false,
+      "order": 17
+    },
+    {
+      "id": "engineering-excellence--innovation-prototyping",
+      "categoryId": "engineering-excellence",
+      "name": "Innovation & Prototyping",
+      "description": "Route for prototyping requests and ideas. Propose to management what capability we need.",
+      "weight": 1,
+      "archived": false,
+      "order": 18
+    },
+    {
+      "id": "engineering-excellence--technical-decision-making-governance",
+      "categoryId": "engineering-excellence",
+      "name": "Technical Decision-Making / Governance",
+      "description": "Route for major technical approach questions. Work up the options and put them to management to decide.",
+      "weight": 1,
+      "archived": false,
+      "order": 19
+    },
+    {
+      "id": "finance--budget-management",
+      "categoryId": "finance",
+      "name": "Budget Management",
+      "description": "Route for budget questions and requests. Put them to Finance and management. Not the strategic call on what gets resourced.",
+      "weight": 1,
+      "archived": false,
+      "order": 20
+    },
+    {
+      "id": "finance--cash-flow-monitoring",
+      "categoryId": "finance",
+      "name": "Cash Flow Monitoring",
+      "description": "Route for cash-flow questions from the team. Refer to Finance and management.",
+      "weight": 1,
+      "archived": false,
+      "order": 21
+    },
+    {
+      "id": "finance--salary-administration",
+      "categoryId": "finance",
+      "name": "Salary Administration",
+      "description": "Point of contact for payroll and salary queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 22
+    },
+    {
+      "id": "finance--revenue-targets",
+      "categoryId": "finance",
+      "name": "Revenue Targets",
+      "description": "Point of contact for revenue target queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 23
+    },
+    {
+      "id": "finance--expense-approval",
+      "categoryId": "finance",
+      "name": "Expense Approval",
+      "description": "Route for spend requests and expense queries. Take them to Finance and management for approval.",
+      "weight": 1,
+      "archived": false,
+      "order": 24
+    },
+    {
+      "id": "finance--financial-planning",
+      "categoryId": "finance",
+      "name": "Financial Planning",
+      "description": "Point of contact for financial planning and forecast queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 25
+    },
+    {
+      "id": "finance--risk-management",
+      "categoryId": "finance",
+      "name": "Risk Management",
+      "description": "Point of contact for financial and business risk queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 26
+    },
+    {
+      "id": "governance--cybersecurity-policy-monitoring",
+      "categoryId": "governance",
+      "name": "Cybersecurity Policy & Monitoring",
+      "description": "Point of contact for data security and cybersecurity queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 27
+    },
+    {
+      "id": "governance--policy-administration",
+      "categoryId": "governance",
+      "name": "Policy Administration",
+      "description": "Point of contact for general company policy queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 28
+    },
+    {
+      "id": "governance--legal-regulatory-compliance",
+      "categoryId": "governance",
+      "name": "Legal & Regulatory Compliance",
+      "description": "Point of contact for legal and regulatory compliance queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 29
+    },
+    {
+      "id": "governance--intellectual-property-management",
+      "categoryId": "governance",
+      "name": "Intellectual Property Management",
+      "description": "Point of contact for company and client IP queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 30
+    },
+    {
+      "id": "governance--ethics-corporate-governance-oversight",
+      "categoryId": "governance",
+      "name": "Ethics & Corporate Governance Oversight",
+      "description": "Confidential route for ethical concerns. Escalate to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 31
+    },
+    {
+      "id": "learning-capability--performance-management",
+      "categoryId": "learning-capability",
+      "name": "Performance Management",
+      "description": "Route for questions about the review cycle and performance feedback. Propose a workflow to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 32
+    },
+    {
+      "id": "learning-capability--career-framework-progression",
+      "categoryId": "learning-capability",
+      "name": "Career Framework & Progression",
+      "description": "Route for questions about career paths and levels. Gather what engineers need and propose a workflow to management for the steps and actions.",
+      "weight": 1,
+      "archived": false,
+      "order": 33
+    },
+    {
+      "id": "learning-capability--promotion-criteria-readiness",
+      "categoryId": "learning-capability",
+      "name": "Promotion Criteria & Readiness",
+      "description": "Route for questions about promotion readiness. Propose criteria and a process to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 34
+    },
+    {
+      "id": "learning-capability--skills-matrix-capability-tracking",
+      "categoryId": "learning-capability",
+      "name": "Skills Matrix & Capability Tracking",
+      "description": "Collect what technical skills we have and where the gaps are. Report to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 35
+    },
+    {
+      "id": "learning-capability--cpd-tracking",
+      "categoryId": "learning-capability",
+      "name": "CPD Tracking",
+      "description": "Route for CPD and registration queries. Propose to management how it is tracked.",
+      "weight": 1,
+      "archived": false,
+      "order": 36
+    },
+    {
+      "id": "learning-capability--individual-development-planning-idps",
+      "categoryId": "learning-capability",
+      "name": "Individual Development Planning (IDPs)",
+      "description": "Support engineers building a personal growth plan. Propose to management what is needed to deliver it.",
+      "weight": 1,
+      "archived": false,
+      "order": 37
+    },
+    {
+      "id": "learning-capability--career-mentorship",
+      "categoryId": "learning-capability",
+      "name": "Career Mentorship",
+      "description": "Route for engineers wanting a mentor. Propose pairings and a workflow to management. Long-term development, not day-to-day problem-solving.",
+      "weight": 1,
+      "archived": false,
+      "order": 38
+    },
+    {
+      "id": "learning-capability--new-engineer-onboarding-buddy-technical",
+      "categoryId": "learning-capability",
+      "name": "New Engineer Onboarding (Buddy & Technical)",
+      "description": "Route for new engineers settling in and getting productive. Propose improvements to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 39
+    },
+    {
+      "id": "learning-capability--technical-training-upskilling",
+      "categoryId": "learning-capability",
+      "name": "Technical Training & Upskilling",
+      "description": "Route for training requests and skills gaps. Propose training to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 40
+    },
+    {
+      "id": "learning-capability--leadership-development",
+      "categoryId": "learning-capability",
+      "name": "Leadership Development",
+      "description": "Route for engineers moving toward Team Lead or Lead Engineer. Propose development steps to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 41
+    },
+    {
+      "id": "learning-capability--communication-soft-skills-training",
+      "categoryId": "learning-capability",
+      "name": "Communication & Soft Skills Training",
+      "description": "Route for communication and presentation training needs. Propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 42
+    },
+    {
+      "id": "learning-capability--graduate-programme",
+      "categoryId": "learning-capability",
+      "name": "Graduate Programme",
+      "description": "Route for graduate development questions. Propose programme steps to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 43
+    },
+    {
+      "id": "learning-capability--technical-coaching",
+      "categoryId": "learning-capability",
+      "name": "Technical Coaching",
+      "description": "Day-to-day coaching for engineers stuck on a technical problem. Escalate what needs management attention. Not long-term career mentoring.",
+      "weight": 1,
+      "archived": false,
+      "order": 44
+    },
+    {
+      "id": "operations-workplace-it--business-process-design",
+      "categoryId": "operations-workplace-it",
+      "name": "Business Process Design",
+      "description": "Route for questions about how work should get done. Propose documented processes to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 45
+    },
+    {
+      "id": "operations-workplace-it--continuous-improvement",
+      "categoryId": "operations-workplace-it",
+      "name": "Continuous Improvement",
+      "description": "Route for inefficiencies and improvement ideas. Work them up and propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 46
+    },
+    {
+      "id": "operations-workplace-it--contractor-management",
+      "categoryId": "operations-workplace-it",
+      "name": "Contractor Management",
+      "description": "Route for issues with contractors doing internal work. Raise with management.",
+      "weight": 1,
+      "archived": false,
+      "order": 47
+    },
+    {
+      "id": "operations-workplace-it--pm-for-internal-initiatives",
+      "categoryId": "operations-workplace-it",
+      "name": "PM for Internal Initiatives",
+      "description": "Route for internal, non-billable initiatives. Coordinate and report progress to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 48
+    },
+    {
+      "id": "operations-workplace-it--cross-department-coordination",
+      "categoryId": "operations-workplace-it",
+      "name": "Cross-Department Coordination",
+      "description": "Route for handoff problems between our own departments. Propose a fix to management. Internal, not engineers at client sites.",
+      "weight": 1,
+      "archived": false,
+      "order": 49
+    },
+    {
+      "id": "operations-workplace-it--it-systems-network-support",
+      "categoryId": "operations-workplace-it",
+      "name": "IT Systems, Network & Support",
+      "description": "Point of contact for IT, network and connectivity issues.",
+      "weight": 1,
+      "archived": false,
+      "order": 50
+    },
+    {
+      "id": "operations-workplace-it--office-infrastructure-improvements",
+      "categoryId": "operations-workplace-it",
+      "name": "Office Infrastructure & Improvements",
+      "description": "Route for office space, layout and improvement ideas. Propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 51
+    },
+    {
+      "id": "operations-workplace-it--building-maintenance",
+      "categoryId": "operations-workplace-it",
+      "name": "Building Maintenance",
+      "description": "Route for building faults and maintenance issues. Raise with management.",
+      "weight": 1,
+      "archived": false,
+      "order": 52
+    },
+    {
+      "id": "operations-workplace-it--kitchen-stock",
+      "categoryId": "operations-workplace-it",
+      "name": "Kitchen Stock",
+      "description": "Point of contact for kitchen stock and supplies.",
+      "weight": 1,
+      "archived": false,
+      "order": 53
+    },
+    {
+      "id": "operations-workplace-it--workplace-safety",
+      "categoryId": "operations-workplace-it",
+      "name": "Workplace Safety",
+      "description": "Point of contact for health and safety concerns.",
+      "weight": 1,
+      "archived": false,
+      "order": 54
+    },
+    {
+      "id": "operations-workplace-it--equipment-management",
+      "categoryId": "operations-workplace-it",
+      "name": "Equipment Management",
+      "description": "Point of contact for tools, hardware and equipment requests.",
+      "weight": 1,
+      "archived": false,
+      "order": 55
+    },
+    {
+      "id": "people--recruitment",
+      "categoryId": "people",
+      "name": "Recruitment",
+      "description": "Route for referrals and hiring questions. Support the process and report to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 56
+    },
+    {
+      "id": "people--hr-onboarding-administration",
+      "categoryId": "people",
+      "name": "HR Onboarding & Administration",
+      "description": "Route for new-hire paperwork, contracts and systems access queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 57
+    },
+    {
+      "id": "people--exit-interviews",
+      "categoryId": "people",
+      "name": "Exit Interviews",
+      "description": "Collect honest feedback from people leaving and pass the themes to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 58
+    },
+    {
+      "id": "people--leave-parental-leave-policies",
+      "categoryId": "people",
+      "name": "Leave & Parental Leave Policies",
+      "description": "Point of contact for leave and parental leave queries.",
+      "weight": 1,
+      "archived": false,
+      "order": 59
+    },
+    {
+      "id": "people--benefits-administration",
+      "categoryId": "people",
+      "name": "Benefits Administration",
+      "description": "Route for employee benefit queries. Refer to management where a decision is needed.",
+      "weight": 1,
+      "archived": false,
+      "order": 60
+    },
+    {
+      "id": "strategy-growth--company-goals-long-term-planning",
+      "categoryId": "strategy-growth",
+      "name": "Company Goals & Long-Term Planning",
+      "description": "Route for questions about what the company is focusing on. Carry engineer input to management, who set the goals.",
+      "weight": 1,
+      "archived": false,
+      "order": 61
+    },
+    {
+      "id": "strategy-growth--company-vision-north-star",
+      "categoryId": "strategy-growth",
+      "name": "Company Vision / North Star",
+      "description": "Route for questions about the company's long-term direction. Carry engineer input to management, who set the vision.",
+      "weight": 1,
+      "archived": false,
+      "order": 62
+    },
+    {
+      "id": "strategy-growth--determining-future-markets-services",
+      "categoryId": "strategy-growth",
+      "name": "Determining Future Markets & Services",
+      "description": "Collect engineer input on markets, technologies and services we could move into. Put it to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 63
+    },
+    {
+      "id": "strategy-growth--resource-allocation",
+      "categoryId": "strategy-growth",
+      "name": "Resource Allocation",
+      "description": "Route for questions about where people, money and time are being invested. Put engineer input to management, who decide. Not the budget figures themselves.",
+      "weight": 1,
+      "archived": false,
+      "order": 64
+    },
+    {
+      "id": "strategy-growth--growth-strategy",
+      "categoryId": "strategy-growth",
+      "name": "Growth Strategy",
+      "description": "Route for growth ideas, including what we need in place to take on more engineers. Propose to management.",
+      "weight": 1,
+      "archived": false,
+      "order": 65
+    },
+    {
+      "id": "strategy-growth--sustainability-outreach",
+      "categoryId": "strategy-growth",
+      "name": "Sustainability & Outreach",
+      "description": "Point of contact for CSR, STEM outreach and environmental initiatives. Giving back, not winning work.",
+      "weight": 1,
+      "archived": false,
+      "order": 66
+    }
+  ]
+}
