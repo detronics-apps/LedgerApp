@@ -83,9 +83,19 @@ Research Square mark from `reference/Logo.png` / `reference/Logo Small.jpg`.
   CDN ES-module URLs (`https://www.gstatic.com/firebasejs/.../firebase-app.js`
   etc.) — this is Google's supported no-bundler integration path, not a
   bundled dependency.
-- Firebase Authentication (Google provider, `hd: 'research-square.com'` hint
-  for UX) + Firestore for all data. No custom server; all logic runs
-  client-side against Firebase.
+- Firebase Authentication (Email/Password provider) + Firestore for all
+  data. No custom server; all logic runs client-side against Firebase.
+  Post-implementation change from the original design (Google Sign-In,
+  restricted by `hd` hint): Research Square runs on Microsoft/Outlook, not
+  Google, so employees have no Google identity tied to their work email —
+  Google Sign-In was never actually usable for real accounts. Email/Password
+  sidesteps identity-provider integration (Google or Microsoft) entirely:
+  an admin creates each account by hand (Firebase console > Authentication
+  > Users > Add user) and hands out the password out of band. This also
+  means `isCompanyUser()` in `firestore.rules` no longer checks
+  `email_verified` — the trust boundary shifted from "this person clicked a
+  link in their own inbox" to "an admin explicitly created this account,"
+  so self-verification no longer maps to anything real here.
 - The Firebase web config (apiKey, projectId, etc.) is public by design —
   Firebase's security model relies on Firestore Rules and Auth, not on
   hiding the config. This will be called out in the README so it is never
@@ -302,8 +312,9 @@ Admins can add, edit, reweight, or remove any of these after launch.
 - `firestore.rules`, ready to deploy
 - Firestore emulator rules-test suite
 - Seed script/data for `categories`/`tasks` from the spreadsheet
-- README covering: Firebase project setup (enabling Google Auth, deploying
-  rules, seeding the first admin), running locally, running tests, deploying
+- README covering: Firebase project setup (enabling Email/Password auth,
+  deploying rules, provisioning accounts, seeding the first admin), running
+  locally, running tests, deploying
   to GitHub Pages, and a plain statement of what data leaves the browser
   (all of it, to Firebase — unlike a typical Detronics tool) and why.
 

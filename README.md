@@ -20,12 +20,16 @@ custom server.
 ## 1. Firebase project setup (one-time, by a Research Square admin)
 
 1. Go to https://console.firebase.google.com and create a new project.
-2. **Authentication > Sign-in method**: enable **Google**.
-3. **Authentication > Settings > Authorized domains**: add your GitHub Pages
-   domain (e.g. `<org>.github.io`) and `localhost` for local testing.
-4. **Firestore Database**: create a database in production mode, in a region
+2. **Authentication > Sign-in method**: enable **Email/Password**. (Not
+   Google or Microsoft - Research Square runs on Microsoft/Outlook, so
+   neither an employee's Google identity nor an unregistered Microsoft
+   OAuth app would work here. Email/Password sidesteps the question
+   entirely: there is no dependency on the company's real identity
+   provider at all - see section 3 below for how accounts actually get
+   created.)
+3. **Firestore Database**: create a database in production mode, in a region
    close to your team.
-5. **Project settings > General > Your apps**: add a Web app, copy the config
+4. **Project settings > General > Your apps**: add a Web app, copy the config
    object it gives you into `js/firebase-config.js`, replacing every
    `REPLACE_ME` value.
 
@@ -80,14 +84,29 @@ is immediately visible to the whole team, not hidden in a private total.
 This is worth hardening before this pilot's data is used for anything beyond
 the measurement-instrument purpose it's built for.
 
-## 3. Seed the first admin
+## 3. Provisioning employee accounts
+
+There is no self-service signup - an admin creates every account by hand:
+
+1. In the Firebase console, go to **Authentication > Users > Add user**.
+2. Enter that person's real `@research-square.com` email and choose a
+   password for them (anything - there's no policy enforced beyond
+   Firebase's own minimum length).
+3. Tell them the password out of band (Slack, in person, whatever) - there's
+   no email invite flow. They sign in with it at the app's URL.
+4. There is no "change my password" screen in the app; if someone needs a
+   new one, use **Authentication > Users**, click their account, and reset
+   it there.
+
+## 4. Seed the first admin
 
 Nobody can grant admin access before at least one admin exists, so the
 *very first* admin has to be set up once, by hand, in the Firebase console
 (every admin after that can be added from the app itself - see below):
 
-1. Sign in to the deployed app once with the intended admin's
-   `@research-square.com` account (so their `users` doc and UID exist).
+1. Provision the intended first admin's account as in section 3 above, and
+   have them sign in once (this creates their `users` doc and Firebase Auth
+   UID).
 2. In the Firebase console, go to **Firestore Database**, open the `admins`
    collection (create it if it doesn't exist yet), and add a document whose
    **document ID is that person's UID** (find it under **Authentication >
@@ -104,7 +123,7 @@ Firebase-console step (delete their doc from the `admins` collection), by
 design - the rules make an existing `admins` doc permanently un-editable
 and un-deletable by any client.
 
-## 4. Seed the task/category list
+## 5. Seed the task/category list
 
 ```bash
 pip install openpyxl
