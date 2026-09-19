@@ -1,4 +1,5 @@
 node_modules/
 .DS_Store
 service-account.json
+*firebase-adminsdk*.json
 .claude/scheduled_tasks.lock
