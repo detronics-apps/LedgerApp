@@ -1,0 +1,404 @@
+Use the detronics-app skill — scaffold with its script, read references/pitfalls.md before any viewport CSS or SVG, pure modules and tests first, then the UI. 
+Build a new browser app called Impact Ledger that does the following. 
+
+Color palette should follow:
+where is the companies website to match the look and feel: https://research-square.com/engineeringservices
+
+I read the identity straight off the live site and rebuilt the poster in it.
+
+What the site uses
+
+Headings	Space Grotesk, weight 500–600, tight negative tracking
+Body	Inter
+Navy (headings)	
+#102A43
+Body text	
+#4A5A6A
+Muted	
+#8294A4
+Accent blue	
+#2E6A9E
+Tints	
+#E3EEF8, 
+#EEF4FA, pale 
+#CFE0F0
+Borders	rgba(16,42,67,0.12), 4px radius
+Eyebrow labels	Inter 600, uppercase, ~0.22em tracking, in accent blue
+
+give description for both scores 2 and 4 values as well, and we moved away from calling it R&R it is called tasks and categories. 
+admin should be able to see the user names, and full stats dashboard, and update (add and remove tasks and categories, currently listed in the excel in the folder, and add weights to each task and category).
+where each user should be able to see their own logs (and be able to edit them), see the full company ledger, and their own stats, as well as the mean and avg stats of the company.
+
+Will engineers actually log extra effort?
+What do engineers themselves consider "extra effort"?
+
+The scoring system therefore needs to be simple enough that people will actually use it, while still collecting useful data.
+
+1. What we are testing
+
+The pilot should answer:
+
+When given a simple platform to record contributions outside their normal engineering work, what do people choose to record, how often do they record it, and what types of work do they consider extra effort?
+
+That means the scoring should not yet try to determine what someone's bonus should be.
+
+The points are essentially a measurement instrument.
+
+2. Logging
+
+I would make the employee interaction extremely simple.
+
+Employee sees:
+
+What did you do?
+
+Select contribution type
+↓
+Select what you did
+↓
+When did you do it?
+↓
+How much impact did you think it had?
+↓
+Add evidence/description
+
+For example:
+
+Field	Example
+Date	17 September
+Category	Technical Development
+Activity	Helped onboard another engineer
+Impact	3
+Proof	2
+Description	Created a short setup guide and helped Sam get their development environment running
+Evidence	Link/document/MoM if applicable
+
+The actual entry should ideally take 10–20 seconds once the system is familiar.
+
+3. Don't ask them to calculate points
+
+This is important.
+
+The employee should never have to work out the score.
+
+They should say:
+
+"I did this."
+
+The system determines the points.
+
+That lets us test what people perceive as extra effort without turning the pilot into a game of "how many points can I squeeze out of this?"
+
+4. Start with a very simple score
+
+For the pilot, I would use only three dimensions:
+
+A. Impact
+Score	Meaning
+1	Small help
+3	Meaningful contribution
+5	Company-shaping improvement
+B. Proof
+Score	Meaning
+1	Trust me bro
+2	Here is the data
+3	Here is proof of the impact
+C. Frequency / consistency
+
+Don't make employees score this.
+
+The system simply records when contributions happen.
+
+That gives us the raw data to later ask:
+
+Is this person doing something once?
+Once a month?
+Every week?
+Continuously?
+
+I would not introduce the 1 / 1.5 / 2 consistency multiplier yet.
+
+First find out what the actual behaviour looks like.
+
+5. What the score could look like
+
+For the pilot:
+
+Contribution Score = Impact × Proof
+
+So:
+
+Impact	Proof	Points
+1	1	1
+1	2	2
+1	3	3
+3	1	3
+3	2	6
+3	3	9
+5	1	5
+5	2	10
+5	3	15
+
+This is deliberately simple.
+
+It lets you see whether employees naturally distinguish between:
+
+"I helped someone for five minutes"
+
+and
+
+"I created something that substantially improved how we work."
+
+6. But I would add one important thing
+
+Have the employee describe the effort before seeing the score.
+
+For example:
+
+What did you do?
+"Helped a junior engineer understand how to use the drawing standard."
+
+Then:
+
+What was the impact?
+○ Small help
+○ Meaningful contribution
+○ Company-shaping improvement
+
+Then:
+
+What evidence exists?
+○ No specific evidence
+○ Data/document/result exists
+○ Clear evidence of impact
+
+This gives you something extremely valuable:
+
+Employee perception vs actual classification
+
+You can later analyse things like:
+
+47% of logged contributions were considered "meaningful" by employees.
+
+Or:
+
+Engineers frequently regarded mentoring as extra effort, while management had previously considered it part of normal teamwork.
+
+That is exactly the sort of information this pilot should uncover.
+
+7. R&R should initially be categorisation, not weighting
+
+I would not weight R&R yet.
+
+For example:
+
+Contribution category
+Technical mentoring
+Onboarding
+Recruitment
+Process improvement
+Quality improvement
+Training / knowledge sharing
+IT / systems
+Culture / social
+Business development
+Client support
+Facilities / workplace
+Company strategy
+Other
+
+Then:
+
+What did you do?
+
+The R&R structure gives you a way to analyse the data later.
+
+For now:
+
+Technical mentoring = Technical mentoring
+
+not
+
+Technical mentoring = ×1.4
+
+We don't yet know whether the weighting is justified.
+
+8. "Other" is extremely important
+
+I would deliberately include:
+
+Other contribution
+
+with a free-text explanation.
+
+Because one of the things you're testing is:
+
+Are we actually capturing what employees think extra effort is?
+
+If 20 people repeatedly use "Other" to describe something, that is a huge signal that your R&R list is missing something.
+
+You can then add it to the formal list later.
+
+9. Don't restrict logging too aggressively initially
+
+I would actually remove the:
+
+1 entry per day / 5-point activity once per week / 39-point weekly maximum
+
+rules for the first pilot.
+
+Those are useful anti-gaming rules later.
+
+But right now they interfere with the experiment.
+
+You want to know:
+
+What would people naturally log if we simply gave them the opportunity?
+
+If someone logs six small things in one day, that's useful information.
+
+You can then discover whether:
+
+they are genuinely contributing frequently
+they are logging trivial things
+the logging process encourages behaviour
+they misunderstood what qualifies
+people naturally consolidate multiple activities
+
+You can introduce limits once you understand the behaviour.
+
+10. The ledger should capture the raw behaviour
+
+I'd structure the underlying data roughly like this:
+
+Date	Person	Category	Activity	Impact	Proof	Points	Description	Evidence
+17/09	A	Mentoring	Helped junior	1	1	1	Helped with CAD setup	
+17/09	B	Process	Improved template	3	2	6	Updated design template	Link
+18/09	C	Onboarding	Created guide	3	3	9	New onboarding guide	Link
+19/09	A	Culture	Organised social	3	2	6	Organised team event	
+
+Then you can analyse:
+
+Participation
+% of engineers who log something
+average entries/person
+median entries/person
+number of repeat contributors
+number of people who never log anything
+What people consider extra effort
+most common categories
+most common activities
+activities employees repeatedly log
+"Other" contributions
+Behaviour
+one-off contributions
+recurring contributions
+contribution frequency
+contribution distribution
+Perception
+what employees call "small"
+what employees call "meaningful"
+what employees consider "company-shaping"
+Evidence
+percentage with no evidence
+percentage with data
+percentage with measurable impact
+
+That gives you far more useful information than starting with a complicated bonus formula.
+
+11. The biggest experiment
+
+I'd actually make the pilot question slightly broader:
+
+"What does R2ES's engineers believe counts as extra effort?"
+
+Because you may discover something unexpected.
+
+For example, you might expect:
+
+Process improvement → lots of entries
+
+but discover:
+
+Helping another engineer → 60% of all entries.
+
+Or:
+
+Engineers don't consider social events "extra effort."
+
+Or:
+
+People don't log things because they believe "that's just part of being a good colleague."
+
+Those are valuable findings.
+
+So I would reduce the current system to this for the pilot
+
+Employee:
+
+1. What did you do?
+Select activity / Other
+
+2. What was the impact?
+1 = Small help
+3 = Meaningful contribution
+5 = Company-shaping improvement
+
+3. What proof do you have?
+1 = Trust me bro
+2 = Here is the data
+3 = Here is proof of the impact
+
+4. Briefly describe it / provide evidence
+
+System:
+
+Points = Impact × Proof
+
+And that's it.
+
+No money.
+No tax.
+No tenure.
+No consistency multiplier.
+No bonus pool.
+No ranking.
+No weekly caps.
+
+Those can all be designed after you have real behavioural data.
+
+The pilot then becomes less about building the perfect scoring system and more about putting a measuring cup under the tap and seeing what actually comes out.
+
+
+I need a web app built with a Firebase + GitHub Pages architecture:
+
+ARCHITECTURE
+- Frontend: static client-side app (HTML/CSS/JS) hosted for free on GitHub Pages
+- Backend: Firebase (Firestore for data, Firebase Authentication for sign-in)
+- No custom server — all logic runs client-side against Firebase
+
+AUTHENTICATION
+- All employees sign in with their company email before using the app
+- Restrict sign-in to only [@yourcompany.com] email addresses
+- Every data entry must be tagged with the signed-in user's ID (auth.uid) and timestamp
+
+CORE FUNCTIONALITY
+- A form where any signed-in employee can log [effort/data entries — describe fields here]
+- Submitted entries save to a shared Firestore collection
+- An admin view/page that lists all entries from all employees (not just the viewer's own)
+- Admin access should be limited to a specific list of admin user IDs — regular employees should not be able to see other people's entries or reach the admin view
+
+SECURITY REQUIREMENTS (non-negotiable)
+- Do NOT leave Firestore in test mode. Write proper Firestore Security Rules that:
+  - reject any unauthenticated read or write
+  - allow a regular user to create entries only under their own auth.uid
+  - allow a regular user to read only their own entries
+  - allow read access to ALL entries only for UIDs listed in an "admins" collection
+  - prevent any client from writing to the "admins" collection directly
+- Confirm the security rules are enforced server-side (Firestore Rules), not just hidden in client-side JavaScript — client code is public by default
+- Before considering this done, test the rules by attempting to read/write data as a non-admin user and as an unauthenticated request, and confirm both are rejected
+
+DELIVERABLES
+- The GitHub Pages-ready frontend code
+- Firebase project setup instructions (Auth providers to enable, Firestore rules to deploy)
+- The actual firestore.rules file, written and ready to deploy
