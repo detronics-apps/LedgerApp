@@ -25,14 +25,15 @@ function distributionList(distribution) {
     el('li', { text: `${value}: ${count}` })));
 }
 
-export function buildUserBreakdownTable(rows, { onToggleExclusion = null } = {}) {
+export function buildUserBreakdownTable(rows, { onToggleExclusion = null, showRank = false } = {}) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
-  const headers = ['Name', 'Email', 'Entries', 'Points', 'Last activity'];
+  const headers = [...(showRank ? ['#'] : []), 'Name', 'Email', 'Entries', 'Points', 'Last activity'];
   if (onToggleExclusion) headers.push('Excluded from ledger');
   return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
     el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
-    el('tbody', {}, rows.map((r) => {
+    el('tbody', {}, rows.map((r, i) => {
       const cells = [
+        ...(showRank ? [el('td', { class: 'value', text: String(i + 1) })] : []),
         el('td', { text: r.displayName }),
         el('td', { text: r.email }),
         el('td', { text: String(r.entryCount) }),

@@ -1,4 +1,4 @@
-import { el, clear, toast, field } from './ui/dom.js';
+import { el, clear, toast, field, select } from './ui/dom.js';
 import { initAuth, signIn, signOutUser } from './ui/auth.js';
 import * as data from './ui/data.js';
 import { buildNav } from './ui/nav.js';
@@ -36,6 +36,7 @@ function applyTheme(theme) {
 const state = {
   user: null, isAdmin: false, adminCategoryIds: [],
   categories: [], tasks: [], entries: [], users: [],
+  leaderboardCategoryId: 'all',
   settings: DEFAULT_SETTINGS,
   activeTab: 'log',
   wrongDomainEmail: null,
@@ -99,6 +100,7 @@ const EMPLOYEE_TABS = [
 const ADMIN_TABS = [
   { id: 'admin-dashboard', label: 'Admin Dashboard' },
   { id: 'admin-manage', label: 'Manage Tasks & Categories' },
+  { id: 'leaderboard', label: 'Leaderboard' },
   { id: 'admin-review', label: 'Custom Task Review' },
   { id: 'admin-settings', label: 'Settings' },
 ];
@@ -107,7 +109,12 @@ function isScopedAdmin() { return !state.isAdmin && state.adminCategoryIds.lengt
 
 function tabsFor(state) {
   if (state.isAdmin) return [...EMPLOYEE_TABS, ...ADMIN_TABS];
-  if (isScopedAdmin()) return [...EMPLOYEE_TABS, { id: 'admin-manage', label: 'Manage Tasks & Categories' }];
+  if (isScopedAdmin()) {
+    return [...EMPLOYEE_TABS,
+      { id: 'admin-manage', label: 'Manage Tasks & Categories' },
+      { id: 'leaderboard', label: 'Leaderboard' },
+    ];
+  }
   return EMPLOYEE_TABS;
 }
 
@@ -126,6 +133,7 @@ function renderView() {
   const view = { log: renderLog, 'my-logs': renderMyLogs, ledger: renderLedger,
     'my-stats': renderMyStats, 'company-stats': renderCompanyStats, 'how-to': () => buildHowTo(state.settings, { isAdmin: state.isAdmin, isScopedAdmin: isScopedAdmin() }),
     'admin-dashboard': renderAdminDashboard, 'admin-manage': renderAdminManage,
+    'leaderboard': renderLeaderboard,
     'admin-review': renderAdminReview, 'admin-settings': renderAdminSettings }[state.activeTab];
   dom.main.appendChild(view());
 }
@@ -243,6 +251,39 @@ function renderAdminDashboard() {
     ]),
     renderNeedsValidation(),
   ].filter(Boolean));
+}
+
+function renderLeaderboard() {
+  const scoped = isScopedAdmin();
+  const availableCategories = scoped
+    ? state.categories.filter((c) => state.adminCategoryIds.includes(c.id))
+    : state.categories;
+  const options = [{ id: 'all', name: scoped ? 'All my categories' : 'All categories' }, ...availableCategories];
+  if (!options.some((o) => o.id === state.leaderboardCategoryId)) state.leaderboardCategoryId = 'all';
+
+  const scopedEntries = scoped ? state.entries.filter((e) => state.adminCategoryIds.includes(e.categoryId)) : state.entries;
+  const filteredEntries = state.leaderboardCategoryId === 'all'
+    ? scopedEntries
+    : scopedEntries.filter((e) => e.categoryId === state.leaderboardCategoryId);
+
+  const rows = summarizeByUser(filteredEntries, state.users);
+  const filterSelect = select(
+    options.map((o) => ({ value: o.id, label: o.name })),
+    state.leaderboardCategoryId,
+    (value) => { state.leaderboardCategoryId = value; renderView(); },
+  );
+  const selectedName = options.find((o) => o.id === state.leaderboardCategoryId)?.name ?? 'All categories';
+
+  return el('div', {}, [
+    el('div', { class: 'panel' }, [
+      el('h3', { text: 'Leaderboard' }),
+      field('Category', filterSelect),
+    ]),
+    el('div', { class: 'panel' }, [
+      el('h3', { text: `Top scorers - ${selectedName}` }),
+      buildUserBreakdownTable(rows, { showRank: true }),
+    ]),
+  ]);
 }
 
 function renderAdminSettings() {
