@@ -1,0 +1,29 @@
+/* Tooltips live on <body>, not inside a scroll container - see dom.js's
+   infoIcon(). Fixed positioning, set from JS, escapes every clipping
+   context that a bubble nested in a panel would be clipped by. */
+.info__bubble {
+  position: fixed;
+  z-index: 300;
+  display: none;
+  pointer-events: none;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 24px));
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: normal;
+}
+
+/* Header shrinks its wordmark before it lets action buttons collide with it. */
+@media (max-width: 560px) {
+  .brand__name { display: none; }
+  .app-header { gap: var(--space-2); padding: 0 var(--space-3); }
+}

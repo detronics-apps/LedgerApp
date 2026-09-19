@@ -1,0 +1,131 @@
+/*
+ * Design tokens for the Research Square Engineering Services identity
+ * (read from research-square.com/engineeringservices). Light is the base;
+ * dark is redefined twice - once behind prefers-color-scheme for viewers who
+ * never touch the toggle, once behind [data-theme] so the toggle wins in
+ * both directions.
+ */
+
+:root {
+  color-scheme: light;
+
+  --bg: #EEF4FA;
+  --panel: #ffffff;
+  --panel-2: #E3EEF8;
+  --panel-3: #CFE0F0;
+  --border: rgba(16, 42, 67, 0.12);
+  --border-strong: rgba(16, 42, 67, 0.28);
+
+  --text: #4A5A6A;
+  --text-heading: #102A43;
+  --text-dim: #4A5A6A;
+  --text-faint: #8294A4;
+
+  /* research-square.com accent blue. Used for fills, outlines and eyebrow
+     labels; --accent-strong is the darker variant for text on light panels. */
+  --accent: #2E6A9E;
+  --accent-strong: #1F4E78;
+  --accent-soft: #CFE0F0;
+  --accent-ink: #ffffff;
+
+  --ok: #1f7a3d;
+  --ok-soft: #e2f2e7;
+  --warn: #8a5a00;
+  --warn-soft: #fdf0d8;
+  --danger: #a32020;
+  --danger-soft: #fbe4e4;
+
+  --shadow-sm: 0 1px 2px rgb(16 42 67 / 8%);
+  --shadow-md: 0 4px 16px rgb(16 42 67 / 12%);
+  --shadow-lg: 0 12px 40px rgb(16 42 67 / 22%);
+
+  --radius-sm: 4px;
+  --radius: 4px;
+  --radius-lg: 8px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --header-h: 56px;
+
+  --font-heading: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0B1A2A;
+    --panel: #102A43;
+    --panel-2: #16324F;
+    --panel-3: #1D3E5E;
+    --border: rgba(207, 224, 240, 0.16);
+    --border-strong: rgba(207, 224, 240, 0.32);
+
+    --text: #CFE0F0;
+    --text-heading: #EEF4FA;
+    --text-dim: #CFE0F0;
+    --text-faint: #8294A4;
+
+    --accent: #6FA8D8;
+    --accent-strong: #9CC4E4;
+    --accent-soft: #1D3E5E;
+    --accent-ink: #0B1A2A;
+
+    --ok: #6ed08c;
+    --ok-soft: #1d3527;
+    --warn: #e8b45c;
+    --warn-soft: #3a2f18;
+    --danger: #f08a8a;
+    --danger-soft: #3b2020;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+    --shadow-md: 0 4px 16px rgb(0 0 0 / 45%);
+    --shadow-lg: 0 12px 40px rgb(0 0 0 / 55%);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0B1A2A;
+  --panel: #102A43;
+  --panel-2: #16324F;
+  --panel-3: #1D3E5E;
+  --border: rgba(207, 224, 240, 0.16);
+  --border-strong: rgba(207, 224, 240, 0.32);
+
+  --text: #CFE0F0;
+  --text-heading: #EEF4FA;
+  --text-dim: #CFE0F0;
+  --text-faint: #8294A4;
+
+  --accent: #6FA8D8;
+  --accent-strong: #9CC4E4;
+  --accent-soft: #1D3E5E;
+  --accent-ink: #0B1A2A;
+
+  --ok: #6ed08c;
+  --ok-soft: #1d3527;
+  --warn: #e8b45c;
+  --warn-soft: #3a2f18;
+  --danger: #f08a8a;
+  --danger-soft: #3b2020;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 45%);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 55%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

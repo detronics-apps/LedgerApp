@@ -1,0 +1,70 @@
+/* Header, nav, content, footer. Tokens only - no literal colours. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font: 400 15px/1.6 var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-heading);
+  margin: 0 0 var(--space-3);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  margin: 0 0 var(--space-2);
+}
+
+.app-header {
+  flex: 0 0 auto;
+  height: var(--header-h);
+  display: flex; align-items: center; gap: var(--space-4);
+  padding: 0 var(--space-4);
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.brand__logo { height: 24px; width: auto; display: block; }
+.brand__name { font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.01em; color: var(--text-heading); white-space: nowrap; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
+
+.app-nav {
+  flex: 0 0 auto;
+  display: flex; gap: var(--space-2); flex-wrap: wrap;
+  padding: var(--space-2) var(--space-4);
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-main {
+  flex: 1 1 auto;
+  padding: var(--space-5) var(--space-4);
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.app-footer {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-faint);
+}
