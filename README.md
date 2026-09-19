@@ -101,14 +101,23 @@ Generate new private key**. Never commit it - it's already in `.gitignore`.)
 
 ## Running it locally
 
+`js/firebase-config.js` automatically points Auth and Firestore at the local
+Firebase emulators when `location.hostname` is `localhost` - so local runs
+never touch production data. Start the emulators first, in their own
+terminal (this requires the same Java runtime (JRE 11+) and `firebase-tools`
+already documented for `npm run test:rules`):
+
+```bash
+npm run emulators
+```
+
+Then, in a second terminal:
+
 ```bash
 npm run serve
 ```
 
-Then open http://localhost:8090/. When `location.hostname` is `localhost`,
-`js/firebase-config.js` automatically points Auth and Firestore at the local
-emulators instead of your real project (see "Tests" below) - so local runs
-never touch production data.
+Then open http://localhost:8090/.
 
 There's also `dev/harness.html`, a Firebase-free page that mounts every view
 with mock data, useful for checking UI changes without any backend at all.
