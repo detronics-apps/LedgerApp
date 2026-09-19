@@ -8,6 +8,7 @@ import { buildStatsView } from './ui/stats-view.js';
 import { buildManageView } from './ui/admin-manage.js';
 import { buildReviewView } from './ui/admin-review.js';
 import { summarizeEntries, summarizeParticipation } from './stats.js';
+import { computePoints } from './scoring.js';
 
 export const APP_VERSION = '0.2.0';
 
@@ -15,6 +16,7 @@ const state = {
   user: null, isAdmin: false,
   categories: [], tasks: [], entries: [], users: [],
   activeTab: 'log',
+  wrongDomainEmail: null,
 };
 
 const dom = {};
@@ -71,7 +73,7 @@ function renderLog() {
         taskWeight: task?.weight ?? 1, categoryWeight: category?.weight ?? 1,
         description: draft.description, evidenceUrl: draft.evidenceUrl,
       }).then(() => ({
-        points: draft.impact * draft.proof * (task?.weight ?? 1) * (category?.weight ?? 1),
+        points: computePoints(draft.impact, draft.proof, task?.weight ?? 1, category?.weight ?? 1),
       }));
     },
   });
@@ -141,7 +143,15 @@ function buildSignedOutHeader() {
 function renderShell() {
   clear(document.body);
   const headerActions = state.user ? buildSignedInHeader() : buildSignedOutHeader();
-  document.body.append(
+  dom.main = el('main', { class: 'app-main' },
+    state.user ? [] : [
+      state.wrongDomainEmail
+        ? el('div', { class: 'banner banner-danger',
+            text: `${state.wrongDomainEmail} is not a research-square.com address. Sign in with your company account.` })
+        : null,
+      el('p', { class: 'muted', text: 'Sign in with your @research-square.com account to continue.' }),
+    ]);
+  document.body.append(...[
     el('header', { class: 'app-header' }, [
       el('div', { class: 'brand' }, [
         el('img', { class: 'brand__logo', src: 'assets/favicon.svg', alt: '' }),
@@ -150,13 +160,12 @@ function renderShell() {
       headerActions,
     ]),
     state.user ? buildNav(tabsFor(state), state.activeTab, (id) => { state.activeTab = id; renderView(); }) : null,
-    dom.main = el('main', { class: 'app-main' },
-      state.user ? [] : el('p', { class: 'muted', text: 'Sign in with your @research-square.com account to continue.' })),
+    dom.main,
     el('footer', { class: 'app-footer' }, [
       el('span', { text: 'Research Square Engineering Services - pilot.' }),
       el('span', { text: `v${APP_VERSION}` }),
     ]),
-  );
+  ].filter(Boolean));
   if (state.user) renderView();
 }
 
@@ -165,9 +174,7 @@ function subscribeToData() {
   unsubscribers.push(data.listenCategories((categories) => { state.categories = categories; renderView(); }));
   unsubscribers.push(data.listenTasks((tasks) => { state.tasks = tasks; renderView(); }));
   unsubscribers.push(data.listenEntries((entries) => { state.entries = entries; renderView(); }));
-  if (state.isAdmin) {
-    unsubscribers.push(data.listenUsers((users) => { state.users = users; renderView(); }));
-  }
+  unsubscribers.push(data.listenUsers((users) => { state.users = users; renderView(); }));
 }
 
 initAuth({
@@ -175,6 +182,7 @@ initAuth({
     state.user = { uid, email, displayName };
     state.isAdmin = isAdmin;
     state.activeTab = 'log';
+    state.wrongDomainEmail = null;
     renderShell();
     subscribeToData();
   },
@@ -186,9 +194,8 @@ initAuth({
     renderShell();
   },
   onWrongDomain: (email) => {
+    state.wrongDomainEmail = email;
     renderShell();
-    dom.main.appendChild(el('div', { class: 'banner banner-danger',
-      text: `${email} is not a research-square.com address. Sign in with your company account.` }));
   },
 });
 
