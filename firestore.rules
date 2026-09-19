@@ -8,7 +8,9 @@ service cloud.firestore {
     }
 
     function isCompanyUser() {
-      return isSignedIn() && request.auth.token.email.matches('.*@research-square[.]com$');
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email.matches('.*@research-square[.]com$');
     }
 
     function isAdmin() {
@@ -38,8 +40,7 @@ service cloud.firestore {
         resource.data.uid == request.auth.uid &&
         request.resource.data.uid == request.auth.uid &&
         isValidEntry(request.resource.data);
-      allow delete: if isCompanyUser() &&
-        (resource.data.uid == request.auth.uid || isAdmin());
+      allow delete: if isCompanyUser() && resource.data.uid == request.auth.uid;
     }
 
     match /categories/{categoryId} {
