@@ -79,7 +79,7 @@ table.table th { color: var(--text-faint); font-weight: 600; font-size: 12px; te
 
 .toast {
   position: fixed; left: 50%; bottom: var(--space-5); transform: translateX(-50%);
-  background: var(--text-heading); color: #fff;
+  background: var(--text-heading); color: var(--bg);
   padding: var(--space-2) var(--space-4); border-radius: var(--radius);
   box-shadow: var(--shadow-md); z-index: 400;
 }
