@@ -150,14 +150,23 @@ Enforced rules, to be delivered as a ready-to-deploy `firestore.rules` file:
    - `read`: allowed to any authenticated @research-square.com user (full
      company ledger, per section 2.B).
    - `update`/`delete`: allowed only if `resource.data.uid ==
-     request.auth.uid` (or the user is listed in `admins`), same points
-     validation on update.
+     request.auth.uid` — owner-only, no admin exception. (An earlier draft
+     of this rule let admins delete any entry; that was removed during
+     implementation review as an unrequested capability that worked against
+     the pilot's goal of preserving honest raw behavioral data — see the
+     implementation plan's ledger for the ruling.) Same points validation
+     on update.
 4. `categories`/`tasks`: `read` allowed to any authenticated
    @research-square.com user (needed for the log form); `create`/`update`/
    `delete` allowed only to admins.
 5. `users/{uid}`: a user may `create`/`update` only their own doc
-   (`uid == request.auth.uid`); `read` allowed to the doc's own owner or an
-   admin.
+   (`uid == request.auth.uid`); delete is denied to everyone. `read` is
+   allowed to any authenticated @research-square.com user, not just the
+   doc's own owner — kept consistent with `entries` being fully open (per
+   section 2.B): a user's name is already visible on every entry they've
+   logged, so restricting the `users` directory to admins-only would add no
+   real privacy and would block the participation-rate stat (which needs
+   the full headcount) from being computed by a regular employee's client.
 6. `admins/{uid}`: `read` allowed only for `uid == request.auth.uid` (so the
    client can check "am I an admin" to show/hide the admin nav, without
    being able to list all admins). No `write` from any client, ever —
