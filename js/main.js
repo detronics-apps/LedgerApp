@@ -1,4 +1,4 @@
-import { el, clear, toast } from './ui/dom.js';
+import { el, clear, toast, field } from './ui/dom.js';
 import { initAuth, signIn, signOutUser } from './ui/auth.js';
 import * as data from './ui/data.js';
 import { buildNav } from './ui/nav.js';
@@ -165,16 +165,32 @@ function buildSignedInHeader() {
 }
 
 function buildSignedOutHeader() {
-  return el('div', { class: 'header-actions' },
-    el('button', { class: 'btn btn-primary', type: 'button', text: 'Sign in', on: {
-      click: () => {
-        state.authError = null;
-        signIn().catch((err) => {
-          state.authError = err.message || String(err);
-          renderShell();
-        });
-      },
-    } }));
+  return el('div', { class: 'header-actions' });
+}
+
+function buildSignInForm() {
+  const emailInput = el('input', { type: 'email', required: true, placeholder: 'you@research-square.com' });
+  const passwordInput = el('input', { type: 'password', required: true, placeholder: 'Password' });
+  const submitBtn = el('button', { type: 'submit', class: 'btn btn-primary', text: 'Sign in' });
+
+  const form = el('form', { class: 'panel' }, [
+    el('h3', { text: 'Sign in' }),
+    field('Email', emailInput),
+    field('Password', passwordInput),
+    submitBtn,
+  ]);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    state.authError = null;
+    submitBtn.disabled = true;
+    signIn(emailInput.value.trim(), passwordInput.value).catch((err) => {
+      state.authError = err.message || String(err);
+      renderShell();
+    });
+  });
+
+  return form;
 }
 
 function renderShell() {
@@ -189,7 +205,7 @@ function renderShell() {
       state.authError
         ? el('div', { class: 'banner banner-danger', text: `Sign-in failed: ${state.authError}` })
         : null,
-      el('p', { class: 'muted', text: 'Sign in with your @research-square.com account to continue.' }),
+      buildSignInForm(),
     ]);
   document.body.append(...[
     el('header', { class: 'app-header' }, [

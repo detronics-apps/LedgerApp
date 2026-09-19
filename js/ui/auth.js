@@ -1,9 +1,12 @@
-import { signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { auth, googleProvider, db, ALLOWED_EMAIL_DOMAIN } from '../firebase-config.js';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+import { auth, db, ALLOWED_EMAIL_DOMAIN } from '../firebase-config.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
 
-export function signIn() {
-  return signInWithPopup(auth, googleProvider);
+/** Accounts are provisioned only by an admin (Firebase console > Authentication
+ * > Users > Add user) - there is no self-service signup. This just signs in
+ * with whatever email/password the admin already created for that person. */
+export function signIn(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
 }
 
 export function signOutUser() {

@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
-import { getAuth, GoogleAuthProvider, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+import { getAuth, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 import { getFirestore, connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
 
 export const ALLOWED_EMAIL_DOMAIN = 'research-square.com';
@@ -21,8 +21,6 @@ export const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ hd: ALLOWED_EMAIL_DOMAIN });
 
 if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
   connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });

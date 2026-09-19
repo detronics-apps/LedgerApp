@@ -7,9 +7,14 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // No `email_verified` check here on purpose: accounts are provisioned only
+    // by an admin (Firebase console > Authentication > Users > Add user, or
+    // Auth is Google/Microsoft SSO), not self-service signup - the admin
+    // vouches for who an email belongs to at account-creation time, so
+    // self-verification via a clicked email link is not the security
+    // boundary here the way it would be for open signup.
     function isCompanyUser() {
       return isSignedIn() &&
-        request.auth.token.email_verified == true &&
         request.auth.token.email.matches('.*@research-square[.]com$');
     }
 
