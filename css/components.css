@@ -8,6 +8,11 @@
   margin-bottom: var(--space-4);
 }
 
+.explain summary { cursor: pointer; font-weight: 600; color: var(--text-heading); }
+.explain summary::marker { color: var(--accent); }
+.explain p, .explain h4 { margin: var(--space-3) 0 0; color: var(--text); }
+.explain h4 { color: var(--text-heading); font-size: 13px; }
+
 .btn {
   font: inherit;
   padding: var(--space-2) var(--space-3);

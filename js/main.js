@@ -12,6 +12,23 @@ import { computePoints } from './scoring.js';
 
 export const APP_VERSION = '0.2.0';
 
+const THEME_KEY = 'impact-ledger-theme';
+const THEME_ORDER = ['system', 'light', 'dark'];
+const THEME_LABEL = { system: 'Theme: Auto', light: 'Theme: Light', dark: 'Theme: Dark' };
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (THEME_ORDER.includes(saved)) return saved;
+  } catch { /* localStorage unavailable - fall through to default */ }
+  return 'system';
+}
+
+function applyTheme(theme) {
+  if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', theme);
+}
+
 const state = {
   user: null, isAdmin: false,
   categories: [], tasks: [], entries: [], users: [],
@@ -19,7 +36,9 @@ const state = {
   wrongDomainEmail: null,
   editingEntry: null,
   authError: null,
+  theme: loadTheme(),
 };
+applyTheme(state.theme);
 
 function sortedByDateDesc(entries) {
   return [...entries].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -157,15 +176,30 @@ function renderAdminReview() {
   });
 }
 
+function buildThemeToggle() {
+  return el('button', {
+    class: 'btn', type: 'button', text: THEME_LABEL[state.theme],
+    on: {
+      click: () => {
+        state.theme = THEME_ORDER[(THEME_ORDER.indexOf(state.theme) + 1) % THEME_ORDER.length];
+        applyTheme(state.theme);
+        try { localStorage.setItem(THEME_KEY, state.theme); } catch { /* best effort only */ }
+        renderShell();
+      },
+    },
+  });
+}
+
 function buildSignedInHeader() {
   return el('div', { class: 'header-actions' }, [
+    buildThemeToggle(),
     el('span', { class: 'muted', text: state.user.displayName }),
     el('button', { class: 'btn', type: 'button', text: 'Sign out', on: { click: signOutUser } }),
   ]);
 }
 
 function buildSignedOutHeader() {
-  return el('div', { class: 'header-actions' });
+  return el('div', { class: 'header-actions' }, [buildThemeToggle()]);
 }
 
 function buildSignInForm() {
@@ -210,7 +244,7 @@ function renderShell() {
   document.body.append(...[
     el('header', { class: 'app-header' }, [
       el('div', { class: 'brand' }, [
-        el('img', { class: 'brand__logo', src: 'assets/favicon.svg', alt: '' }),
+        el('img', { class: 'brand__logo', src: 'assets/logo-mark.png', alt: '' }),
         el('span', { class: 'brand__name', text: 'Impact Ledger' }),
       ]),
       headerActions,
