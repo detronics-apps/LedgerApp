@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { summarizeEntries, summarizeParticipation } from '../js/stats.js';
+import { summarizeEntries, summarizeParticipation, summarizeByUser } from '../js/stats.js';
 
 const entries = [
   { uid: 'a', categoryName: 'Culture', taskName: 'Team event', isCustomTask: false, impact: 3, proof: 2, points: 6 },
@@ -52,6 +52,23 @@ test('summarizeEntries on an empty array returns zeros, not NaN', () => {
   assert.equal(s.meanPoints, 0);
   assert.equal(s.medianPoints, 0);
   assert.equal(s.customTaskRate, 0);
+});
+
+test('summarizeByUser builds a per-person breakdown sorted by points desc', () => {
+  const users = [
+    { id: 'a', displayName: 'Alice', email: 'alice@research-square.com' },
+    { id: 'b', displayName: 'Bob', email: 'bob@research-square.com' },
+  ];
+  const userEntries = [
+    { uid: 'a', date: '2026-09-01', points: 6 },
+    { uid: 'a', date: '2026-09-10', points: 1 },
+    { uid: 'b', date: '2026-09-05', points: 16 },
+  ];
+  const rows = summarizeByUser(userEntries, users);
+  assert.deepEqual(rows, [
+    { uid: 'b', displayName: 'Bob', email: 'bob@research-square.com', entryCount: 1, totalPoints: 16, lastActivity: '2026-09-05' },
+    { uid: 'a', displayName: 'Alice', email: 'alice@research-square.com', entryCount: 2, totalPoints: 7, lastActivity: '2026-09-10' },
+  ]);
 });
 
 test('summarizeParticipation reports headcount, contributors and rate', () => {

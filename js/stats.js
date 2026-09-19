@@ -60,6 +60,22 @@ export function summarizeEntries(entries) {
   };
 }
 
+export function summarizeByUser(entries, users) {
+  const byUid = new Map(users.map((u) => [u.id, u]));
+  return groupBy(entries, (e) => e.uid).map(([uid, group]) => {
+    const user = byUid.get(uid);
+    const lastActivity = group.reduce((latest, e) => (e.date > latest ? e.date : latest), group[0].date);
+    return {
+      uid,
+      displayName: user?.displayName ?? group[0].displayName ?? uid,
+      email: user?.email ?? group[0].email ?? '',
+      entryCount: group.length,
+      totalPoints: group.reduce((s, e) => s + e.points, 0),
+      lastActivity,
+    };
+  }).sort((a, b) => b.totalPoints - a.totalPoints);
+}
+
 export function summarizeParticipation(entries, allUserIds) {
   const totalUsers = allUserIds.length;
   const countsByUser = groupBy(entries, (e) => e.uid).map(([, group]) => group.length);

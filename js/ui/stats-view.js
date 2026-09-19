@@ -1,5 +1,5 @@
 import { el } from './dom.js';
-import { formatPoints, formatPercent } from '../format.js';
+import { formatPoints, formatPercent, formatDate } from '../format.js';
 
 function statCard(value, label) {
   return el('div', { class: 'stat-card' }, [
@@ -23,6 +23,20 @@ function breakdownList(rows, nameKey) {
 function distributionList(distribution) {
   return el('ul', {}, Object.entries(distribution).map(([value, count]) =>
     el('li', { text: `${value}: ${count}` })));
+}
+
+export function buildUserBreakdownTable(rows) {
+  if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
+  return el('table', { class: 'table' }, [
+    el('thead', {}, el('tr', {}, ['Name', 'Email', 'Entries', 'Points', 'Last activity'].map((h) => el('th', { text: h })))),
+    el('tbody', {}, rows.map((r) => el('tr', {}, [
+      el('td', { text: r.displayName }),
+      el('td', { text: r.email }),
+      el('td', { text: String(r.entryCount) }),
+      el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
+      el('td', { text: formatDate(r.lastActivity) }),
+    ]))),
+  ]);
 }
 
 export function buildStatsView(summary, participation = null) {
