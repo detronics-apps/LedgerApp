@@ -9,5 +9,9 @@
     "test:rules": "firebase emulators:exec --project demo-impact-ledger --only firestore \"node --test firestore.rules.test.mjs\"",
     "serve": "python -m http.server 8090"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "firebase": "^10.13.2",
+    "firebase-tools": "^13.15.4",
+    "@firebase/rules-unit-testing": "^3.0.4"
+  }
 }

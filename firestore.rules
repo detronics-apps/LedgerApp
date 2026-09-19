@@ -1,0 +1,71 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isCompanyUser() {
+      return isSignedIn() && request.auth.token.email.matches('.*@research-square[.]com$');
+    }
+
+    function isAdmin() {
+      return isCompanyUser() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function computedPoints(data) {
+      return data.impact * data.proof * data.taskWeight * data.categoryWeight;
+    }
+
+    function isValidEntry(data) {
+      return data.uid is string &&
+        data.impact is number && data.impact >= 1 && data.impact <= 5 &&
+        data.proof is number && data.proof >= 1 && data.proof <= 3 &&
+        data.taskWeight is number && data.taskWeight > 0 &&
+        data.categoryWeight is number && data.categoryWeight > 0 &&
+        data.points == computedPoints(data);
+    }
+
+    match /entries/{entryId} {
+      allow read: if isCompanyUser();
+      allow create: if isCompanyUser() &&
+        request.resource.data.uid == request.auth.uid &&
+        isValidEntry(request.resource.data);
+      allow update: if isCompanyUser() &&
+        resource.data.uid == request.auth.uid &&
+        request.resource.data.uid == request.auth.uid &&
+        isValidEntry(request.resource.data);
+      allow delete: if isCompanyUser() &&
+        (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    match /categories/{categoryId} {
+      allow read: if isCompanyUser();
+      allow write: if isAdmin();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isCompanyUser();
+      allow write: if isAdmin();
+    }
+
+    // Every company user can read the directory (names are already visible on
+    // every ledger entry, so this adds no new exposure) but may only write
+    // their own profile doc.
+    match /users/{userId} {
+      allow read: if isCompanyUser();
+      allow create, update: if isCompanyUser() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // No client, including an admin, may ever write here - promoting a user
+    // to admin is a manual Firebase-console step (see README).
+    match /admins/{uid} {
+      allow read: if isCompanyUser() && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}
