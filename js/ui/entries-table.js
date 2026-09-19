@@ -11,8 +11,11 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
   if (onEdit || onDelete) headers.push('');
 
   const rows = entries.map((entry) => {
-    // Never build an anchor from an unvalidated href - only http(s) links render as a link.
-    const evidenceHref = /^https?:\/\//i.test(entry.evidenceUrl || '') ? entry.evidenceUrl : null;
+    // Evidence can be a real link or just descriptive text ("ask Sam, she was
+    // in the meeting"). Never build an anchor from an unvalidated href -
+    // only something that actually looks like a http(s) link renders as a
+    // clickable link; anything else renders as plain text, never as an <a>.
+    const evidenceIsLink = /^https?:\/\//i.test(entry.evidenceUrl || '');
     const cells = [
       el('td', { text: formatDate(entry.date) }),
       el('td', { text: entry.categoryName }),
@@ -25,7 +28,10 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
       el('td', { class: 'value', text: formatPoints(entry.points) }),
       el('td', {}, [
         entry.description,
-        evidenceHref ? el('a', { href: evidenceHref, target: '_blank', rel: 'noopener', text: ' [evidence]' }) : null,
+        !entry.evidenceUrl ? null
+          : evidenceIsLink
+            ? el('a', { href: entry.evidenceUrl, target: '_blank', rel: 'noopener', text: ' [evidence]' })
+            : el('span', { class: 'muted', text: ` (${entry.evidenceUrl})` }),
       ]),
     ];
     if (showOwner) {

@@ -353,7 +353,7 @@ function renderShell() {
       ]),
       headerActions,
     ]),
-    state.user ? buildNav(tabsFor(state), state.activeTab, (id) => { state.activeTab = id; renderView(); }) : null,
+    state.user ? buildNav(tabsFor(state), state.activeTab, (id) => { state.activeTab = id; renderShell(); }) : null,
     dom.main,
     el('footer', { class: 'app-footer' }, [
       el('span', { text: 'Research Square Engineering Services - pilot.' }),

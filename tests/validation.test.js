@@ -66,13 +66,17 @@ test('a http(s) evidence link is valid', () => {
   assert.equal(result.errors.evidenceUrl, undefined);
 });
 
-test('a javascript: evidence URL is rejected', () => {
-  const result = validateEntryDraft({ ...baseDraft, evidenceUrl: 'javascript:alert(1)' });
-  assert.equal(result.valid, false);
-  assert.equal(result.errors.evidenceUrl, 'Evidence must be a http(s) link, or left blank.');
+test('plain-text evidence (who can verify it, not a link) is valid', () => {
+  // Evidence doesn't have to be a URL - "ask Sam, she was in the meeting" is
+  // valid proof too. Rendering never turns non-http(s) text into a clickable
+  // link (see entries-table.js) - that's a display-layer safety check, not
+  // a validation rule, so it isn't re-tested here.
+  const result = validateEntryDraft({ ...baseDraft, evidenceUrl: 'Ask Sam - she was in the meeting.' });
+  assert.equal(result.valid, true);
+  assert.equal(result.errors.evidenceUrl, undefined);
 });
 
-test('an empty evidence URL is valid (optional)', () => {
+test('an empty evidence field is valid (optional)', () => {
   const result = validateEntryDraft({ ...baseDraft, evidenceUrl: '' });
   assert.equal(result.valid, true);
   assert.equal(result.errors.evidenceUrl, undefined);
