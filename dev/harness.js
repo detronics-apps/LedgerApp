@@ -5,6 +5,7 @@ import { el } from '../js/ui/dom.js';
 import { buildStatsView } from '../js/ui/stats-view.js';
 import { summarizeEntries, summarizeParticipation } from '../js/stats.js';
 import { buildManageView } from '../js/ui/admin-manage.js';
+import { buildReviewView } from '../js/ui/admin-review.js';
 
 const categories = [
   { id: 'culture', name: 'Culture' },
@@ -62,4 +63,11 @@ document.getElementById('mount').appendChild(buildManageView({
   onCreateTask: (t) => { console.log('create task', t); return Promise.resolve(); },
   onUpdateTask: (id, patch) => { console.log('update task', id, patch); return Promise.resolve(); },
   onDeleteTask: (id) => { console.log('delete task', id); return Promise.resolve(); },
+}));
+
+const mockCustomEntries = [
+  { date: '2026-09-18', displayName: 'Bob', categoryName: 'Learning & Capability', customTaskName: 'Fixed the coffee machine', description: 'Fixed the coffee machine and wrote a guide.' },
+];
+document.getElementById('mount').appendChild(buildReviewView(mockCustomEntries, {
+  onPromote: (entry) => { console.log('promote', entry); return Promise.resolve(); },
 }));
