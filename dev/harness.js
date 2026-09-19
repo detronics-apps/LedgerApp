@@ -4,6 +4,7 @@ import { buildEntriesTable } from '../js/ui/entries-table.js';
 import { el } from '../js/ui/dom.js';
 import { buildStatsView } from '../js/ui/stats-view.js';
 import { summarizeEntries, summarizeParticipation } from '../js/stats.js';
+import { buildManageView } from '../js/ui/admin-manage.js';
 
 const categories = [
   { id: 'culture', name: 'Culture' },
@@ -45,3 +46,20 @@ document.getElementById('mount').appendChild(el('div', { class: 'panel' }, [
 const summary = summarizeEntries(mockEntries);
 const participation = summarizeParticipation(mockEntries, ['alice', 'bob', 'carol']);
 document.getElementById('mount').appendChild(buildStatsView(summary, participation));
+
+const mockCategories = [
+  { id: 'culture', name: 'Culture', description: '', weight: 1, archived: false, entryCount: 1 },
+];
+const mockTasks = [
+  { id: 'culture--team-event', categoryId: 'culture', name: 'Team Culture', description: 'Team events', weight: 1, archived: false, entryCount: 1 },
+];
+
+document.getElementById('mount').appendChild(buildManageView({
+  categories: mockCategories, tasks: mockTasks,
+  onCreateCategory: (c) => { console.log('create category', c); return Promise.resolve(); },
+  onUpdateCategory: (id, patch) => { console.log('update category', id, patch); return Promise.resolve(); },
+  onDeleteCategory: (id) => { console.log('delete category', id); return Promise.resolve(); },
+  onCreateTask: (t) => { console.log('create task', t); return Promise.resolve(); },
+  onUpdateTask: (id, patch) => { console.log('update task', id, patch); return Promise.resolve(); },
+  onDeleteTask: (id) => { console.log('delete task', id); return Promise.resolve(); },
+}));
