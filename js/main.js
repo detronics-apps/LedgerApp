@@ -1,13 +1,13 @@
-import { el, clear } from './ui/dom.js';
+import { el, clear, toast } from './ui/dom.js';
 import { initAuth, signIn, signOutUser } from './ui/auth.js';
 import * as data from './ui/data.js';
 import { buildNav } from './ui/nav.js';
 import { buildLogForm } from './ui/log-form.js';
 import { buildEntriesTable } from './ui/entries-table.js';
-import { buildStatsView } from './ui/stats-view.js';
+import { buildStatsView, buildUserBreakdownTable } from './ui/stats-view.js';
 import { buildManageView } from './ui/admin-manage.js';
 import { buildReviewView } from './ui/admin-review.js';
-import { summarizeEntries, summarizeParticipation } from './stats.js';
+import { summarizeEntries, summarizeParticipation, summarizeByUser } from './stats.js';
 import { computePoints } from './scoring.js';
 
 export const APP_VERSION = '0.2.0';
@@ -17,7 +17,12 @@ const state = {
   categories: [], tasks: [], entries: [], users: [],
   activeTab: 'log',
   wrongDomainEmail: null,
+  editingEntry: null,
 };
+
+function sortedByDateDesc(entries) {
+  return [...entries].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+}
 
 const dom = {};
 
@@ -58,12 +63,15 @@ function renderView() {
 }
 
 function renderLog() {
+  const editing = state.editingEntry;
   return buildLogForm({
     categories: activeCategories(), tasks: activeTasks(),
+    initialValues: editing ? { ...editing } : null,
+    onCancel: editing ? () => { state.editingEntry = null; renderView(); } : null,
     onSubmit: (draft) => {
       const category = state.categories.find((c) => c.id === draft.categoryId);
       const task = state.tasks.find((t) => t.id === draft.taskId);
-      return data.createEntry({
+      const payload = {
         uid: state.user.uid, email: state.user.email, displayName: state.user.displayName,
         date: draft.date, categoryId: draft.categoryId, categoryName: draft.categoryName,
         taskId: draft.isCustomTask ? 'custom' : draft.taskId,
@@ -72,23 +80,27 @@ function renderLog() {
         impact: draft.impact, proof: draft.proof,
         taskWeight: task?.weight ?? 1, categoryWeight: category?.weight ?? 1,
         description: draft.description, evidenceUrl: draft.evidenceUrl,
-      }).then(() => ({
-        points: computePoints(draft.impact, draft.proof, task?.weight ?? 1, category?.weight ?? 1),
-      }));
+      };
+      const write = editing ? data.updateEntry(editing.id, payload) : data.createEntry(payload);
+      return write.then(() => {
+        if (editing) state.editingEntry = null;
+        return { points: computePoints(draft.impact, draft.proof, task?.weight ?? 1, category?.weight ?? 1) };
+      });
     },
   });
 }
 
 function renderMyLogs() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
-  return buildEntriesTable(own, {
+  return buildEntriesTable(sortedByDateDesc(own), {
     showOwner: false,
-    onDelete: (entry) => data.deleteEntry(entry.id),
+    onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderView(); },
+    onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
   });
 }
 
 function renderLedger() {
-  return buildEntriesTable(state.entries);
+  return buildEntriesTable(sortedByDateDesc(state.entries));
 }
 
 function renderMyStats() {
@@ -103,7 +115,16 @@ function renderCompanyStats() {
 }
 
 function renderAdminDashboard() {
-  return renderCompanyStats();
+  const summary = summarizeEntries(state.entries);
+  const participation = summarizeParticipation(state.entries, state.users.map((u) => u.id));
+  const userBreakdown = summarizeByUser(state.entries, state.users);
+  return el('div', {}, [
+    buildStatsView(summary, participation),
+    el('div', { class: 'panel' }, [
+      el('h3', { text: 'By person' }),
+      buildUserBreakdownTable(userBreakdown),
+    ]),
+  ]);
 }
 
 function renderAdminManage() {
