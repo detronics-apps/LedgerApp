@@ -2,6 +2,8 @@ import { buildLogForm } from '../js/ui/log-form.js';
 import { computePoints } from '../js/scoring.js';
 import { buildEntriesTable } from '../js/ui/entries-table.js';
 import { el } from '../js/ui/dom.js';
+import { buildStatsView } from '../js/ui/stats-view.js';
+import { summarizeEntries, summarizeParticipation } from '../js/stats.js';
 
 const categories = [
   { id: 'culture', name: 'Culture' },
@@ -39,3 +41,7 @@ document.getElementById('mount').appendChild(el('div', { class: 'panel' }, [
     onDelete: (entry) => console.log('delete', entry),
   }),
 ]));
+
+const summary = summarizeEntries(mockEntries);
+const participation = summarizeParticipation(mockEntries, ['alice', 'bob', 'carol']);
+document.getElementById('mount').appendChild(buildStatsView(summary, participation));
