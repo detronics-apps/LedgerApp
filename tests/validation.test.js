@@ -32,6 +32,18 @@ test('a custom task with text is valid', () => {
   assert.equal(result.valid, true);
 });
 
+test('a custom task with empty taskId and valid customTaskName is valid', () => {
+  const result = validateEntryDraft({ ...baseDraft, isCustomTask: true, taskId: '', customTaskName: 'Reviewed security logs' });
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.errors, {});
+});
+
+test('a non-custom task with empty taskId is invalid', () => {
+  const result = validateEntryDraft({ ...baseDraft, isCustomTask: false, taskId: '' });
+  assert.equal(result.valid, false);
+  assert.equal(result.errors.taskId, 'Select a task.');
+});
+
 test('impact and proof out of range are reported', () => {
   const result = validateEntryDraft({ ...baseDraft, impact: 0, proof: 4 });
   assert.equal(result.errors.impact, 'Choose an impact level.');

@@ -2,7 +2,7 @@ export function validateEntryDraft(draft) {
   const errors = {};
 
   if (!draft.categoryId) errors.categoryId = 'Select a category.';
-  if (!draft.taskId) errors.taskId = 'Select a task.';
+  if (!draft.isCustomTask && !draft.taskId) errors.taskId = 'Select a task.';
   if (draft.isCustomTask && !(draft.customTaskName || '').trim()) {
     errors.customTaskName = 'Describe what you did.';
   }
