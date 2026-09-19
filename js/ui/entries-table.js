@@ -17,7 +17,7 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
       el('td', { text: formatDate(entry.date) }),
       el('td', { text: entry.categoryName }),
       el('td', {}, [
-        entry.taskName || 'Other',
+        entry.isCustomTask ? (entry.customTaskName || 'Untitled') : entry.taskName,
         entry.isCustomTask ? el('span', { class: 'badge', text: 'Other' }) : null,
       ]),
       el('td', { text: String(entry.impact) }),

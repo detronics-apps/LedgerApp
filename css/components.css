@@ -65,7 +65,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.table th, table.table td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); }
 table.table th { color: var(--text-faint); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; background: var(--accent-soft); color: var(--accent-strong); }
+.badge { display: inline-block; margin-left: var(--space-2); padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; background: var(--accent-soft); color: var(--accent-strong); }
 
 .banner { border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); border: 1px solid; margin-bottom: var(--space-3); }
 .banner-ok     { color: var(--ok);     background: var(--ok-soft);     border-color: var(--ok); }
