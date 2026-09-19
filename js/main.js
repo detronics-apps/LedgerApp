@@ -34,7 +34,7 @@ function applyTheme(theme) {
 }
 
 const state = {
-  user: null, isAdmin: false,
+  user: null, isAdmin: false, adminCategoryIds: [],
   categories: [], tasks: [], entries: [], users: [],
   settings: DEFAULT_SETTINGS,
   activeTab: 'log',
@@ -103,8 +103,12 @@ const ADMIN_TABS = [
   { id: 'admin-settings', label: 'Settings' },
 ];
 
+function isScopedAdmin() { return !state.isAdmin && state.adminCategoryIds.length > 0; }
+
 function tabsFor(state) {
-  return state.isAdmin ? [...EMPLOYEE_TABS, ...ADMIN_TABS] : EMPLOYEE_TABS;
+  if (state.isAdmin) return [...EMPLOYEE_TABS, ...ADMIN_TABS];
+  if (isScopedAdmin()) return [...EMPLOYEE_TABS, { id: 'admin-manage', label: 'Manage Tasks & Categories' }];
+  return EMPLOYEE_TABS;
 }
 
 function activeCategories() { return state.categories.filter((c) => !c.archived); }
@@ -177,8 +181,13 @@ function renderMyLogs() {
 }
 
 function renderLedger() {
+  const canSeeIdentity = state.isAdmin || isScopedAdmin();
   return buildEntriesTable(sortedByDateDesc(state.entries), {
-    anonymize: state.settings.anonymizeLedgerEnabled && !state.isAdmin,
+    // Nobody but an admin sees real names/emails unless anonymized identifiers
+    // are turned on for everyone else (settings.anonymizeLedgerEnabled) - the
+    // column is hidden entirely otherwise, not just shown with real identity.
+    showOwner: canSeeIdentity || state.settings.anonymizeLedgerEnabled,
+    anonymize: state.settings.anonymizeLedgerEnabled && !canSeeIdentity,
   });
 }
 
@@ -244,19 +253,20 @@ function renderAdminManage() {
   return buildManageView({
     categories: withEntryCounts(state.categories, 'categoryId'),
     tasks: withEntryCounts(state.tasks, 'taskId'),
+    restrictToCategoryIds: state.isAdmin ? null : state.adminCategoryIds,
     onCreateCategory: data.createCategory,
     onUpdateCategory: data.updateCategory,
     onDeleteCategory: data.deleteCategory,
     onCreateTask: data.createTask,
     onUpdateTask: data.updateTask,
     onDeleteTask: data.deleteTask,
-    onAddAdmin: (email) => {
+    onAddAdmin: state.isAdmin ? (email, categoryIds) => {
       const user = state.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
       if (!user) {
         return Promise.reject(new Error('No signed-in user found with that email - they need to sign in once first.'));
       }
-      return data.addAdmin(user.id, user.email);
-    },
+      return data.addAdmin(user.id, user.email, categoryIds);
+    } : null,
   });
 }
 
@@ -373,9 +383,10 @@ function subscribeToData() {
 }
 
 initAuth({
-  onSignedIn: ({ uid, email, displayName, isAdmin }) => {
+  onSignedIn: ({ uid, email, displayName, isAdmin, categoryIds }) => {
     state.user = { uid, email, displayName };
     state.isAdmin = isAdmin;
+    state.adminCategoryIds = categoryIds || [];
     state.activeTab = 'log';
     state.wrongDomainEmail = null;
     state.authError = null;
@@ -385,7 +396,7 @@ initAuth({
   onSignedOut: () => {
     unsubscribers.forEach((u) => u());
     unsubscribers = [];
-    state.user = null; state.isAdmin = false;
+    state.user = null; state.isAdmin = false; state.adminCategoryIds = [];
     state.categories = []; state.tasks = []; state.entries = []; state.users = [];
     renderShell();
   },

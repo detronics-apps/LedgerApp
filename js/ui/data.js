@@ -73,8 +73,8 @@ export function deleteTask(id) {
  * target has signed in at least once. There is no corresponding "remove admin"
  * - that stays a manual Firebase-console step, same as bootstrapping the very
  * first admin. */
-export function addAdmin(uid, email) {
-  return setDoc(doc(db, 'admins', uid), { email });
+export function addAdmin(uid, email, categoryIds = []) {
+  return setDoc(doc(db, 'admins', uid), { email, categoryIds });
 }
 
 /** Admin re-links a custom ("Other") entry to a real task/category. Only

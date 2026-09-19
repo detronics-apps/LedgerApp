@@ -140,7 +140,7 @@ Nobody can grant admin access before at least one admin exists, so the
 3. Reload the app signed in as that person - the admin tabs should appear.
 
 **Adding further admins after that** doesn't need the console: on the
-**Manage Tasks & Categories** tab, any existing admin can enter another
+**Manage Tasks & Categories** tab, any existing full admin can enter another
 person's email under "Admins" and click "Make admin" - it only works for
 someone who has already signed in at least once (the rules check their
 `users` doc exists and the email matches exactly). There's no "remove
@@ -148,6 +148,16 @@ admin" button anywhere in the app; de-admin-ing someone is still a manual
 Firebase-console step (delete their doc from the `admins` collection), by
 design - the rules make an existing `admins` doc permanently un-editable
 and un-deletable by any client.
+
+**Category-scoped admins:** when granting access, a full admin can tick one
+or more categories instead of leaving them all unchecked. That person then
+only sees the "Manage Tasks & Categories" tab (no dashboard, settings,
+custom-task review, or Admins panel), and only their assigned categories
+and tasks appear there - enforced both in the UI and in `firestore.rules`
+(`isCategoryAdminFor`). They can edit/archive/add tasks in their categories
+and edit their categories, but can never create a brand-new category or
+grant admin access to anyone else. Leaving every category unchecked grants
+a full admin, same as before.
 
 ## 5. Seed the task/category list
 

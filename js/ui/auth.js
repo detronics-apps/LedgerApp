@@ -21,16 +21,21 @@ async function upsertUserProfile(user) {
   }, { merge: true });
 }
 
-async function checkIsAdmin(uid) {
+/** A full admin has no categoryIds restriction (missing or empty); a
+ * category-scoped admin's categoryIds names which categories/tasks they
+ * may manage - everything else stays off-limits to them. */
+async function loadAdminInfo(uid) {
   try {
     const snap = await getDoc(doc(db, 'admins', uid));
-    return snap.exists();
+    if (!snap.exists()) return { isAdmin: false, categoryIds: [] };
+    const categoryIds = snap.data().categoryIds || [];
+    return { isAdmin: categoryIds.length === 0, categoryIds };
   } catch {
-    return false;
+    return { isAdmin: false, categoryIds: [] };
   }
 }
 
-/** onSignedIn({uid, email, displayName, isAdmin}); onWrongDomain(email) fires instead of onSignedIn for a non-company address. */
+/** onSignedIn({uid, email, displayName, isAdmin, categoryIds}); onWrongDomain(email) fires instead of onSignedIn for a non-company address. */
 export function initAuth({ onSignedIn, onSignedOut, onWrongDomain }) {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -43,7 +48,7 @@ export function initAuth({ onSignedIn, onSignedOut, onWrongDomain }) {
       return;
     }
     await upsertUserProfile(user);
-    const isAdmin = await checkIsAdmin(user.uid);
-    onSignedIn({ uid: user.uid, email: user.email, displayName: user.displayName || user.email, isAdmin });
+    const { isAdmin, categoryIds } = await loadAdminInfo(user.uid);
+    onSignedIn({ uid: user.uid, email: user.email, displayName: user.displayName || user.email, isAdmin, categoryIds });
   });
 }

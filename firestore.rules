@@ -18,9 +18,28 @@ service cloud.firestore {
         request.auth.token.email.matches('.*@research-square[.]com$');
     }
 
+    function adminData() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data;
+    }
+
+    // A full admin: has an admins/{uid} doc with no categoryIds restriction
+    // (missing, or an empty list). Full admins can touch everything -
+    // settings, validation, user exclusion, other admins - not just
+    // categories/tasks.
     function isAdmin() {
       return isCompanyUser() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        (!('categoryIds' in adminData()) || adminData().categoryIds.size() == 0);
+    }
+
+    // A category-scoped admin: has an admins/{uid} doc whose categoryIds
+    // lists this specific category. Scoped admins can only touch their own
+    // categories/tasks - never settings, validation, users, or other admins.
+    function isCategoryAdminFor(categoryId) {
+      return isCompanyUser() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        ('categoryIds' in adminData()) &&
+        categoryId in adminData().categoryIds;
     }
 
     function computedPoints(data) {
@@ -89,12 +108,19 @@ service cloud.firestore {
 
     match /categories/{categoryId} {
       allow read: if isCompanyUser();
-      allow write: if isAdmin();
+      // A scoped admin can only ever touch a category already in their
+      // categoryIds list - a freshly-created category gets a random id that
+      // can't already be in that list, so scoped admins can edit their own
+      // categories but never create new ones.
+      allow write: if isAdmin() || isCategoryAdminFor(categoryId);
     }
 
     match /tasks/{taskId} {
       allow read: if isCompanyUser();
-      allow write: if isAdmin();
+      allow create: if isAdmin() || isCategoryAdminFor(request.resource.data.categoryId);
+      allow update: if isAdmin() ||
+        (isCategoryAdminFor(resource.data.categoryId) && isCategoryAdminFor(request.resource.data.categoryId));
+      allow delete: if isAdmin() || isCategoryAdminFor(resource.data.categoryId);
     }
 
     // An admin toggling someone's R&R-exclusion flag (settings.rrExclusion):
