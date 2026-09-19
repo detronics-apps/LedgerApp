@@ -18,6 +18,7 @@ const state = {
   activeTab: 'log',
   wrongDomainEmail: null,
   editingEntry: null,
+  authError: null,
 };
 
 function sortedByDateDesc(entries) {
@@ -158,7 +159,15 @@ function buildSignedInHeader() {
 
 function buildSignedOutHeader() {
   return el('div', { class: 'header-actions' },
-    el('button', { class: 'btn btn-primary', type: 'button', text: 'Sign in', on: { click: signIn } }));
+    el('button', { class: 'btn btn-primary', type: 'button', text: 'Sign in', on: {
+      click: () => {
+        state.authError = null;
+        signIn().catch((err) => {
+          state.authError = err.message || String(err);
+          renderShell();
+        });
+      },
+    } }));
 }
 
 function renderShell() {
@@ -169,6 +178,9 @@ function renderShell() {
       state.wrongDomainEmail
         ? el('div', { class: 'banner banner-danger',
             text: `${state.wrongDomainEmail} is not a research-square.com address. Sign in with your company account.` })
+        : null,
+      state.authError
+        ? el('div', { class: 'banner banner-danger', text: `Sign-in failed: ${state.authError}` })
         : null,
       el('p', { class: 'muted', text: 'Sign in with your @research-square.com account to continue.' }),
     ]);
@@ -204,6 +216,7 @@ initAuth({
     state.isAdmin = isAdmin;
     state.activeTab = 'log';
     state.wrongDomainEmail = null;
+    state.authError = null;
     renderShell();
     subscribeToData();
   },
