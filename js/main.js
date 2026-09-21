@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.5.4';
+export const APP_VERSION = '0.5.5';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];

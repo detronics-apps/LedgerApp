@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.5
+- Evidence now has its own column on every entries table (My Logs, Company
+  Ledger), instead of being squeezed onto the end of Description. A link
+  renders as a compact "View" (full URL still in the href/hover title); a
+  plain-text description of the evidence just displays in full.
+
 ## 0.5.4
 - Fixed: the daily entry cap (and the weekly points / once-a-week impact-5
   caps) were keyed on when you hit submit, not on the date you were logging

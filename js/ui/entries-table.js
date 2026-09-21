@@ -35,7 +35,7 @@ export function buildEntriesTable(entries, {
     return el('p', { class: 'muted', text: 'Nothing logged yet.' });
   }
 
-  const headers = ['Date', 'Category', 'Task', 'Impact', 'Proof', 'Description'];
+  const headers = ['Date', 'Category', 'Task', 'Impact', 'Proof', 'Description', 'Evidence'];
   if (showPoints) headers.splice(5, 0, 'Points');
   if (showOwner) headers.splice(1, 0, 'Person');
   if (onEdit || onDelete || onRelog || onFlag) headers.push('');
@@ -57,13 +57,11 @@ export function buildEntriesTable(entries, {
       el('td', { text: String(entry.impact) }),
       el('td', { text: String(entry.proof) }),
       ...(showPoints ? [el('td', { class: 'value', text: formatPoints(entry.points) })] : []),
-      el('td', {}, [
-        entry.description,
-        !entry.evidenceUrl ? null
-          : evidenceIsLink
-            ? el('a', { href: entry.evidenceUrl, target: '_blank', rel: 'noopener', text: ' [evidence]' })
-            : el('span', { class: 'muted', text: ` (${entry.evidenceUrl})` }),
-      ]),
+      el('td', { text: entry.description }),
+      el('td', {}, !entry.evidenceUrl ? null
+        : evidenceIsLink
+          ? el('a', { href: entry.evidenceUrl, target: '_blank', rel: 'noopener', title: entry.evidenceUrl, text: 'View' })
+          : el('span', { text: entry.evidenceUrl })),
     ];
     if (showOwner) {
       const personLabel = anonymize ? `Employee ${(entry.uid || '').slice(-4)}` : entry.displayName;
