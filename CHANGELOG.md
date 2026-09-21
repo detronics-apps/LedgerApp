@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1
+- Admins panel now lists everyone with admin access and their level (full,
+  or which categories), with a "Revoke access" button per row - reverses
+  the earlier "no client can ever remove an admins doc" rule. A full admin
+  can revoke anyone else's access (with a confirm prompt); their own row
+  has no revoke button, to prevent a self-lockout. firestore.rules updated
+  (delete allowed for a full admin, never on their own doc) and redeployed.
+
 ## 0.5.0
 - Company Ledger filters: date range (From/To) instead of a single exact
   date, a "Turn filters off" toggle that keeps your selections while

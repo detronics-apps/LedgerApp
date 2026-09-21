@@ -38,6 +38,7 @@ export const listenCategories = (cb) => listen('categories', cb);
 export const listenTasks = (cb) => listen('tasks', cb);
 export const listenUsers = (cb) => listen('users', cb);
 export const listenFlags = (cb) => listen('flags', cb);
+export const listenAdmins = (cb) => listen('admins', cb);
 
 export function listenSettings(cb) {
   return onSnapshot(doc(db, 'settings', 'global'), (snap) => {
@@ -71,11 +72,17 @@ export function deleteTask(id) {
 
 /** Grants admin access to an existing user (by uid). The rules only allow this
  * when the caller is already an admin and `uid` has a `users` doc - i.e. the
- * target has signed in at least once. There is no corresponding "remove admin"
- * - that stays a manual Firebase-console step, same as bootstrapping the very
- * first admin. */
+ * target has signed in at least once. */
 export function addAdmin(uid, email, categoryIds = []) {
   return setDoc(doc(db, 'admins', uid), { email, categoryIds });
+}
+
+/** Full admin revokes someone's admin access. Rules independently only allow
+ * a full admin to do this, and never to revoke their own (no self-lockout) -
+ * bootstrapping the very first admin is still a manual Firebase-console step,
+ * since nobody can grant admin before at least one admin exists. */
+export function removeAdmin(uid) {
+  return deleteDoc(doc(db, 'admins', uid));
 }
 
 /** Admin re-links a custom ("Other") entry to a real task/category. Only

@@ -69,7 +69,7 @@ function adminSections(isFullAdmin) {
         el('ul', {}, [
           el('li', { text: 'Tick "All categories" to grant a full admin - they get every admin tab (Settings, granting further admins, deleting any entry from the Company Ledger) and every category.' }),
           el('li', { text: 'Tick one or more specific categories instead (not "All") to grant a category-scoped admin - they see Admin Dashboard, "Manage Tasks & Categories", and Leaderboard, each scoped to just their assigned categories. They can\'t create brand-new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category - deleting is reserved for full admins.' }),
-          el('li', { text: 'There\'s no "remove admin" button - de-admin-ing someone is a manual step in the Firebase console (delete their doc from the admins collection).' }),
+          el('li', { text: 'The same panel lists everyone with admin access and their level - click "Revoke access" (with a confirm prompt) to remove anyone else\'s. You can\'t revoke your own, to avoid locking yourself out.' }),
         ]),
       ]),
       section('Admin: how scoring works and how to change it', [

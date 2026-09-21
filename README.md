@@ -60,13 +60,14 @@ app's JS):
   and `users` (the full ledger and directory are intentionally open to
   everyone - see the design spec, section 2.B)
 - only a UID listed in `admins` may write `categories`/`tasks`
-- an existing admin may **grant** admin access to someone else, but only if
-  that person has signed in at least once (their `users` doc must exist)
-  and the granted email matches their real one exactly - **no client, not
-  even an admin, can ever update or delete an `admins` doc**, so an admin
-  can add new admins but can never edit or remove an existing one (that
-  stays a manual Firebase-console step, same as bootstrapping the very
-  first admin)
+- an existing full admin may **grant** admin access to someone else, but
+  only if that person has signed in at least once (their `users` doc must
+  exist) and the granted email matches their real one exactly, and may
+  **revoke** anyone else's admin access (never their own - no self-lockout).
+  An admin doc is never edited in place (no update) - changing someone's
+  access level means revoking and re-granting. Bootstrapping the very first
+  admin is still a manual Firebase-console step, since nobody can grant
+  admin before at least one admin exists.
 
 **Category weight comes from a contribution type, not a per-category number.**
 Every category is assigned to one of three contribution types - Cultural,
@@ -172,11 +173,12 @@ Nobody can grant admin access before at least one admin exists, so the
 **Manage Tasks & Categories** tab, any existing full admin can enter another
 person's email under "Admins" and click "Make admin" - it only works for
 someone who has already signed in at least once (the rules check their
-`users` doc exists and the email matches exactly). There's no "remove
-admin" button anywhere in the app; de-admin-ing someone is still a manual
-Firebase-console step (delete their doc from the `admins` collection), by
-design - the rules make an existing `admins` doc permanently un-editable
-and un-deletable by any client.
+`users` doc exists and the email matches exactly). The same panel lists
+everyone with admin access and their level (full, or which categories), and
+a full admin can click "Revoke access" (with a confirm prompt) to remove
+anyone else's - not their own, which the button hides entirely to prevent
+locking yourself out. An admin doc is never edited in place; changing
+someone's level is a revoke followed by a fresh grant.
 
 **Category-scoped admins:** when granting access, a full admin can tick one
 or more categories instead of leaving them all unchecked. That person then
@@ -292,8 +294,10 @@ regular employee and an admin):
       signed in once (their email, under "Admins" on the Manage tab), and
       that account then sees the admin tabs on its next reload. Confirm
       granting it to an email that has never signed in fails with a clear
-      message, and confirm there's no way in the UI to remove an admin
-      once granted.
+      message. Confirm the Admins panel lists both accounts with their
+      correct access level, that the signed-in admin's own row has no
+      "Revoke access" button, and that revoking the second account's access
+      removes its admin tabs on its next reload.
 - [ ] Attempt an unauthenticated read via `curl` against the Firestore REST
       API for this project and confirm it is rejected (403), proving the
       rule is enforced server-side and not just hidden in this app's JS.

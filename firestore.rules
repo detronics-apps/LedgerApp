@@ -150,20 +150,22 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // An existing admin may grant admin access to someone who has already
-    // signed in at least once (their users/{uid} doc must exist, and the
-    // granted email must match that doc's email exactly - an admin can't
-    // mislabel who they're granting access to). There is no update or
-    // delete: an admin doc, once created, can never be edited or removed
-    // by any client - de-admin-ing someone is a manual Firebase-console
-    // step (see README), same as bootstrapping the very first admin
-    // (nobody can grant admin before at least one admin exists).
+    // An existing full admin may grant admin access to someone who has
+    // already signed in at least once (their users/{uid} doc must exist, and
+    // the granted email must match that doc's email exactly - an admin can't
+    // mislabel who they're granting access to), and may revoke anyone else's
+    // admin access (never their own - no self-lockout; bootstrapping the
+    // very first admin is still a manual Firebase-console step, since nobody
+    // can grant admin before at least one admin exists). There is no update:
+    // an admin doc's access level is changed by revoking and re-granting,
+    // never edited in place.
     match /admins/{uid} {
       allow read: if isCompanyUser() && (request.auth.uid == uid || isAdmin());
       allow create: if isAdmin() &&
         exists(/databases/$(database)/documents/users/$(uid)) &&
         request.resource.data.email == get(/databases/$(database)/documents/users/$(uid)).data.email;
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isAdmin() && request.auth.uid != uid;
     }
 
     // One person can re-flag the same entry only once their own last flag on

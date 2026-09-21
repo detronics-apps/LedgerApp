@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.5.0';
+export const APP_VERSION = '0.5.1';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -40,7 +40,7 @@ const DEFAULT_LEDGER_FILTERS = { enabled: true, dateStart: '', dateEnd: '', cate
 
 const state = {
   user: null, isAdmin: false, adminCategoryIds: [],
-  categories: [], tasks: [], entries: [], users: [], flags: [],
+  categories: [], tasks: [], entries: [], users: [], flags: [], admins: [],
   leaderboardCategoryId: 'all',
   ledgerFilters: { ...DEFAULT_LEDGER_FILTERS },
   settings: DEFAULT_SETTINGS,
@@ -472,6 +472,9 @@ function renderAdminManage() {
       }
       return data.addAdmin(user.id, user.email, categoryIds);
     } : null,
+    admins: state.admins,
+    currentUid: state.user.uid,
+    onRemoveAdmin: state.isAdmin ? data.removeAdmin : null,
   });
 }
 
@@ -586,6 +589,7 @@ function subscribeToData() {
   unsubscribers.push(data.listenEntries((entries) => { state.entries = entries; renderView(); }));
   unsubscribers.push(data.listenUsers((users) => { state.users = users; renderView(); }));
   unsubscribers.push(data.listenFlags((flags) => { state.flags = flags; renderView(); }));
+  unsubscribers.push(data.listenAdmins((admins) => { state.admins = admins; renderView(); }));
   unsubscribers.push(data.listenSettings((settings) => { state.settings = settings ? { ...DEFAULT_SETTINGS, ...settings } : DEFAULT_SETTINGS; renderView(); }));
 }
 
@@ -604,7 +608,7 @@ initAuth({
     unsubscribers.forEach((u) => u());
     unsubscribers = [];
     state.user = null; state.isAdmin = false; state.adminCategoryIds = [];
-    state.categories = []; state.tasks = []; state.entries = []; state.users = []; state.flags = [];
+    state.categories = []; state.tasks = []; state.entries = []; state.users = []; state.flags = []; state.admins = [];
     renderShell();
   },
   onWrongDomain: (email) => {

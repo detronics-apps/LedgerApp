@@ -142,7 +142,31 @@ function tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTas
   ]);
 }
 
-function adminsPanel(onAddAdmin, categories) {
+function adminRow(admin, categories, currentUid, onRemoveAdmin) {
+  const isFull = !admin.categoryIds || admin.categoryIds.length === 0;
+  const access = isFull
+    ? 'All categories (full admin)'
+    : admin.categoryIds.map((id) => categories.find((c) => c.id === id)?.name ?? id).join(', ');
+  const isSelf = admin.id === currentUid;
+  return el('tr', {}, [
+    el('td', { text: admin.email }),
+    el('td', { text: access }),
+    el('td', {}, isSelf
+      ? el('span', { class: 'muted', text: "That's you" })
+      : el('button', {
+          type: 'button', class: 'btn btn-danger', text: 'Revoke access',
+          on: {
+            click: () => {
+              if (confirm(`Revoke admin access for ${admin.email}? They'll go back to a regular employee account.`)) {
+                onRemoveAdmin(admin.id).then(() => toast('Admin access revoked.')).catch((err) => toast(err.message || 'Could not revoke access.'));
+              }
+            },
+          },
+        })),
+  ]);
+}
+
+function adminsPanel({ onAddAdmin, categories, admins = [], currentUid = null, onRemoveAdmin = null }) {
   const emailInput = el('input', { type: 'email', placeholder: 'name@research-square.com' });
   const allCheckbox = el('input', { type: 'checkbox' });
   const categoryChecks = categories.map((c) => {
@@ -187,6 +211,10 @@ function adminsPanel(onAddAdmin, categories) {
 
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Admins' }),
+    admins.length === 0 ? null : el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+      el('thead', {}, el('tr', {}, ['Email', 'Access', ''].map((h) => el('th', { text: h })))),
+      el('tbody', {}, admins.map((a) => adminRow(a, categories, currentUid, onRemoveAdmin))),
+    ])),
     el('p', { class: 'muted', text: 'Grant admin access by email. The person must have signed in at least once already.' }),
     el('div', { class: 'field' }, [emailInput, addBtn]),
     field('Category access', el('div', {}, [
@@ -196,13 +224,16 @@ function adminsPanel(onAddAdmin, categories) {
   ]);
 }
 
-export function buildManageView({ categories, tasks, contributionWeights, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask, onAddAdmin = null, restrictToCategoryIds = null }) {
+export function buildManageView({
+  categories, tasks, contributionWeights, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask,
+  onAddAdmin = null, admins = [], currentUid = null, onRemoveAdmin = null, restrictToCategoryIds = null,
+}) {
   const scoped = Array.isArray(restrictToCategoryIds);
   const visibleCategories = scoped ? categories.filter((c) => restrictToCategoryIds.includes(c.id)) : categories;
   const visibleTasks = scoped ? tasks.filter((t) => restrictToCategoryIds.includes(t.categoryId)) : tasks;
   return el('div', {}, [
     categoriesPanel(visibleCategories, contributionWeights, { onCreateCategory, onUpdateCategory, onDeleteCategory, canCreate: !scoped, canDelete: !scoped }),
     tasksPanel(visibleCategories, visibleTasks, { onCreateTask, onUpdateTask, onDeleteTask }),
-    onAddAdmin ? adminsPanel(onAddAdmin, categories) : null,
+    onAddAdmin ? adminsPanel({ onAddAdmin, categories, admins, currentUid, onRemoveAdmin }) : null,
   ]);
 }
