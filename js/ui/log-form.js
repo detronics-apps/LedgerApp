@@ -111,7 +111,9 @@ export function buildLogForm({ categories, tasks, initialValues = null, onSubmit
     field('When did you do it?', dateInput),
     field('How much impact did you think it had?', pickerHost.impact),
     field('What proof do you have?', pickerHost.proof),
-    field('Description', descriptionInput),
+    field('Description', descriptionInput, {
+      info: 'Write enough that future-you remembers exactly what this was, and when - handy if this entry ever gets flagged and you need to explain it.',
+    }),
     field('Evidence', evidenceInput, { hint: 'Optional - a link, document, or minutes of a meeting.' }),
     submitBtn,
   );
