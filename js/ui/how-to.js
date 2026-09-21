@@ -55,13 +55,13 @@ const CATEGORY_SCOPES = [
   },
   {
     name: 'Operations, Workplace & IT',
-    purpose: 'Physical and IT scope: setting up or fixing IT equipment, improving the physical workspace (e.g. maintaining the kitchen or office), and managing contractors for physical work (e.g. an office or kitchen upgrade).',
-    notPartOf: 'How engineering work should be performed (Engineering Excellence). Building internal software, tools, or systems.',
+    purpose: 'Physical and IT scope: setting up or fixing IT equipment, improving the physical workspace (e.g. maintaining the kitchen or office), and managing contractors for physical work (e.g. an office or kitchen upgrade). Includes building a tool for this - e.g. an equipment tracker or booking system.',
+    notPartOf: "How engineering work should be performed (Engineering Excellence). A tool built for a different purpose just because it's software (see the tool-categorizing rule below).",
   },
   {
     name: 'Engineering Excellence',
-    purpose: 'Focused on the company: the standards we work to and the quality of what we deliver to clients - mechanical engineering standards, how engineering work gets checked, and how technical decisions are made.',
-    notPartOf: 'Developing an individual engineer - internal training, mentoring, coaching, and onboarding (Learning & Capability). Software or internal tooling work.',
+    purpose: 'Focused on the company: the standards we work to and the quality of what we deliver to clients - mechanical engineering standards, how engineering work gets checked, and how technical decisions are made. Includes building a tool for this - e.g. a QA checklist or standards reference.',
+    notPartOf: "Developing an individual engineer - internal training, mentoring, coaching, and onboarding (Learning & Capability). A tool built for a different purpose just because it's software (see the tool-categorizing rule below).",
   },
   {
     name: 'Finance',
@@ -188,8 +188,8 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
     section('What does each category actually cover?', [
       el('p', {}, 'Categories can sound like they overlap. This table is the tie-breaker - what each one is actually for, and what it deliberately excludes (because another category already owns it).'),
       categoryScopeTable(),
-      el('p', {}, el('strong', { text: 'If you built a tool or system, categorize it by what it does, not by who might use it.' })),
-      el('p', {}, "For example, Impact Ledger itself belongs under Learning & Capability, because its purpose is helping engineers make their own effort and growth visible. The fact that Culture might later use it to decide who to praise doesn't make the tool a Culture entry - that's a separate, later activity (the praising itself), logged separately under Culture by whoever does it."),
+      el('p', {}, el('strong', { text: 'If you built a tool or system, categorize it by what it does, not by the fact that it\'s a tool.' })),
+      el('p', {}, "Building software isn't its own category - it belongs wherever its purpose belongs. A tool for tracking IT equipment is Operations. A tool for checking engineering quality is Engineering Excellence. Impact Ledger itself is Learning & Capability, because its purpose is helping engineers make their own effort and growth visible - the fact that Culture might later use it to decide who to praise doesn't make the tool a Culture entry, that's a separate, later activity (the praising itself), logged separately under Culture by whoever does it."),
       el('p', {}, 'Still unsure which category fits? Pick the closest one and write a clear description - you can edit your own entry\'s category any time from "My Logs" if you change your mind.'),
     ]),
     section('How do I judge impact fairly?', [

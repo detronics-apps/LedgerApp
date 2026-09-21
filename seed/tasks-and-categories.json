@@ -264,13 +264,22 @@
       "order": 18
     },
     {
+      "id": "cID2H3cnLQzipA6dTolE",
+      "categoryId": "engineering-excellence",
+      "name": "Build a tool or system to support engineering quality or standards",
+      "description": "Building or improving a tool that helps raise the quality or consistency of our engineering work - e.g. a QA checklist tool, a standards reference, or a technical-decision tracker.",
+      "weight": 1,
+      "archived": false,
+      "order": 19
+    },
+    {
       "id": "engineering-excellence--capture-and-share-technical-knowledge",
       "categoryId": "engineering-excellence",
       "name": "Capture and share technical knowledge",
       "description": "Wrote up how a problem was solved so others can find and reuse the solution.",
       "weight": 1,
       "archived": false,
-      "order": 19
+      "order": 20
     },
     {
       "id": "engineering-excellence--catch-or-prevent-a-quality-issue",
@@ -279,7 +288,7 @@
       "description": "Caught a quality problem before it reached the client, or proposed a review step that improved delivery quality.",
       "weight": 1,
       "archived": false,
-      "order": 20
+      "order": 21
     },
     {
       "id": "engineering-excellence--help-decide-a-technical-approach",
@@ -288,7 +297,7 @@
       "description": "Worked up the options for a significant technical decision and helped the team choose.",
       "weight": 1,
       "archived": false,
-      "order": 21
+      "order": 22
     },
     {
       "id": "engineering-excellence--write-or-improve-an-engineering-standard",
@@ -297,7 +306,7 @@
       "description": "Documented how a type of engineering work should be done, or updated an existing standard.",
       "weight": 1,
       "archived": false,
-      "order": 22
+      "order": 23
     },
     {
       "id": "SXSBZ1cwl0d0HGajxB6Y",
@@ -306,7 +315,7 @@
       "description": "Building or improving a tool that helps manage budgets, costs, or cash flow.",
       "weight": 1,
       "archived": false,
-      "order": 23
+      "order": 24
     },
     {
       "id": "finance--flag-a-cost-saving-opportunity",
@@ -315,7 +324,7 @@
       "description": "Identified a way to reduce costs or use budget more effectively on a project.",
       "weight": 1,
       "archived": false,
-      "order": 24
+      "order": 25
     },
     {
       "id": "finance--help-track-project-costs-or-hours",
@@ -324,7 +333,7 @@
       "description": "Did the legwork to reconcile spend, hours, or invoicing on a project when it wasn't expected of you.",
       "weight": 1,
       "archived": false,
-      "order": 25
+      "order": 26
     },
     {
       "id": "finance--help-with-cash-flow-or-expense-tracking",
@@ -333,7 +342,7 @@
       "description": "Helped keep tabs on project spend or expenses so it didn't fall on someone else to chase.",
       "weight": 1,
       "archived": false,
-      "order": 26
+      "order": 27
     },
     {
       "id": "finance--prepare-a-budget-or-cost-estimate",
@@ -342,7 +351,7 @@
       "description": "Put together the numbers for a proposal, project, or internal request.",
       "weight": 1,
       "archived": false,
-      "order": 27
+      "order": 28
     },
     {
       "id": "7UvYpmuDpEDuYkG0Mw6d",
@@ -351,7 +360,7 @@
       "description": "Building or improving a tool that helps track compliance, policy, security, or ethical concerns.",
       "weight": 1,
       "archived": false,
-      "order": 28
+      "order": 29
     },
     {
       "id": "governance--flag-a-security-or-compliance-risk",
@@ -360,7 +369,7 @@
       "description": "Noticed and raised a cybersecurity, data-protection, or compliance issue before it became a problem.",
       "weight": 1,
       "archived": false,
-      "order": 29
+      "order": 30
     },
     {
       "id": "governance--help-write-or-improve-a-company-policy",
@@ -369,7 +378,7 @@
       "description": "Contributed to writing or improving a policy so it's clearer or more practical.",
       "weight": 1,
       "archived": false,
-      "order": 30
+      "order": 31
     },
     {
       "id": "governance--protect-company-or-client-ip",
@@ -378,7 +387,7 @@
       "description": "Took care to properly document, protect, or handle intellectual property - ours or a client's.",
       "weight": 1,
       "archived": false,
-      "order": 31
+      "order": 32
     },
     {
       "id": "governance--raise-an-ethical-concern",
@@ -387,7 +396,7 @@
       "description": "Escalated a genuine ethical concern through the right channel.",
       "weight": 1,
       "archived": false,
-      "order": 32
+      "order": 33
     },
     {
       "id": "le7QYeO6Se6LqunTOpMi",
@@ -396,7 +405,7 @@
       "description": "Building or improving any tool or process aimed at developing engineers — training, mentoring, coaching, skills tracking, or making growth/effort visible for reviews and promotion. Categorized by the tool's purpose, not by who else later uses it",
       "weight": 1,
       "archived": false,
-      "order": 33
+      "order": 34
     },
     {
       "id": "learning-capability--coach-someone-toward-a-leadership-step",
@@ -405,7 +414,7 @@
       "description": "Helped someone moving toward a Team Lead or Lead Engineer role build the skills for it.",
       "weight": 1,
       "archived": false,
-      "order": 34
+      "order": 35
     },
     {
       "id": "learning-capability--deliver-training-or-a-knowledge-share-session",
@@ -414,7 +423,7 @@
       "description": "Ran a session, workshop, or short talk that upskilled colleagues.",
       "weight": 1,
       "archived": false,
-      "order": 35
+      "order": 36
     },
     {
       "id": "learning-capability--help-build-a-career-or-skills-framework",
@@ -423,7 +432,7 @@
       "description": "Contributed to defining career paths, skill levels, or promotion criteria.",
       "weight": 1,
       "archived": false,
-      "order": 36
+      "order": 37
     },
     {
       "id": "learning-capability--mentor-another-engineer",
@@ -432,7 +441,7 @@
       "description": "Had a coaching conversation - technical or career-related - that helped a colleague grow.",
       "weight": 1,
       "archived": false,
-      "order": 37
+      "order": 38
     },
     {
       "id": "learning-capability--onboard-a-new-engineer",
@@ -441,7 +450,7 @@
       "description": "Helped a new hire get set up, learn the ropes, or find their feet in their first weeks.",
       "weight": 1,
       "archived": false,
-      "order": 38
+      "order": 39
     },
     {
       "id": "learning-capability--support-a-performance-review-or-development-plan",
@@ -450,7 +459,7 @@
       "description": "Helped a colleague prepare for a review or put together a personal development plan.",
       "weight": 1,
       "archived": false,
-      "order": 39
+      "order": 40
     },
     {
       "id": "learning-capability--support-the-graduate-programme",
@@ -459,7 +468,7 @@
       "description": "Mentored, trained, or helped design part of the graduate or junior engineer programme.",
       "weight": 1,
       "archived": false,
-      "order": 40
+      "order": 41
     },
     {
       "id": "learning-capability--track-team-skills-and-gaps",
@@ -468,7 +477,16 @@
       "description": "Helped identify what skills the team has and where the gaps are.",
       "weight": 1,
       "archived": false,
-      "order": 41
+      "order": 42
+    },
+    {
+      "id": "46kt4cSrbyouN09E45hP",
+      "categoryId": "operations-workplace-it",
+      "name": "Build a tool or system to support workplace or IT operations",
+      "description": "Building or improving a tool that helps manage IT equipment, the physical workplace, or contractors - e.g. an asset tracker, a room or equipment booking system, or a maintenance log.",
+      "weight": 1,
+      "archived": false,
+      "order": 43
     },
     {
       "id": "operations-workplace-it--coordinate-an-internal-project",
@@ -477,7 +495,7 @@
       "description": "Took the lead coordinating a non-billable, internal initiative.",
       "weight": 1,
       "archived": false,
-      "order": 42
+      "order": 44
     },
     {
       "id": "operations-workplace-it--fix-a-handoff-problem-between-teams",
@@ -486,7 +504,7 @@
       "description": "Noticed and fixed a breakdown in how work passes between internal departments.",
       "weight": 1,
       "archived": false,
-      "order": 43
+      "order": 45
     },
     {
       "id": "operations-workplace-it--fix-a-source-of-wasted-time-or-effort",
@@ -495,7 +513,7 @@
       "description": "Found and fixed something that was quietly wasting the team's time.",
       "weight": 1,
       "archived": false,
-      "order": 44
+      "order": 46
     },
     {
       "id": "operations-workplace-it--help-manage-a-contractor-or-supplier-issue",
@@ -504,7 +522,7 @@
       "description": "Picked up and resolved an issue with a contractor doing internal work.",
       "weight": 1,
       "archived": false,
-      "order": 45
+      "order": 47
     },
     {
       "id": "operations-workplace-it--help-with-it-network-or-equipment-issues",
@@ -513,7 +531,7 @@
       "description": "Helped resolve an IT, connectivity, or equipment problem for a colleague.",
       "weight": 1,
       "archived": false,
-      "order": 46
+      "order": 48
     },
     {
       "id": "operations-workplace-it--improve-the-office-or-workplace",
@@ -522,7 +540,7 @@
       "description": "Proposed or actioned an improvement to the physical workplace, or flagged a safety issue.",
       "weight": 1,
       "archived": false,
-      "order": 47
+      "order": 49
     },
     {
       "id": "GPfFg9xd54ZyB7FBb21g",
@@ -531,7 +549,7 @@
       "description": "Anything todo with the daily running of the kitchen",
       "weight": 1,
       "archived": false,
-      "order": 48
+      "order": 50
     },
     {
       "id": "operations-workplace-it--improve-a-business-process",
@@ -540,7 +558,7 @@
       "description": "Documented or improved how a piece of work gets done, saving time or reducing errors going forward.",
       "weight": 1,
       "archived": false,
-      "order": 49
+      "order": 51
     },
     {
       "id": "vuq0g5r9pAHgE0lLF5m3",
@@ -549,7 +567,7 @@
       "description": "Building or improving a tool that supports recruitment, onboarding logistics, or the employment lifecycle - not training or development, which is Learning & Capability.",
       "weight": 1,
       "archived": false,
-      "order": 50
+      "order": 52
     },
     {
       "id": "people--contribute-honest-exit-feedback",
@@ -558,7 +576,7 @@
       "description": "Shared candid, useful feedback when leaving a role or team, or helped collect it from someone else.",
       "weight": 1,
       "archived": false,
-      "order": 51
+      "order": 53
     },
     {
       "id": "people--help-improve-a-people-process",
@@ -567,7 +585,7 @@
       "description": "Helped improve how recruitment, onboarding, or induction actually works.",
       "weight": 1,
       "archived": false,
-      "order": 52
+      "order": 54
     },
     {
       "id": "people--refer-or-help-recruit-a-candidate",
@@ -576,7 +594,7 @@
       "description": "Referred someone for a role, or helped with an interview or hiring process.",
       "weight": 1,
       "archived": false,
-      "order": 53
+      "order": 55
     },
     {
       "id": "QOHSYlyHE9MXmuzPY6Z2",
@@ -585,7 +603,7 @@
       "description": "Building or improving a tool that helps the company plan its direction - resourcing, market opportunities, or growth initiatives.",
       "weight": 1,
       "archived": false,
-      "order": 54
+      "order": 56
     },
     {
       "id": "strategy-growth--contribute-an-idea-to-company-strategy",
@@ -594,7 +612,7 @@
       "description": "Fed engineer-level insight into a discussion about company goals or direction.",
       "weight": 1,
       "archived": false,
-      "order": 55
+      "order": 57
     },
     {
       "id": "strategy-growth--contribute-to-a-sustainability-or-outreach-initiative",
@@ -603,7 +621,7 @@
       "description": "Took part in CSR, STEM outreach, or environmental efforts.",
       "weight": 1,
       "archived": false,
-      "order": 56
+      "order": 58
     },
     {
       "id": "strategy-growth--help-with-resource-or-capacity-planning",
@@ -612,7 +630,7 @@
       "description": "Contributed insight into where people, time, or budget should be focused.",
       "weight": 1,
       "archived": false,
-      "order": 57
+      "order": 59
     },
     {
       "id": "strategy-growth--spot-a-new-market-or-service-opportunity",
@@ -621,7 +639,7 @@
       "description": "Identified a potential new market, technology, or service the company could offer.",
       "weight": 1,
       "archived": false,
-      "order": 58
+      "order": 60
     },
     {
       "id": "strategy-growth--support-a-growth-initiative",
@@ -630,7 +648,7 @@
       "description": "Helped build something needed to take on more work or more engineers - a process, tool, or template.",
       "weight": 1,
       "archived": false,
-      "order": 59
+      "order": 61
     }
   ]
 }

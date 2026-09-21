@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.3
+- Data: recategorized two drifted tasks ("Build a tool or system to support
+  engineer development" and "Support the graduate programme" both moved to
+  Learning & Capability), reworded two Operations tasks to fit its narrowed
+  scope, and added a "Build a tool or system to support <purpose>" task to
+  every one of the 10 categories - including Operations and Engineering
+  Excellence, corrected from an earlier assumption that tool-building
+  couldn't belong there at all (it can, when the tool's purpose matches the
+  category). seed/tasks-and-categories.json regenerated from live Firestore.
+- How-to page: fixed the "What does each category actually cover?" table
+  and the tool-categorizing rule below it to match - a tool belongs to
+  whichever category its purpose serves, on every category, not just some.
+
 ## 0.5.2
 - Info tooltips (the (i) icons) now keep working after the first page
   navigation - fixes a bug where the shared tooltip element got silently
