@@ -1,78 +1,573 @@
 {
   "categories": [
-    { "id": "client-success", "name": "Client Success", "description": "Anything that helps win, keep, or strengthen a relationship with a client.", "weight": 1, "archived": false, "order": 0 },
-    { "id": "communication-transparency", "name": "Communication & Transparency", "description": "Keeping people informed and connected across the company.", "weight": 1, "archived": false, "order": 1 },
-    { "id": "culture", "name": "Culture", "description": "How the team works together day to day.", "weight": 1, "archived": false, "order": 2 },
-    { "id": "engineering-excellence", "name": "Engineering Excellence", "description": "Raising the quality and consistency of our engineering work.", "weight": 1, "archived": false, "order": 3 },
-    { "id": "finance", "name": "Finance", "description": "Helping manage budgets, costs, and spend.", "weight": 1, "archived": false, "order": 4 },
-    { "id": "governance", "name": "Governance", "description": "Keeping the company compliant, secure, and ethical.", "weight": 1, "archived": false, "order": 5 },
-    { "id": "learning-capability", "name": "Learning & Capability", "description": "Helping colleagues grow their skills and careers.", "weight": 1, "archived": false, "order": 6 },
-    { "id": "operations-workplace-it", "name": "Operations, Workplace & IT", "description": "Making how we work - and where we work - better.", "weight": 1, "archived": false, "order": 7 },
-    { "id": "people", "name": "People", "description": "Recruitment, onboarding, and the People side of the business.", "weight": 1, "archived": false, "order": 8 },
-    { "id": "strategy-growth", "name": "Strategy & Growth", "description": "Contributing to where the company is headed next.", "weight": 1, "archived": false, "order": 9 }
+    {
+      "id": "client-success",
+      "name": "Client Success",
+      "description": "Anything that helps win, keep, or strengthen a relationship with a client.",
+      "weight": 1,
+      "archived": false,
+      "order": 0,
+      "contributionType": "operational"
+    },
+    {
+      "id": "communication-transparency",
+      "name": "Communication & Transparency",
+      "description": "Keeping people informed and connected across the company.",
+      "weight": 1,
+      "archived": false,
+      "order": 1,
+      "contributionType": "cultural"
+    },
+    {
+      "id": "culture",
+      "name": "Culture",
+      "description": "How the team works together day to day.",
+      "weight": 1,
+      "archived": false,
+      "order": 2,
+      "contributionType": "cultural"
+    },
+    {
+      "id": "engineering-excellence",
+      "name": "Engineering Excellence",
+      "description": "Raising the quality and consistency of our engineering work.",
+      "weight": 1,
+      "archived": false,
+      "order": 3,
+      "contributionType": "operational"
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "description": "Helping manage budgets, costs, and spend.",
+      "weight": 1,
+      "archived": false,
+      "order": 4,
+      "contributionType": "operational"
+    },
+    {
+      "id": "governance",
+      "name": "Governance",
+      "description": "Keeping the company compliant, secure, and ethical.",
+      "weight": 1,
+      "archived": false,
+      "order": 5,
+      "contributionType": "operational"
+    },
+    {
+      "id": "learning-capability",
+      "name": "Learning & Capability",
+      "description": "Helping colleagues grow their skills and careers.",
+      "weight": 1,
+      "archived": false,
+      "order": 6,
+      "contributionType": "leadership"
+    },
+    {
+      "id": "operations-workplace-it",
+      "name": "Operations, Workplace & IT",
+      "description": "Making how we work - and where we work - better.",
+      "weight": 1,
+      "archived": false,
+      "order": 7,
+      "contributionType": "operational"
+    },
+    {
+      "id": "people",
+      "name": "People",
+      "description": "Recruitment, onboarding, and the People side of the business.",
+      "weight": 1,
+      "archived": false,
+      "order": 8,
+      "contributionType": "leadership"
+    },
+    {
+      "id": "strategy-growth",
+      "name": "Strategy & Growth",
+      "description": "Contributing to where the company is headed next.",
+      "weight": 1,
+      "archived": false,
+      "order": 9,
+      "contributionType": "leadership"
+    }
   ],
   "tasks": [
-    { "id": "client-success--spot-and-flag-a-business-opportunity", "categoryId": "client-success", "name": "Spot and flag a business opportunity", "description": "Noticed a chance to win new work or grow a client relationship, and raised it with management with enough detail to act on.", "weight": 1, "archived": false, "order": 0 },
-    { "id": "client-success--help-resolve-a-client-issue", "categoryId": "client-success", "name": "Help resolve a client issue", "description": "Helped smooth over a client relationship problem - a scope question, a miscommunication, or an urgent ask that needed a fast response.", "weight": 1, "archived": false, "order": 1 },
-    { "id": "client-success--create-content-for-marketing-or-social-media", "categoryId": "client-success", "name": "Create content for marketing or social media", "description": "Wrote, filmed, photographed, or designed something used on the company's social media, website, or marketing materials.", "weight": 1, "archived": false, "order": 2 },
-    { "id": "client-success--represent-the-company-at-an-event", "categoryId": "client-success", "name": "Represent the company at an event", "description": "Attended, presented at, or helped organise a conference, industry event, or client function on the company's behalf.", "weight": 1, "archived": false, "order": 3 },
-    { "id": "client-success--collect-and-document-client-feedback", "categoryId": "client-success", "name": "Collect and document client feedback", "description": "Gathered feedback from a client - formal or informal - and wrote it up so it could actually inform how we work.", "weight": 1, "archived": false, "order": 4 },
-    { "id": "client-success--introduce-a-potential-partner-or-supplier", "categoryId": "client-success", "name": "Introduce a potential partner or supplier", "description": "Connected the company with a partner, supplier, or university link that could lead to new work or capability.", "weight": 1, "archived": false, "order": 5 },
-
-    { "id": "communication-transparency--explain-a-company-decision-to-the-team", "categoryId": "communication-transparency", "name": "Explain a company decision to the team", "description": "Helped colleagues understand a decision, direction, or change that hadn't been clearly communicated yet.", "weight": 1, "archived": false, "order": 6 },
-    { "id": "communication-transparency--share-a-business-or-performance-update", "categoryId": "communication-transparency", "name": "Share a business or performance update", "description": "Passed on information about how the company or a project is performing that helped others do their job better.", "weight": 1, "archived": false, "order": 7 },
-    { "id": "communication-transparency--support-colleagues-through-a-change", "categoryId": "communication-transparency", "name": "Support colleagues through a change", "description": "Helped colleagues understand or adjust to an organisational, process, or technical change that affected them.", "weight": 1, "archived": false, "order": 8 },
-    { "id": "communication-transparency--propose-a-way-to-raise-concerns-upward", "categoryId": "communication-transparency", "name": "Propose a way to raise concerns upward", "description": "Suggested or helped build a channel or process for staff to raise ideas or concerns.", "weight": 1, "archived": false, "order": 9 },
-    { "id": "communication-transparency--fix-a-misalignment-between-teams", "categoryId": "communication-transparency", "name": "Fix a misalignment between teams", "description": "Noticed two teams, sites, or client accounts working out of step and helped get them aligned.", "weight": 1, "archived": false, "order": 10 },
-
-    { "id": "culture--check-in-on-a-colleagues-wellbeing", "categoryId": "culture", "name": "Check in on a colleague's wellbeing", "description": "Noticed someone was struggling and reached out, listened, or connected them with support.", "weight": 1, "archived": false, "order": 11 },
-    { "id": "culture--help-resolve-a-conflict", "categoryId": "culture", "name": "Help resolve a conflict", "description": "Helped mediate or de-escalate a disagreement between colleagues.", "weight": 1, "archived": false, "order": 12 },
-    { "id": "culture--organise-a-team-culture-activity", "categoryId": "culture", "name": "Organise a team culture activity", "description": "Planned or ran something that brought the team together socially or improved how people work together day to day.", "weight": 1, "archived": false, "order": 13 },
-    { "id": "culture--recognise-a-colleagues-contribution", "categoryId": "culture", "name": "Recognise a colleague's contribution", "description": "Acknowledged someone's good work - publicly or privately - in a way that wasn't already expected of you.", "weight": 1, "archived": false, "order": 14 },
-    { "id": "culture--suggest-and-drive-a-culture-improvement", "categoryId": "culture", "name": "Suggest and drive a culture improvement", "description": "Raised an idea for how the team works together, and helped see it through.", "weight": 1, "archived": false, "order": 15 },
-
-    { "id": "engineering-excellence--catch-or-prevent-a-quality-issue", "categoryId": "engineering-excellence", "name": "Catch or prevent a quality issue", "description": "Caught a quality problem before it reached the client, or proposed a review step that improved delivery quality.", "weight": 1, "archived": false, "order": 16 },
-    { "id": "engineering-excellence--write-or-improve-an-engineering-standard", "categoryId": "engineering-excellence", "name": "Write or improve an engineering standard", "description": "Documented how a type of engineering work should be done, or updated an existing standard.", "weight": 1, "archived": false, "order": 17 },
-    { "id": "engineering-excellence--capture-and-share-technical-knowledge", "categoryId": "engineering-excellence", "name": "Capture and share technical knowledge", "description": "Wrote up how a problem was solved so others can find and reuse the solution.", "weight": 1, "archived": false, "order": 18 },
-    { "id": "engineering-excellence--build-or-improve-a-prototype", "categoryId": "engineering-excellence", "name": "Build or improve a prototype", "description": "Used prototyping (e.g. 3D printing) to test an idea or solve a problem faster than the alternative.", "weight": 1, "archived": false, "order": 19 },
-    { "id": "engineering-excellence--help-decide-a-technical-approach", "categoryId": "engineering-excellence", "name": "Help decide a technical approach", "description": "Worked up the options for a significant technical decision and helped the team choose.", "weight": 1, "archived": false, "order": 20 },
-
-    { "id": "finance--flag-a-cost-saving-opportunity", "categoryId": "finance", "name": "Flag a cost-saving opportunity", "description": "Identified a way to reduce costs or use budget more effectively on a project.", "weight": 1, "archived": false, "order": 21 },
-    { "id": "finance--help-track-project-costs-or-hours", "categoryId": "finance", "name": "Help track project costs or hours", "description": "Did the legwork to reconcile spend, hours, or invoicing on a project when it wasn't expected of you.", "weight": 1, "archived": false, "order": 22 },
-    { "id": "finance--prepare-a-budget-or-cost-estimate", "categoryId": "finance", "name": "Prepare a budget or cost estimate", "description": "Put together the numbers for a proposal, project, or internal request.", "weight": 1, "archived": false, "order": 23 },
-    { "id": "finance--help-with-cash-flow-or-expense-tracking", "categoryId": "finance", "name": "Help with cash flow or expense tracking", "description": "Helped keep tabs on project spend or expenses so it didn't fall on someone else to chase.", "weight": 1, "archived": false, "order": 24 },
-
-    { "id": "governance--flag-a-security-or-compliance-risk", "categoryId": "governance", "name": "Flag a security or compliance risk", "description": "Noticed and raised a cybersecurity, data-protection, or compliance issue before it became a problem.", "weight": 1, "archived": false, "order": 25 },
-    { "id": "governance--help-write-or-improve-a-company-policy", "categoryId": "governance", "name": "Help write or improve a company policy", "description": "Contributed to writing or improving a policy so it's clearer or more practical.", "weight": 1, "archived": false, "order": 26 },
-    { "id": "governance--protect-company-or-client-ip", "categoryId": "governance", "name": "Protect company or client IP", "description": "Took care to properly document, protect, or handle intellectual property - ours or a client's.", "weight": 1, "archived": false, "order": 27 },
-    { "id": "governance--raise-an-ethical-concern", "categoryId": "governance", "name": "Raise an ethical concern", "description": "Escalated a genuine ethical concern through the right channel.", "weight": 1, "archived": false, "order": 28 },
-
-    { "id": "learning-capability--mentor-another-engineer", "categoryId": "learning-capability", "name": "Mentor another engineer", "description": "Had a coaching conversation - technical or career-related - that helped a colleague grow.", "weight": 1, "archived": false, "order": 29 },
-    { "id": "learning-capability--onboard-a-new-engineer", "categoryId": "learning-capability", "name": "Onboard a new engineer", "description": "Helped a new hire get set up, learn the ropes, or find their feet in their first weeks.", "weight": 1, "archived": false, "order": 30 },
-    { "id": "learning-capability--deliver-training-or-a-knowledge-share-session", "categoryId": "learning-capability", "name": "Deliver training or a knowledge-share session", "description": "Ran a session, workshop, or short talk that upskilled colleagues.", "weight": 1, "archived": false, "order": 31 },
-    { "id": "learning-capability--help-build-a-career-or-skills-framework", "categoryId": "learning-capability", "name": "Help build a career or skills framework", "description": "Contributed to defining career paths, skill levels, or promotion criteria.", "weight": 1, "archived": false, "order": 32 },
-    { "id": "learning-capability--support-a-performance-review-or-development-plan", "categoryId": "learning-capability", "name": "Support a performance review or development plan", "description": "Helped a colleague prepare for a review or put together a personal development plan.", "weight": 1, "archived": false, "order": 33 },
-    { "id": "learning-capability--track-team-skills-and-gaps", "categoryId": "learning-capability", "name": "Track team skills and gaps", "description": "Helped identify what skills the team has and where the gaps are.", "weight": 1, "archived": false, "order": 34 },
-    { "id": "learning-capability--support-the-graduate-programme", "categoryId": "learning-capability", "name": "Support the graduate programme", "description": "Mentored, trained, or helped design part of the graduate or junior engineer programme.", "weight": 1, "archived": false, "order": 35 },
-    { "id": "learning-capability--coach-someone-toward-a-leadership-step", "categoryId": "learning-capability", "name": "Coach someone toward a leadership step", "description": "Helped someone moving toward a Team Lead or Lead Engineer role build the skills for it.", "weight": 1, "archived": false, "order": 36 },
-
-    { "id": "operations-workplace-it--improve-a-business-process", "categoryId": "operations-workplace-it", "name": "Improve a business process", "description": "Documented or improved how a piece of work gets done, saving time or reducing errors going forward.", "weight": 1, "archived": false, "order": 37 },
-    { "id": "operations-workplace-it--fix-a-source-of-wasted-time-or-effort", "categoryId": "operations-workplace-it", "name": "Fix a source of wasted time or effort", "description": "Found and fixed something that was quietly wasting the team's time.", "weight": 1, "archived": false, "order": 38 },
-    { "id": "operations-workplace-it--help-manage-a-contractor-or-supplier-issue", "categoryId": "operations-workplace-it", "name": "Help manage a contractor or supplier issue", "description": "Picked up and resolved an issue with a contractor doing internal work.", "weight": 1, "archived": false, "order": 39 },
-    { "id": "operations-workplace-it--coordinate-an-internal-project", "categoryId": "operations-workplace-it", "name": "Coordinate an internal project", "description": "Took the lead coordinating a non-billable, internal initiative.", "weight": 1, "archived": false, "order": 40 },
-    { "id": "operations-workplace-it--fix-a-handoff-problem-between-teams", "categoryId": "operations-workplace-it", "name": "Fix a handoff problem between teams", "description": "Noticed and fixed a breakdown in how work passes between internal departments.", "weight": 1, "archived": false, "order": 41 },
-    { "id": "operations-workplace-it--help-with-it-network-or-equipment-issues", "categoryId": "operations-workplace-it", "name": "Help with IT, network, or equipment issues", "description": "Helped resolve an IT, connectivity, or equipment problem for a colleague.", "weight": 1, "archived": false, "order": 42 },
-    { "id": "operations-workplace-it--improve-the-office-or-workplace", "categoryId": "operations-workplace-it", "name": "Improve the office or workplace", "description": "Proposed or actioned an improvement to the physical workplace, or flagged a safety issue.", "weight": 1, "archived": false, "order": 43 },
-
-    { "id": "people--refer-or-help-recruit-a-candidate", "categoryId": "people", "name": "Refer or help recruit a candidate", "description": "Referred someone for a role, or helped with an interview or hiring process.", "weight": 1, "archived": false, "order": 44 },
-    { "id": "people--help-onboard-a-new-hire", "categoryId": "people", "name": "Help onboard a new hire", "description": "Supported the paperwork or systems-access side of getting someone started.", "weight": 1, "archived": false, "order": 45 },
-    { "id": "people--contribute-honest-exit-feedback", "categoryId": "people", "name": "Contribute honest exit feedback", "description": "Shared candid, useful feedback when leaving a role or team, or helped collect it from someone else.", "weight": 1, "archived": false, "order": 46 },
-    { "id": "people--help-improve-a-people-process", "categoryId": "people", "name": "Help improve a People process", "description": "Helped improve how recruitment, onboarding, or induction actually works.", "weight": 1, "archived": false, "order": 47 },
-
-    { "id": "strategy-growth--contribute-an-idea-to-company-strategy", "categoryId": "strategy-growth", "name": "Contribute an idea to company strategy", "description": "Fed engineer-level insight into a discussion about company goals or direction.", "weight": 1, "archived": false, "order": 48 },
-    { "id": "strategy-growth--spot-a-new-market-or-service-opportunity", "categoryId": "strategy-growth", "name": "Spot a new market or service opportunity", "description": "Identified a potential new market, technology, or service the company could offer.", "weight": 1, "archived": false, "order": 49 },
-    { "id": "strategy-growth--help-with-resource-or-capacity-planning", "categoryId": "strategy-growth", "name": "Help with resource or capacity planning", "description": "Contributed insight into where people, time, or budget should be focused.", "weight": 1, "archived": false, "order": 50 },
-    { "id": "strategy-growth--support-a-growth-initiative", "categoryId": "strategy-growth", "name": "Support a growth initiative", "description": "Helped build something needed to take on more work or more engineers - a process, tool, or template.", "weight": 1, "archived": false, "order": 51 },
-    { "id": "strategy-growth--contribute-to-a-sustainability-or-outreach-initiative", "categoryId": "strategy-growth", "name": "Contribute to a sustainability or outreach initiative", "description": "Took part in CSR, STEM outreach, or environmental efforts.", "weight": 1, "archived": false, "order": 52 }
+    {
+      "id": "client-success--spot-and-flag-a-business-opportunity",
+      "categoryId": "client-success",
+      "name": "Spot and flag a business opportunity",
+      "description": "Noticed a chance to win new work or grow a client relationship, and raised it with management with enough detail to act on.",
+      "weight": 1,
+      "archived": false,
+      "order": 0
+    },
+    {
+      "id": "client-success--help-resolve-a-client-issue",
+      "categoryId": "client-success",
+      "name": "Help resolve a client issue",
+      "description": "Helped smooth over a client relationship problem - a scope question, a miscommunication, or an urgent ask that needed a fast response.",
+      "weight": 1,
+      "archived": false,
+      "order": 1
+    },
+    {
+      "id": "client-success--create-content-for-marketing-or-social-media",
+      "categoryId": "client-success",
+      "name": "Create content for marketing or social media",
+      "description": "Wrote, filmed, photographed, or designed something used on the company's social media, website, or marketing materials.",
+      "weight": 1,
+      "archived": false,
+      "order": 2
+    },
+    {
+      "id": "client-success--represent-the-company-at-an-event",
+      "categoryId": "client-success",
+      "name": "Represent the company at an event",
+      "description": "Attended, presented at, or helped organise a conference, industry event, or client function on the company's behalf.",
+      "weight": 1,
+      "archived": false,
+      "order": 3
+    },
+    {
+      "id": "client-success--collect-and-document-client-feedback",
+      "categoryId": "client-success",
+      "name": "Collect and document client feedback",
+      "description": "Gathered feedback from a client - formal or informal - and wrote it up so it could actually inform how we work.",
+      "weight": 1,
+      "archived": false,
+      "order": 4
+    },
+    {
+      "id": "client-success--introduce-a-potential-partner-or-supplier",
+      "categoryId": "client-success",
+      "name": "Introduce a potential partner or supplier",
+      "description": "Connected the company with a partner, supplier, or university link that could lead to new work or capability.",
+      "weight": 1,
+      "archived": false,
+      "order": 5
+    },
+    {
+      "id": "communication-transparency--explain-a-company-decision-to-the-team",
+      "categoryId": "communication-transparency",
+      "name": "Explain a company decision to the team",
+      "description": "Helped colleagues understand a decision, direction, or change that hadn't been clearly communicated yet.",
+      "weight": 1,
+      "archived": false,
+      "order": 6
+    },
+    {
+      "id": "communication-transparency--share-a-business-or-performance-update",
+      "categoryId": "communication-transparency",
+      "name": "Share a business or performance update",
+      "description": "Passed on information about how the company or a project is performing that helped others do their job better.",
+      "weight": 1,
+      "archived": false,
+      "order": 7
+    },
+    {
+      "id": "communication-transparency--support-colleagues-through-a-change",
+      "categoryId": "communication-transparency",
+      "name": "Support colleagues through a change",
+      "description": "Helped colleagues understand or adjust to an organisational, process, or technical change that affected them.",
+      "weight": 1,
+      "archived": false,
+      "order": 8
+    },
+    {
+      "id": "communication-transparency--propose-a-way-to-raise-concerns-upward",
+      "categoryId": "communication-transparency",
+      "name": "Propose a way to raise concerns upward",
+      "description": "Suggested or helped build a channel or process for staff to raise ideas or concerns.",
+      "weight": 1,
+      "archived": false,
+      "order": 9
+    },
+    {
+      "id": "communication-transparency--fix-a-misalignment-between-teams",
+      "categoryId": "communication-transparency",
+      "name": "Fix a misalignment between teams",
+      "description": "Noticed two teams, sites, or client accounts working out of step and helped get them aligned.",
+      "weight": 1,
+      "archived": false,
+      "order": 10
+    },
+    {
+      "id": "culture--check-in-on-a-colleagues-wellbeing",
+      "categoryId": "culture",
+      "name": "Check in on a colleague's wellbeing",
+      "description": "Noticed someone was struggling and reached out, listened, or connected them with support.",
+      "weight": 1,
+      "archived": false,
+      "order": 11
+    },
+    {
+      "id": "culture--help-resolve-a-conflict",
+      "categoryId": "culture",
+      "name": "Help resolve a conflict",
+      "description": "Helped mediate or de-escalate a disagreement between colleagues.",
+      "weight": 1,
+      "archived": false,
+      "order": 12
+    },
+    {
+      "id": "culture--organise-a-team-culture-activity",
+      "categoryId": "culture",
+      "name": "Organise a team culture activity",
+      "description": "Planned or ran something that brought the team together socially or improved how people work together day to day.",
+      "weight": 1,
+      "archived": false,
+      "order": 13
+    },
+    {
+      "id": "culture--recognise-a-colleagues-contribution",
+      "categoryId": "culture",
+      "name": "Recognise a colleague's contribution",
+      "description": "Acknowledged someone's good work - publicly or privately - in a way that wasn't already expected of you.",
+      "weight": 1,
+      "archived": false,
+      "order": 14
+    },
+    {
+      "id": "culture--suggest-and-drive-a-culture-improvement",
+      "categoryId": "culture",
+      "name": "Suggest and drive a culture improvement",
+      "description": "Raised an idea for how the team works together, and helped see it through.",
+      "weight": 1,
+      "archived": false,
+      "order": 15
+    },
+    {
+      "id": "engineering-excellence--catch-or-prevent-a-quality-issue",
+      "categoryId": "engineering-excellence",
+      "name": "Catch or prevent a quality issue",
+      "description": "Caught a quality problem before it reached the client, or proposed a review step that improved delivery quality.",
+      "weight": 1,
+      "archived": false,
+      "order": 16
+    },
+    {
+      "id": "engineering-excellence--write-or-improve-an-engineering-standard",
+      "categoryId": "engineering-excellence",
+      "name": "Write or improve an engineering standard",
+      "description": "Documented how a type of engineering work should be done, or updated an existing standard.",
+      "weight": 1,
+      "archived": false,
+      "order": 17
+    },
+    {
+      "id": "engineering-excellence--capture-and-share-technical-knowledge",
+      "categoryId": "engineering-excellence",
+      "name": "Capture and share technical knowledge",
+      "description": "Wrote up how a problem was solved so others can find and reuse the solution.",
+      "weight": 1,
+      "archived": false,
+      "order": 18
+    },
+    {
+      "id": "engineering-excellence--build-or-improve-a-prototype",
+      "categoryId": "engineering-excellence",
+      "name": "Build or improve a prototype",
+      "description": "Used prototyping (e.g. 3D printing) to test an idea or solve a problem faster than the alternative.",
+      "weight": 1,
+      "archived": false,
+      "order": 19
+    },
+    {
+      "id": "engineering-excellence--help-decide-a-technical-approach",
+      "categoryId": "engineering-excellence",
+      "name": "Help decide a technical approach",
+      "description": "Worked up the options for a significant technical decision and helped the team choose.",
+      "weight": 1,
+      "archived": false,
+      "order": 20
+    },
+    {
+      "id": "finance--flag-a-cost-saving-opportunity",
+      "categoryId": "finance",
+      "name": "Flag a cost-saving opportunity",
+      "description": "Identified a way to reduce costs or use budget more effectively on a project.",
+      "weight": 1,
+      "archived": false,
+      "order": 21
+    },
+    {
+      "id": "finance--help-track-project-costs-or-hours",
+      "categoryId": "finance",
+      "name": "Help track project costs or hours",
+      "description": "Did the legwork to reconcile spend, hours, or invoicing on a project when it wasn't expected of you.",
+      "weight": 1,
+      "archived": false,
+      "order": 22
+    },
+    {
+      "id": "finance--prepare-a-budget-or-cost-estimate",
+      "categoryId": "finance",
+      "name": "Prepare a budget or cost estimate",
+      "description": "Put together the numbers for a proposal, project, or internal request.",
+      "weight": 1,
+      "archived": false,
+      "order": 23
+    },
+    {
+      "id": "finance--help-with-cash-flow-or-expense-tracking",
+      "categoryId": "finance",
+      "name": "Help with cash flow or expense tracking",
+      "description": "Helped keep tabs on project spend or expenses so it didn't fall on someone else to chase.",
+      "weight": 1,
+      "archived": false,
+      "order": 24
+    },
+    {
+      "id": "governance--flag-a-security-or-compliance-risk",
+      "categoryId": "governance",
+      "name": "Flag a security or compliance risk",
+      "description": "Noticed and raised a cybersecurity, data-protection, or compliance issue before it became a problem.",
+      "weight": 1,
+      "archived": false,
+      "order": 25
+    },
+    {
+      "id": "governance--help-write-or-improve-a-company-policy",
+      "categoryId": "governance",
+      "name": "Help write or improve a company policy",
+      "description": "Contributed to writing or improving a policy so it's clearer or more practical.",
+      "weight": 1,
+      "archived": false,
+      "order": 26
+    },
+    {
+      "id": "governance--protect-company-or-client-ip",
+      "categoryId": "governance",
+      "name": "Protect company or client IP",
+      "description": "Took care to properly document, protect, or handle intellectual property - ours or a client's.",
+      "weight": 1,
+      "archived": false,
+      "order": 27
+    },
+    {
+      "id": "governance--raise-an-ethical-concern",
+      "categoryId": "governance",
+      "name": "Raise an ethical concern",
+      "description": "Escalated a genuine ethical concern through the right channel.",
+      "weight": 1,
+      "archived": false,
+      "order": 28
+    },
+    {
+      "id": "learning-capability--mentor-another-engineer",
+      "categoryId": "learning-capability",
+      "name": "Mentor another engineer",
+      "description": "Had a coaching conversation - technical or career-related - that helped a colleague grow.",
+      "weight": 1,
+      "archived": false,
+      "order": 29
+    },
+    {
+      "id": "learning-capability--onboard-a-new-engineer",
+      "categoryId": "learning-capability",
+      "name": "Onboard a new engineer",
+      "description": "Helped a new hire get set up, learn the ropes, or find their feet in their first weeks.",
+      "weight": 1,
+      "archived": false,
+      "order": 30
+    },
+    {
+      "id": "learning-capability--deliver-training-or-a-knowledge-share-session",
+      "categoryId": "learning-capability",
+      "name": "Deliver training or a knowledge-share session",
+      "description": "Ran a session, workshop, or short talk that upskilled colleagues.",
+      "weight": 1,
+      "archived": false,
+      "order": 31
+    },
+    {
+      "id": "learning-capability--help-build-a-career-or-skills-framework",
+      "categoryId": "learning-capability",
+      "name": "Help build a career or skills framework",
+      "description": "Contributed to defining career paths, skill levels, or promotion criteria.",
+      "weight": 1,
+      "archived": false,
+      "order": 32
+    },
+    {
+      "id": "learning-capability--support-a-performance-review-or-development-plan",
+      "categoryId": "learning-capability",
+      "name": "Support a performance review or development plan",
+      "description": "Helped a colleague prepare for a review or put together a personal development plan.",
+      "weight": 1,
+      "archived": false,
+      "order": 33
+    },
+    {
+      "id": "learning-capability--track-team-skills-and-gaps",
+      "categoryId": "learning-capability",
+      "name": "Track team skills and gaps",
+      "description": "Helped identify what skills the team has and where the gaps are.",
+      "weight": 1,
+      "archived": false,
+      "order": 34
+    },
+    {
+      "id": "learning-capability--support-the-graduate-programme",
+      "categoryId": "learning-capability",
+      "name": "Support the graduate programme",
+      "description": "Mentored, trained, or helped design part of the graduate or junior engineer programme.",
+      "weight": 1,
+      "archived": false,
+      "order": 35
+    },
+    {
+      "id": "learning-capability--coach-someone-toward-a-leadership-step",
+      "categoryId": "learning-capability",
+      "name": "Coach someone toward a leadership step",
+      "description": "Helped someone moving toward a Team Lead or Lead Engineer role build the skills for it.",
+      "weight": 1,
+      "archived": false,
+      "order": 36
+    },
+    {
+      "id": "operations-workplace-it--improve-a-business-process",
+      "categoryId": "operations-workplace-it",
+      "name": "Improve a business process",
+      "description": "Documented or improved how a piece of work gets done, saving time or reducing errors going forward.",
+      "weight": 1,
+      "archived": false,
+      "order": 37
+    },
+    {
+      "id": "operations-workplace-it--fix-a-source-of-wasted-time-or-effort",
+      "categoryId": "operations-workplace-it",
+      "name": "Fix a source of wasted time or effort",
+      "description": "Found and fixed something that was quietly wasting the team's time.",
+      "weight": 1,
+      "archived": false,
+      "order": 38
+    },
+    {
+      "id": "operations-workplace-it--help-manage-a-contractor-or-supplier-issue",
+      "categoryId": "operations-workplace-it",
+      "name": "Help manage a contractor or supplier issue",
+      "description": "Picked up and resolved an issue with a contractor doing internal work.",
+      "weight": 1,
+      "archived": false,
+      "order": 39
+    },
+    {
+      "id": "operations-workplace-it--coordinate-an-internal-project",
+      "categoryId": "operations-workplace-it",
+      "name": "Coordinate an internal project",
+      "description": "Took the lead coordinating a non-billable, internal initiative.",
+      "weight": 1,
+      "archived": false,
+      "order": 40
+    },
+    {
+      "id": "operations-workplace-it--fix-a-handoff-problem-between-teams",
+      "categoryId": "operations-workplace-it",
+      "name": "Fix a handoff problem between teams",
+      "description": "Noticed and fixed a breakdown in how work passes between internal departments.",
+      "weight": 1,
+      "archived": false,
+      "order": 41
+    },
+    {
+      "id": "operations-workplace-it--help-with-it-network-or-equipment-issues",
+      "categoryId": "operations-workplace-it",
+      "name": "Help with IT, network, or equipment issues",
+      "description": "Helped resolve an IT, connectivity, or equipment problem for a colleague.",
+      "weight": 1,
+      "archived": false,
+      "order": 42
+    },
+    {
+      "id": "operations-workplace-it--improve-the-office-or-workplace",
+      "categoryId": "operations-workplace-it",
+      "name": "Improve the office or workplace",
+      "description": "Proposed or actioned an improvement to the physical workplace, or flagged a safety issue.",
+      "weight": 1,
+      "archived": false,
+      "order": 43
+    },
+    {
+      "id": "people--refer-or-help-recruit-a-candidate",
+      "categoryId": "people",
+      "name": "Refer or help recruit a candidate",
+      "description": "Referred someone for a role, or helped with an interview or hiring process.",
+      "weight": 1,
+      "archived": false,
+      "order": 44
+    },
+    {
+      "id": "people--help-onboard-a-new-hire",
+      "categoryId": "people",
+      "name": "Help onboard a new hire",
+      "description": "Supported the paperwork or systems-access side of getting someone started.",
+      "weight": 1,
+      "archived": false,
+      "order": 45
+    },
+    {
+      "id": "people--contribute-honest-exit-feedback",
+      "categoryId": "people",
+      "name": "Contribute honest exit feedback",
+      "description": "Shared candid, useful feedback when leaving a role or team, or helped collect it from someone else.",
+      "weight": 1,
+      "archived": false,
+      "order": 46
+    },
+    {
+      "id": "people--help-improve-a-people-process",
+      "categoryId": "people",
+      "name": "Help improve a People process",
+      "description": "Helped improve how recruitment, onboarding, or induction actually works.",
+      "weight": 1,
+      "archived": false,
+      "order": 47
+    },
+    {
+      "id": "strategy-growth--contribute-an-idea-to-company-strategy",
+      "categoryId": "strategy-growth",
+      "name": "Contribute an idea to company strategy",
+      "description": "Fed engineer-level insight into a discussion about company goals or direction.",
+      "weight": 1,
+      "archived": false,
+      "order": 48
+    },
+    {
+      "id": "strategy-growth--spot-a-new-market-or-service-opportunity",
+      "categoryId": "strategy-growth",
+      "name": "Spot a new market or service opportunity",
+      "description": "Identified a potential new market, technology, or service the company could offer.",
+      "weight": 1,
+      "archived": false,
+      "order": 49
+    },
+    {
+      "id": "strategy-growth--help-with-resource-or-capacity-planning",
+      "categoryId": "strategy-growth",
+      "name": "Help with resource or capacity planning",
+      "description": "Contributed insight into where people, time, or budget should be focused.",
+      "weight": 1,
+      "archived": false,
+      "order": 50
+    },
+    {
+      "id": "strategy-growth--support-a-growth-initiative",
+      "categoryId": "strategy-growth",
+      "name": "Support a growth initiative",
+      "description": "Helped build something needed to take on more work or more engineers - a process, tool, or template.",
+      "weight": 1,
+      "archived": false,
+      "order": 51
+    },
+    {
+      "id": "strategy-growth--contribute-to-a-sustainability-or-outreach-initiative",
+      "categoryId": "strategy-growth",
+      "name": "Contribute to a sustainability or outreach initiative",
+      "description": "Took part in CSR, STEM outreach, or environmental efforts.",
+      "weight": 1,
+      "archived": false,
+      "order": 52
+    }
   ]
 }

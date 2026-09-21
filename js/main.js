@@ -11,7 +11,7 @@ import { buildHowTo } from './ui/how-to.js';
 import { buildSettingsView } from './ui/admin-settings.js';
 import { summarizeEntries, summarizeParticipation, summarizeByUser } from './stats.js';
 import { computePoints } from './scoring.js';
-import { checkSubmissionLimits, DEFAULT_SETTINGS } from './limits.js';
+import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './limits.js';
 import { formatDate } from './format.js';
 
 export const APP_VERSION = '0.2.0';
@@ -90,12 +90,16 @@ function myRecentActivity() {
 
 const dom = {};
 
+// Grouped by kind, not alphabetically: logging/viewing entries, then stats, then the help
+// tab - each group fenced off with a hairline (see nav.js's `sep` entries).
 const EMPLOYEE_TABS = [
   { id: 'log', label: 'Log Effort' },
   { id: 'my-logs', label: 'My Logs' },
   { id: 'ledger', label: 'Company Ledger' },
+  { sep: true },
   { id: 'my-stats', label: 'My Stats' },
   { id: 'company-stats', label: 'Company Stats' },
+  { sep: true },
   { id: 'how-to', label: 'How to use' },
 ];
 const ADMIN_TABS = [
@@ -109,9 +113,9 @@ const ADMIN_TABS = [
 function isScopedAdmin() { return !state.isAdmin && state.adminCategoryIds.length > 0; }
 
 function tabsFor(state) {
-  if (state.isAdmin) return [...EMPLOYEE_TABS, ...ADMIN_TABS];
+  if (state.isAdmin) return [...EMPLOYEE_TABS, { sep: true }, ...ADMIN_TABS];
   if (isScopedAdmin()) {
-    return [...EMPLOYEE_TABS,
+    return [...EMPLOYEE_TABS, { sep: true },
       { id: 'admin-manage', label: 'Manage Tasks & Categories' },
       { id: 'leaderboard', label: 'Leaderboard' },
     ];
@@ -149,7 +153,7 @@ function renderLog() {
       const category = state.categories.find((c) => c.id === draft.categoryId);
       const task = state.tasks.find((t) => t.id === draft.taskId);
       const taskWeight = task?.weight ?? 1;
-      const categoryWeight = category?.weight ?? 1;
+      const categoryWeight = categoryWeightFor(category, state.settings);
       const prospectivePoints = computePoints(draft.impact, draft.proof, taskWeight, categoryWeight);
 
       if (!editing) {
@@ -295,6 +299,7 @@ function renderAdminManage() {
   return buildManageView({
     categories: withEntryCounts(state.categories, 'categoryId'),
     tasks: withEntryCounts(state.tasks, 'taskId'),
+    contributionWeights: state.settings.contributionWeights,
     restrictToCategoryIds: state.isAdmin ? null : state.adminCategoryIds,
     onCreateCategory: data.createCategory,
     onUpdateCategory: data.updateCategory,
@@ -322,7 +327,8 @@ function renderAdminReview() {
       const category = state.categories.find((c) => c.id === categoryId);
       const task = state.tasks.find((t) => t.id === taskId);
       if (!category || !task) return;
-      data.relinkEntry(entry, category, task).catch((err) => toast(err.message || 'Could not link - try again.'));
+      data.relinkEntry(entry, category, task, categoryWeightFor(category, state.settings))
+        .catch((err) => toast(err.message || 'Could not link - try again.'));
     },
     categories: activeCategories(),
     tasks: activeTasks(),

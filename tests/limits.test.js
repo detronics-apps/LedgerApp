@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkSubmissionLimits, DEFAULT_SETTINGS } from '../js/limits.js';
+import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from '../js/limits.js';
 
 const base = {
   impact: 3, prospectivePoints: 6, isExcluded: false,
@@ -46,4 +46,15 @@ test('multiple violated limits are all reported', () => {
   const result = checkSubmissionLimits({ ...base, settings, todayCount: 1, isExcluded: true });
   assert.equal(result.allowed, false);
   assert.equal(result.errors.length, 2);
+});
+
+test('categoryWeightFor looks up the weight for the category\'s contribution type', () => {
+  assert.equal(categoryWeightFor({ contributionType: 'cultural' }, DEFAULT_SETTINGS), 1);
+  assert.equal(categoryWeightFor({ contributionType: 'operational' }, DEFAULT_SETTINGS), 1.5);
+  assert.equal(categoryWeightFor({ contributionType: 'leadership' }, DEFAULT_SETTINGS), 2);
+});
+
+test('categoryWeightFor defaults to operational when unassigned', () => {
+  assert.equal(categoryWeightFor({}, DEFAULT_SETTINGS), 1.5);
+  assert.equal(categoryWeightFor(null, DEFAULT_SETTINGS), 1.5);
 });

@@ -82,9 +82,8 @@ export function addAdmin(uid, email, categoryIds = []) {
  * evidence, and the employee's own uid stay exactly as they logged it. The
  * rules independently enforce this same boundary (isRecategorizationOnly in
  * firestore.rules), so this is a convenience wrapper, not the real gate. */
-export function relinkEntry(entry, category, task) {
+export function relinkEntry(entry, category, task, categoryWeight) {
   const taskWeight = task.weight ?? 1;
-  const categoryWeight = category.weight ?? 1;
   return updateDoc(doc(db, 'entries', entry.id), {
     categoryId: category.id, categoryName: category.name,
     taskId: task.id, taskName: task.name,

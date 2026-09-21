@@ -13,10 +13,26 @@ function numberRow(label, value, onChange) {
   return el('div', { class: 'field' }, [el('label', { class: 'field__label', text: label }), input]);
 }
 
+function weightRow(label, value, onChange) {
+  const input = el('input', { type: 'number', min: '0.1', step: '0.1', value, on: { change: (e) => onChange(Number(e.target.value)) } });
+  return el('div', { class: 'field' }, [el('label', { class: 'field__label', text: label }), input]);
+}
+
 export function buildSettingsView(settings, onUpdate) {
   const save = (patch) => onUpdate(patch).then(() => toast('Saved.')).catch((err) => toast(err.message || 'Could not save.'));
 
-  return el('div', { class: 'panel' }, [
+  const weights = settings.contributionWeights ?? { cultural: 1, operational: 1.5, leadership: 2 };
+  const saveWeight = (key, value) => save({ contributionWeights: { ...weights, [key]: value } });
+
+  return el('div', {}, [
+    el('div', { class: 'panel' }, [
+      el('h3', { text: 'Contribution type weights' }),
+      el('p', { class: 'muted', text: 'Every category is assigned to one of these three types (in "Manage Tasks & Categories"). Changing a weight here changes the points for every category of that type going forward.' }),
+      weightRow('Cultural', weights.cultural, (v) => saveWeight('cultural', v)),
+      weightRow('Operational', weights.operational, (v) => saveWeight('operational', v)),
+      weightRow('Leadership', weights.leadership, (v) => saveWeight('leadership', v)),
+    ]),
+    el('div', { class: 'panel' }, [
     el('h3', { text: 'Pilot rules' }),
     el('p', { class: 'muted', text: 'Everything here is off by default. What you turn on here is described on the "How to use" page automatically. Note: these limits are enforced in this app\'s own logic, not independently re-checked by the server - see README "Known limitations".' }),
 
@@ -34,5 +50,6 @@ export function buildSettingsView(settings, onUpdate) {
 
     toggleRow('Flag high-scoring entries for management validation', null, settings.managementValidationEnabled, (v) => save({ managementValidationEnabled: v })),
     numberRow('Validation threshold (points)', settings.managementValidationThreshold, (v) => save({ managementValidationThreshold: v })),
+    ]),
   ]);
 }

@@ -28,4 +28,19 @@ export const DEFAULT_SETTINGS = {
   rrExclusionEnabled: false,
   anonymizeLedgerEnabled: false,
   managementValidationEnabled: false, managementValidationThreshold: 15,
+  contributionWeights: { cultural: 1, operational: 1.5, leadership: 2 },
 };
+
+export const CONTRIBUTION_TYPES = [
+  { value: 'cultural', label: 'Cultural' },
+  { value: 'operational', label: 'Operational' },
+  { value: 'leadership', label: 'Leadership' },
+];
+
+/** Every category is assigned one of the three contribution types (js/ui/admin-manage.js);
+ * that type's weight (settings.contributionWeights, admin-adjustable) replaces a per-category
+ * weight in the points formula. Unassigned categories default to 'operational'. */
+export function categoryWeightFor(category, settings) {
+  const type = category?.contributionType ?? 'operational';
+  return settings.contributionWeights?.[type] ?? 1;
+}

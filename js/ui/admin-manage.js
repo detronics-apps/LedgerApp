@@ -1,4 +1,5 @@
 import { el, field, select, clear, toast } from './dom.js';
+import { CONTRIBUTION_TYPES } from '../limits.js';
 
 function textField(value) {
   return el('textarea', { rows: '2', text: value });
@@ -20,40 +21,38 @@ function rowActions(item, onSave, onToggleArchive, onDelete) {
   ]));
 }
 
-function editableRow(item, fields, onUpdate, onDelete) {
-  const inputs = {};
-  const row = el('tr', {}, [
-    ...fields.map(({ key, type = 'text' }) => {
-      const input = type === 'text' ? textField(item[key]) : el('input', { type, value: item[key] });
-      inputs[key] = input;
-      return el('td', {}, input);
-    }),
-    el('td', { text: item.archived ? 'Archived' : 'Active' }),
+function categoryRow(category, contributionWeights, onUpdate, onDelete) {
+  const nameInput = textField(category.name);
+  const descInput = textField(category.description);
+  const typeSelect = select(CONTRIBUTION_TYPES, category.contributionType ?? 'operational', () => {});
+  const weight = contributionWeights?.[category.contributionType ?? 'operational'] ?? 1;
+
+  return el('tr', {}, [
+    el('td', {}, nameInput),
+    el('td', {}, descInput),
+    el('td', {}, [typeSelect, el('div', { class: 'field__hint', text: `×${weight}` })]),
+    el('td', { text: category.archived ? 'Archived' : 'Active' }),
     rowActions(
-      item,
-      () => {
-        const patch = {};
-        for (const { key, type } of fields) {
-          patch[key] = type === 'number' ? Number(inputs[key].value) : inputs[key].value;
-        }
-        onUpdate(item.id, patch).then(() => toast('Saved.'));
-      },
-      () => onUpdate(item.id, { archived: !item.archived }).then(() => toast('Updated.')),
-      onDelete ? () => onDelete(item.id).then(() => toast('Deleted.')) : null,
+      category,
+      () => onUpdate(category.id, {
+        name: nameInput.value, description: descInput.value, contributionType: typeSelect.value,
+      }).then(() => toast('Saved.')),
+      () => onUpdate(category.id, { archived: !category.archived }).then(() => toast('Updated.')),
+      onDelete ? () => onDelete(category.id).then(() => toast('Deleted.')) : null,
     ),
   ]);
-  return row;
 }
 
-function categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDeleteCategory, canCreate = true, canDelete = true }) {
+function categoriesPanel(categories, contributionWeights, { onCreateCategory, onUpdateCategory, onDeleteCategory, canCreate = true, canDelete = true }) {
   const nameInput = el('input', { type: 'text', placeholder: 'Category name' });
   const descInput = el('input', { type: 'text', placeholder: 'Description' });
+  const typeSelect = select(CONTRIBUTION_TYPES, CONTRIBUTION_TYPES[0].value, () => {});
   const addBtn = el('button', {
     type: 'button', class: 'btn btn-primary', text: 'Add category',
     on: {
       click: () => {
         if (!nameInput.value.trim()) return;
-        onCreateCategory({ name: nameInput.value, description: descInput.value }).then(() => {
+        onCreateCategory({ name: nameInput.value, description: descInput.value, contributionType: typeSelect.value }).then(() => {
           nameInput.value = ''; descInput.value = '';
           toast('Category added.');
         });
@@ -64,15 +63,12 @@ function categoriesPanel(categories, { onCreateCategory, onUpdateCategory, onDel
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Categories' }),
     el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
-      el('thead', {}, el('tr', {}, ['Name', 'Description', 'Weight', 'Status', ''].map((h) => el('th', { text: h })))),
-      el('tbody', {}, categories.map((c) => editableRow(
-        c,
-        [{ key: 'name' }, { key: 'description' }, { key: 'weight', type: 'number' }],
-        onUpdateCategory,
-        canDelete ? onDeleteCategory : null,
+      el('thead', {}, el('tr', {}, ['Name', 'Description', 'Contribution type', 'Status', ''].map((h) => el('th', { text: h })))),
+      el('tbody', {}, categories.map((c) => categoryRow(
+        c, contributionWeights, onUpdateCategory, canDelete ? onDeleteCategory : null,
       ))),
     ])),
-    canCreate ? el('div', { class: 'field' }, [nameInput, descInput, addBtn]) : null,
+    canCreate ? el('div', { class: 'field' }, [typeSelect, nameInput, descInput, addBtn]) : null,
   ]);
 }
 
@@ -177,12 +173,12 @@ function adminsPanel(onAddAdmin, categories) {
   ]);
 }
 
-export function buildManageView({ categories, tasks, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask, onAddAdmin = null, restrictToCategoryIds = null }) {
+export function buildManageView({ categories, tasks, contributionWeights, onCreateCategory, onUpdateCategory, onDeleteCategory, onCreateTask, onUpdateTask, onDeleteTask, onAddAdmin = null, restrictToCategoryIds = null }) {
   const scoped = Array.isArray(restrictToCategoryIds);
   const visibleCategories = scoped ? categories.filter((c) => restrictToCategoryIds.includes(c.id)) : categories;
   const visibleTasks = scoped ? tasks.filter((t) => restrictToCategoryIds.includes(t.categoryId)) : tasks;
   return el('div', {}, [
-    categoriesPanel(visibleCategories, { onCreateCategory, onUpdateCategory, onDeleteCategory, canCreate: !scoped, canDelete: !scoped }),
+    categoriesPanel(visibleCategories, contributionWeights, { onCreateCategory, onUpdateCategory, onDeleteCategory, canCreate: !scoped, canDelete: !scoped }),
     tasksPanel(visibleCategories, visibleTasks, { onCreateTask, onUpdateTask, onDeleteTask }),
     onAddAdmin ? adminsPanel(onAddAdmin, categories) : null,
   ]);

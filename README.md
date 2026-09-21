@@ -67,6 +67,16 @@ app's JS):
   stays a manual Firebase-console step, same as bootstrapping the very
   first admin)
 
+**Category weight comes from a contribution type, not a per-category number.**
+Every category is assigned to one of three contribution types - Cultural,
+Operational, or Leadership - on the Categories table in "Manage Tasks &
+Categories" (a dropdown per row, defaulting to Operational for anything
+unassigned). Each type's own weight (default ×1 / ×1.5 / ×2) is set once for
+everyone on the Settings tab, under "Contribution type weights" - change it
+there and every category of that type is affected immediately, rather than
+editing each category individually. See `categoryWeightFor()` in
+`js/limits.js`.
+
 **Known limitation - entry weights are not cross-checked against the source
 documents.** The rules validate that a logged entry's `taskWeight` and
 `categoryWeight` are numbers and positive, and that `points` equals
@@ -252,9 +262,10 @@ regular employee and an admin):
       write. This is the deliberately tightened, no-exceptions delete rule
       described above, and it deserves its own explicit check since admins
       can do almost everything else.
-- [ ] An admin sees the admin tabs, can add/edit/archive a category or task
-      and set its weight, and can promote a custom "Other" entry into a
-      real task.
+- [ ] An admin sees the admin tabs, can add/edit/archive a category (setting
+      its contribution type) or task (setting its own weight), can adjust
+      the three contribution-type weights on Settings, and can promote a
+      custom "Other" entry into a real task.
 - [ ] An admin can grant admin access to a second account that has already
       signed in once (their email, under "Admins" on the Manage tab), and
       that account then sees the admin tabs on its next reload. Confirm
