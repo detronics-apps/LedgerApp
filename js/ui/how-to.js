@@ -22,6 +22,70 @@ function wireAccordion(container) {
   return container;
 }
 
+const CATEGORY_SCOPES = [
+  {
+    name: 'Strategy & Growth',
+    purpose: 'Where the company is going and how it grows - the goals we set, the markets we choose, and how people and time get invested toward that.',
+    notPartOf: 'Running an individual project (Operations, Workplace & IT). Individual client opportunities (Client Success). Budgets, revenue targets, and anything financial (Finance).',
+  },
+  {
+    name: 'Communication & Transparency',
+    purpose: 'How information moves through the company - decisions coming down, concerns and ideas going up, and teams staying in step while things change.',
+    notPartOf: "The content of a decision - that belongs to whichever topic owns it. This topic only owns whether you heard about it and had a way to respond.",
+  },
+  {
+    name: 'Client Success',
+    purpose: 'Everything that wins and keeps clients - sales, client relationships, marketing, social media, our public profile, and the feedback loop from clients back into what we offer.',
+    notPartOf: 'The technical quality of what we deliver (Engineering Excellence). Revenue targets (Finance).',
+  },
+  {
+    name: 'People',
+    purpose: 'Your employment relationship with the company - joining, your contract and paperwork, benefits, leave, and leaving.',
+    notPartOf: 'How you grow or get promoted, and your performance review (Learning & Capability). Problems with colleagues, and wellbeing (Culture).',
+  },
+  {
+    name: 'Culture',
+    purpose: 'How it feels to work here day to day - how we treat each other, how conflict gets resolved, wellbeing, and giving recognition or praise for good work.',
+    notPartOf: 'The formal performance or disciplinary process (Learning & Capability / People).',
+  },
+  {
+    name: 'Learning & Capability',
+    purpose: "Focused on the engineer: internal training, mentoring, coaching, and where you are now versus where you're going - including making your growth and effort visible to management, e.g. for performance reviews and promotion.",
+    notPartOf: 'Company-wide engineering standards and the quality of our output (Engineering Excellence).',
+  },
+  {
+    name: 'Operations, Workplace & IT',
+    purpose: 'Physical and IT scope: setting up or fixing IT equipment, improving the physical workspace (e.g. maintaining the kitchen or office), and managing contractors for physical work (e.g. an office or kitchen upgrade).',
+    notPartOf: 'How engineering work should be performed (Engineering Excellence). Building internal software, tools, or systems.',
+  },
+  {
+    name: 'Engineering Excellence',
+    purpose: 'Focused on the company: the standards we work to and the quality of what we deliver to clients - mechanical engineering standards, how engineering work gets checked, and how technical decisions are made.',
+    notPartOf: 'Developing an individual engineer - internal training, mentoring, coaching, and onboarding (Learning & Capability). Software or internal tooling work.',
+  },
+  {
+    name: 'Finance',
+    purpose: "The company's money - budgets, spending approval, cash flow, and pay.",
+    notPartOf: 'Company policy (Governance). Where people and time get invested strategically (Strategy & Growth).',
+  },
+  {
+    name: 'Governance',
+    purpose: 'The rules we operate under - company policy, legal and regulatory compliance, intellectual property, data security, and ethics.',
+    notPartOf: 'Leave and parental leave (People).',
+  },
+];
+
+function categoryScopeTable() {
+  return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+    el('thead', {}, el('tr', {}, ['Category', 'Purpose / focus', 'Not part of this topic'].map((h) => el('th', { text: h })))),
+    el('tbody', {}, CATEGORY_SCOPES.map((c) => el('tr', {}, [
+      el('td', { text: c.name }),
+      el('td', { text: c.purpose }),
+      el('td', { text: c.notPartOf }),
+    ]))),
+  ]));
+}
+
 function activeRules(settings) {
   const rules = [];
   if (settings.dailyEntryCapEnabled) {
@@ -120,6 +184,13 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Pick the date, rate the Impact and the Proof, write a short description, and add an evidence link if you have one.' }),
         el('li', { text: 'Submit. You can see and edit your own entries any time under "My Logs".' }),
       ]),
+    ]),
+    section('What does each category actually cover?', [
+      el('p', {}, 'Categories can sound like they overlap. This table is the tie-breaker - what each one is actually for, and what it deliberately excludes (because another category already owns it).'),
+      categoryScopeTable(),
+      el('p', {}, el('strong', { text: 'If you built a tool or system, categorize it by what it does, not by who might use it.' })),
+      el('p', {}, "For example, Impact Ledger itself belongs under Learning & Capability, because its purpose is helping engineers make their own effort and growth visible. The fact that Culture might later use it to decide who to praise doesn't make the tool a Culture entry - that's a separate, later activity (the praising itself), logged separately under Culture by whoever does it."),
+      el('p', {}, 'Still unsure which category fits? Pick the closest one and write a clear description - you can edit your own entry\'s category any time from "My Logs" if you change your mind.'),
     ]),
     section('How do I judge impact fairly?', [
       el('p', {}, "This only works if everyone rates things the same way. Two people doing very different work, but achieving something similarly sized, should end up with similar Impact ratings."),

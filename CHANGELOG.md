@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.2
+- Info tooltips (the (i) icons) now keep working after the first page
+  navigation - fixes a bug where the shared tooltip element got silently
+  detached from the page on every nav click and never showed again.
+- Shortened the Log Effort "impact" tooltip; the full 1-5 reach guide moved
+  to the How-to page instead of being duplicated inline.
+- Rewrote the whole How-to page in plainer language (fewer stiff/clever
+  phrases, shorter sentences) - same sections and behaviour, just clearer.
+- New How-to section "What does each category actually cover?": a full
+  Purpose/Focus and Not-part-of-this-topic table for all 10 categories, plus
+  the rule for categorizing a tool by what it does, not by who later uses
+  its output.
+
 ## 0.5.1
 - Admins panel now lists everyone with admin access and their level (full,
   or which categories), with a "Revoke access" button per row - reverses
