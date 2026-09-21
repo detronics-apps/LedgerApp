@@ -90,14 +90,14 @@ function myRecentActivity() {
 
 const dom = {};
 
-// Grouped by kind, not alphabetically: logging/viewing entries, then stats, then the help
-// tab - each group fenced off with a hairline (see nav.js's `sep` entries).
+// Grouped by kind, not alphabetically: the employee's own pages, then company-wide pages,
+// then the help tab - each group fenced off with a hairline (see nav.js's `sep` entries).
 const EMPLOYEE_TABS = [
   { id: 'log', label: 'Log Effort' },
   { id: 'my-logs', label: 'My Logs' },
-  { id: 'ledger', label: 'Company Ledger' },
-  { sep: true },
   { id: 'my-stats', label: 'My Stats' },
+  { sep: true },
+  { id: 'ledger', label: 'Company Ledger' },
   { id: 'company-stats', label: 'Company Stats' },
   { sep: true },
   { id: 'how-to', label: 'How to use' },
