@@ -2,10 +2,24 @@ import { el } from './dom.js';
 import { DEFAULT_SETTINGS } from '../limits.js';
 
 function section(title, children) {
-  return el('details', { class: 'panel explain', open: true }, [
+  return el('details', { class: 'panel explain' }, [
     el('summary', { text: title }),
     ...children,
   ]);
+}
+
+/** Accordion: opening one section closes every other top-level <details> in
+ * this container, so at most one is expanded at a time. */
+function wireAccordion(container) {
+  const sections = [...container.children].filter((c) => c.tagName === 'DETAILS');
+  for (const section of sections) {
+    section.addEventListener('toggle', () => {
+      if (section.open) {
+        for (const other of sections) { if (other !== section) other.open = false; }
+      }
+    });
+  }
+  return container;
 }
 
 function activeRules(settings) {
@@ -97,7 +111,7 @@ function adminSections(isFullAdmin) {
 export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isScopedAdmin = false } = {}) {
   const rules = activeRules(settings);
 
-  return el('div', {}, [
+  return wireAccordion(el('div', {}, [
     section('How do I log an entry?', [
       el('ol', {}, [
         el('li', { text: 'Go to "Log Effort".' }),
@@ -136,5 +150,5 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       ]),
     ]),
     ...(isAdmin || isScopedAdmin ? adminSections(isAdmin) : []),
-  ]);
+  ]));
 }
