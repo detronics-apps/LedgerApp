@@ -11,12 +11,12 @@ import { buildHowTo } from './ui/how-to.js';
 import { buildSettingsView } from './ui/admin-settings.js';
 import { summarizeEntries, summarizeParticipation, summarizeByUser } from './stats.js';
 import { computePoints } from './scoring.js';
-import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './limits.js';
+import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor, summarizeRecentActivity } from './limits.js';
 import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.5.3';
+export const APP_VERSION = '0.5.4';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -57,41 +57,12 @@ function sortedByDateDesc(entries) {
   return [...entries].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
-function startOfWeek(d) {
-  const date = new Date(d);
-  const day = (date.getDay() + 6) % 7; // Monday = 0
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() - day);
-  return date;
-}
-
-function toJsDate(value) {
-  if (!value) return null;
-  if (typeof value.toDate === 'function') return value.toDate();
-  return new Date(value);
-}
-
-/** How many entries the signed-in user has already submitted today/this
- * week, keyed on when they actually hit submit (createdAt), not the
- * back-datable "when did you do it" field - otherwise the caps below would
- * be trivial to dodge by backdating. */
-function myRecentActivity() {
+/** How many of the signed-in user's own entries already fall on the date
+ * they're about to log, and their week (by that date) so far. Delegates to
+ * the pure summarizeRecentActivity() in limits.js. */
+function myRecentActivity(forDate) {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
-  const now = new Date();
-  const weekStart = startOfWeek(now);
-  const todayCount = own.filter((e) => {
-    const created = toJsDate(e.createdAt) ?? now;
-    return created.toDateString() === now.toDateString();
-  }).length;
-  const thisWeek = own.filter((e) => {
-    const created = toJsDate(e.createdAt) ?? now;
-    return created >= weekStart;
-  });
-  return {
-    todayCount,
-    weekPoints: thisWeek.reduce((sum, e) => sum + e.points, 0),
-    weekUsedFiveImpact: thisWeek.some((e) => e.impact === 5),
-  };
+  return summarizeRecentActivity(own, forDate);
 }
 
 const dom = {};
@@ -179,7 +150,7 @@ function renderLog() {
       if (!editing) {
         const { allowed, errors } = checkSubmissionLimits({
           impact: draft.impact, prospectivePoints, settings: state.settings,
-          ...myRecentActivity(),
+          ...myRecentActivity(draft.date),
         });
         if (!allowed) return Promise.reject(new Error(errors[0]));
       }

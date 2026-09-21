@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.4
+- Fixed: the daily entry cap (and the weekly points / once-a-week impact-5
+  caps) were keyed on when you hit submit, not on the date you were logging
+  for - so catching up on several different backlogged days in one sitting
+  incorrectly tripped the daily cap, while the actual goal (stopping
+  multiple entries piling onto one single date) still needed protecting.
+  Now keyed on the entry's own "when did you do it" date. Moved the date
+  logic into a tested pure function (limits.js summarizeRecentActivity) and
+  fixed a real timezone bug found while testing it: week-boundary dates were
+  computed via `toISOString()`, which silently shifts a day backward for
+  anyone in a positive UTC offset (this app's own users included).
+- How-to page explains the submit-day vs. logged-date distinction for all
+  three caps.
+
 ## 0.5.3
 - Data: recategorized two drifted tasks ("Build a tool or system to support
   engineer development" and "Support the graduate programme" both moved to

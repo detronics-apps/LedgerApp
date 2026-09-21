@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from '../js/limits.js';
+import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor, summarizeRecentActivity } from '../js/limits.js';
 
 const base = {
   impact: 3, prospectivePoints: 6,
@@ -50,4 +50,44 @@ test('categoryWeightFor looks up the weight for the category\'s contribution typ
 test('categoryWeightFor defaults to operational when unassigned', () => {
   assert.equal(categoryWeightFor({}, DEFAULT_SETTINGS), 1.5);
   assert.equal(categoryWeightFor(null, DEFAULT_SETTINGS), 1.5);
+});
+
+test('summarizeRecentActivity: todayCount only counts entries dated the same day - not submission day', () => {
+  // Three entries all "created" (submitted) on the same day, but for three
+  // different dates worked - catching up on a backlog. Each date's own
+  // count should reflect only itself, not the other two.
+  const entries = [
+    { date: '2026-09-15', points: 4, impact: 2 },
+    { date: '2026-09-16', points: 5, impact: 3 },
+    { date: '2026-09-17', points: 6, impact: 4 },
+  ];
+  assert.equal(summarizeRecentActivity(entries, '2026-09-15').todayCount, 1);
+  assert.equal(summarizeRecentActivity(entries, '2026-09-16').todayCount, 1);
+  assert.equal(summarizeRecentActivity(entries, '2026-09-18').todayCount, 0);
+});
+
+test('summarizeRecentActivity: todayCount blocks multiple entries piled on the same single date', () => {
+  const entries = [
+    { date: '2026-09-15', points: 4, impact: 2 },
+    { date: '2026-09-15', points: 5, impact: 3 },
+  ];
+  assert.equal(summarizeRecentActivity(entries, '2026-09-15').todayCount, 2);
+});
+
+test('summarizeRecentActivity: weekPoints and weekUsedFiveImpact are scoped to the Mon-Sun week of the given date', () => {
+  // 2026-09-14 is a Monday; the week runs through Sunday 2026-09-20.
+  const entries = [
+    { date: '2026-09-14', points: 3, impact: 2 }, // in week
+    { date: '2026-09-20', points: 4, impact: 5 }, // in week (Sunday)
+    { date: '2026-09-21', points: 10, impact: 5 }, // next week - excluded
+    { date: '2026-09-13', points: 10, impact: 5 }, // previous week - excluded
+  ];
+  const result = summarizeRecentActivity(entries, '2026-09-16');
+  assert.equal(result.weekPoints, 7);
+  assert.equal(result.weekUsedFiveImpact, true);
+});
+
+test('summarizeRecentActivity: weekUsedFiveImpact is false when no impact-5 entry falls in the week', () => {
+  const entries = [{ date: '2026-09-16', points: 3, impact: 3 }];
+  assert.equal(summarizeRecentActivity(entries, '2026-09-16').weekUsedFiveImpact, false);
 });

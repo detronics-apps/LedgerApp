@@ -89,13 +89,13 @@ function categoryScopeTable() {
 function activeRules(settings) {
   const rules = [];
   if (settings.dailyEntryCapEnabled) {
-    rules.push(`You can log up to ${settings.dailyEntryCap} ${settings.dailyEntryCap === 1 ? 'entry' : 'entries'} per day.`);
+    rules.push(`You can log up to ${settings.dailyEntryCap} ${settings.dailyEntryCap === 1 ? 'entry' : 'entries'} per day - this counts by the date you pick under "When did you do it?", not by when you hit submit. Catching up on several different backlogged days in one sitting is fine; piling multiple entries onto the same single date is what this limits, so nobody overloads one day.`);
   }
   if (settings.fiveImpactOncePerWeekEnabled) {
-    rules.push('You can only log one "company-shaping" (impact 5) entry per week.');
+    rules.push('You can only log one "company-shaping" (impact 5) entry per week - the week of the date you\'re logging for, not the week you submit it.');
   }
   if (settings.weeklyPointsCapEnabled) {
-    rules.push(`There's a cap of ${settings.weeklyPointsCap} points per week.`);
+    rules.push(`There's a cap of ${settings.weeklyPointsCap} points per week, based on the week of the date you're logging for.`);
   }
   if (settings.managementValidationEnabled) {
     rules.push(`Entries worth ${settings.managementValidationThreshold}+ points get reviewed by management before they count.`);
