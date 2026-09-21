@@ -131,6 +131,14 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       ]),
       el('p', {}, el('strong', { text: "One more trap worth naming: time spent is not a proxy for impact either." })),
       el('p', {}, "Spending longer on something doesn't make it more impactful, and working efficiently shouldn't score you lower. Rate what changed as a result, not how long it took."),
+      el('p', {}, el('strong', { text: "Reach is still a useful rough anchor once it's not the whole story:" })),
+      el('ul', {}, [
+        el('li', { text: '1 = helped one person with something small.' }),
+        el('li', { text: '2 = helped a few people, or saved someone real time.' }),
+        el('li', { text: '3 = changed how a team works, not just for a moment.' }),
+        el('li', { text: '4 = a team or client noticeably better off, and it keeps paying off.' }),
+        el('li', { text: '5 = changed something company-wide, in a lasting way.' }),
+      ]),
       el('p', {}, el('strong', { text: 'A quick gut check before you submit:' })),
       el('ul', {}, [
         el('li', { text: 'What actually changed because of this - not what theoretically could have, in the worst case?' }),

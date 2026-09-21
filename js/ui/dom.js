@@ -74,11 +74,20 @@ export const $ = (selector, root = document) => root.querySelector(selector);
 
 let bubble = null;
 let bubbleAnchor = null;
+let bubbleListenersAttached = false;
 
 function ensureBubble() {
-  if (!bubble) {
+  // `renderShell()` does `clear(document.body)` on every full re-render (any
+  // nav click), which detaches this node from the document without the
+  // module ever finding out - `bubble` stays a truthy reference to an orphan
+  // element, so the old `if (!bubble)` guard alone never re-attached it and
+  // every tooltip after the first page silently did nothing.
+  if (!bubble || !bubble.isConnected) {
     bubble = el('div', { class: 'info__bubble', role: 'tooltip' });
     document.body.appendChild(bubble);
+  }
+  if (!bubbleListenersAttached) {
+    bubbleListenersAttached = true;
     // A tooltip pinned to viewport coordinates goes stale the moment anything
     // moves, so retire it rather than let it drift away from its icon.
     for (const event of ['scroll', 'resize']) {
