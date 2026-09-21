@@ -121,6 +121,23 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Submit. You can see and edit your own entries any time under "My Logs".' }),
       ]),
     ]),
+    section('How do I judge impact fairly?', [
+      el('p', {}, "This only works if everyone's numbers mean roughly the same thing. Two people logging very different work should land on similar Impact ratings if what they actually achieved was similarly sized - that only happens if we're all applying the scale the same way."),
+      el('p', {}, el('strong', { text: "The trap: almost anything can be talked up into a big story." })),
+      el('p', {}, "Reach and drama are the two easiest ways scores get inflated without anyone meaning to game it:"),
+      el('ul', {}, [
+        el('li', { text: '"This touched the whole company" - reach on its own doesn\'t make something bigger. Swapping the fire-alarm batteries reaches every single person in the building. It\'s still a five-minute task, not a company-shaping change.' }),
+        el('li', { text: '"This could have prevented a disaster" - a hypothetical worst case is not something that happened. Score the actual, realised effect of what you did, not the worst thing you can imagine would have gone wrong otherwise. Almost any task can be reframed as "preventing" something bad if you think hard enough - that reframing doesn\'t change what you actually did.' }),
+      ]),
+      el('p', {}, el('strong', { text: "One more trap worth naming: time spent is not a proxy for impact either." })),
+      el('p', {}, "Spending longer on something doesn't make it more impactful, and working efficiently shouldn't score you lower. Rate what changed as a result, not how long it took."),
+      el('p', {}, el('strong', { text: 'A quick gut check before you submit:' })),
+      el('ul', {}, [
+        el('li', { text: 'What actually changed because of this - not what theoretically could have, in the worst case?' }),
+        el('li', { text: 'If you described just the real outcome, plainly, with no hypotheticals - would a colleague agree with the level you picked?' }),
+      ]),
+      el('p', {}, "Nobody expects perfect precision here - it's a judgement call, and different people will land slightly differently on genuinely borderline cases. That's fine. What matters is rating the real thing you did, not the best story you could tell about it. If a rating still looks off to someone else, that's exactly what \"Flag it\" (below) is for - this doesn't all rest on getting every single entry perfectly calibrated up front."),
+    ]),
     section('Doing the same thing again? Use "Relog".', [
       el('p', {}, 'On "My Logs", every entry has a "Relog" button. It starts a new entry on the Log Effort page pre-filled from that one - same category, task, impact, proof, description and evidence - but dated today, so you can tweak whatever changed and submit in seconds instead of filling the form from scratch. Handy for anything you do daily or weekly.'),
     ]),

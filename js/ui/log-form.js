@@ -110,7 +110,7 @@ export function buildLogForm({ categories, tasks, initialValues = null, onSubmit
     taskFieldHost,
     field('When did you do it?', dateInput),
     field('How much impact did you think it had?', pickerHost.impact, {
-      info: "Reach alone isn't enough - it has to actually make a difference, not just touch a lot of people (e.g. swapping the fire-alarm batteries reaches the whole company but barely counts). Rough guide: 1 = helped one person with something small. 2 = helped a few people, or saved someone real time. 3 = changed how a team works, not just for a moment. 4 = a team or client noticeably better off, and it keeps paying off. 5 = changed something company-wide, in a lasting way.",
+      info: "Score what actually happened, not a hypothetical you can imagine (e.g. 'this could have prevented a disaster'). Reach alone isn't enough either - it has to actually make a difference, not just touch a lot of people (swapping the fire-alarm batteries reaches the whole company but barely counts). Rough guide: 1 = helped one person with something small. 2 = helped a few people, or saved someone real time. 3 = changed how a team works, not just for a moment. 4 = a team or client noticeably better off, and it keeps paying off. 5 = changed something company-wide, in a lasting way. See \"How do I judge impact fairly?\" on the How-to page for more.",
     }),
     field('What proof do you have?', pickerHost.proof),
     field('Description', descriptionInput, {
