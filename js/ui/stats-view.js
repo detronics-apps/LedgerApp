@@ -43,7 +43,7 @@ export function buildUserBreakdownTable(rows, { showRank = false } = {}) {
   ]));
 }
 
-export function buildStatsView(summary, participation = null, { hidePoints = false } = {}) {
+export function buildStatsView(summary, participation = null, { hidePoints = false, hideTaskBreakdown = false } = {}) {
   const panels = [];
 
   if (participation) {
@@ -72,10 +72,12 @@ export function buildStatsView(summary, participation = null, { hidePoints = fal
     breakdownList(summary.categoryBreakdown, 'categoryName', { hidePoints }),
   ]));
 
-  panels.push(el('div', { class: 'panel' }, [
-    el('h3', { text: 'By task' }),
-    breakdownList(summary.taskBreakdown, 'taskName', { hidePoints }),
-  ]));
+  if (!hideTaskBreakdown) {
+    panels.push(el('div', { class: 'panel' }, [
+      el('h3', { text: 'By task' }),
+      breakdownList(summary.taskBreakdown, 'taskName', { hidePoints }),
+    ]));
+  }
 
   panels.push(el('div', { class: 'panel' }, [
     el('h3', { text: 'Impact distribution (1-5)' }),

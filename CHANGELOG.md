@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.6
+- Removed the "By task" breakdown from Company Stats - with 60+ tasks now
+  in the list, that table could grow to a screen-length line-item dump for
+  every employee. Category-scoped admins can already see it per-category on
+  the Admin Dashboard, and it stays on My Stats and the (full) Admin
+  Dashboard. Company Stats keeps "By category".
+
 ## 0.5.5
 - Evidence now has its own column on every entries table (My Logs, Company
   Ledger), instead of being squeezed onto the end of Description. A link

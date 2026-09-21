@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.5.5';
+export const APP_VERSION = '0.5.6';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -282,7 +282,7 @@ function renderMyStats() {
 function renderCompanyStats() {
   const summary = summarizeEntries(state.entries);
   const participation = summarizeParticipation(state.entries, state.users.map((u) => u.id));
-  return buildStatsView(summary, participation, { hidePoints: true });
+  return buildStatsView(summary, participation, { hidePoints: true, hideTaskBreakdown: true });
 }
 
 function renderNeedsValidation(entries) {
