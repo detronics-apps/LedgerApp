@@ -9,14 +9,15 @@ function rowActions(item, onSave, onToggleArchive, onDelete) {
   return el('td', {}, el('div', { class: 'row-actions' }, [
     el('button', { type: 'button', class: 'btn', text: 'Save', on: { click: onSave } }),
     el('button', {
-      type: 'button', class: 'btn', text: item.archived ? 'Unarchive' : 'Archive',
+      type: 'button', class: 'btn', text: item.archived ? 'Restore' : 'Archive',
+      title: item.archived ? 'Make this visible on the log-entry form again.' : 'Hide from the log-entry form, without deleting its history.',
       on: { click: onToggleArchive },
     }),
     onDelete ? el('button', {
       type: 'button', class: 'btn btn-danger', text: 'Delete',
       disabled: item.entryCount > 0,
       title: item.entryCount > 0 ? 'Has logged entries - archive instead of deleting.' : '',
-      on: { click: onDelete },
+      on: { click: () => { if (confirm('Delete this permanently? This cannot be undone - archive it instead if you might need it again.')) onDelete(); } },
     }) : null,
   ]));
 }
@@ -143,10 +144,25 @@ function tasksPanel(categories, tasks, { onCreateTask, onUpdateTask, onDeleteTas
 
 function adminsPanel(onAddAdmin, categories) {
   const emailInput = el('input', { type: 'email', placeholder: 'name@research-square.com' });
+  const allCheckbox = el('input', { type: 'checkbox' });
   const categoryChecks = categories.map((c) => {
     const checkbox = el('input', { type: 'checkbox' });
     return { id: c.id, checkbox, row: el('label', { class: 'checkbox-row' }, [checkbox, el('span', { text: c.name })]) };
   });
+  // "All" is a full admin, not just every category ticked - it also grants
+  // Settings, the Admins panel, and (per firestore.rules) the only path to
+  // deleting someone else's entry from the Company Ledger. Ticking it locks
+  // out the individual boxes so the two can't disagree.
+  allCheckbox.addEventListener('change', () => {
+    categoryChecks.forEach((c) => {
+      c.checkbox.disabled = allCheckbox.checked;
+      if (allCheckbox.checked) c.checkbox.checked = false;
+    });
+  });
+  const resetChecks = () => {
+    allCheckbox.checked = false;
+    categoryChecks.forEach((c) => { c.checkbox.checked = false; c.checkbox.disabled = false; });
+  };
   const addBtn = el('button', {
     type: 'button', class: 'btn btn-primary', text: 'Make admin',
     on: {
@@ -154,10 +170,14 @@ function adminsPanel(onAddAdmin, categories) {
         const email = emailInput.value.trim();
         if (!email) return;
         const categoryIds = categoryChecks.filter((c) => c.checkbox.checked).map((c) => c.id);
+        if (!allCheckbox.checked && categoryIds.length === 0) {
+          toast('Tick "All" or at least one category.');
+          return;
+        }
         onAddAdmin(email, categoryIds).then(() => {
           emailInput.value = '';
-          categoryChecks.forEach((c) => { c.checkbox.checked = false; });
-          toast(categoryIds.length ? `${email} can now manage ${categoryIds.length} category(ies).` : `${email} is now a full admin.`);
+          resetChecks();
+          toast(categoryIds.length ? `${email} can now manage ${categoryIds.length} category(ies).` : `${email} is now a full admin (all categories).`);
         }).catch((err) => {
           toast(err.message || 'Could not add admin.');
         });
@@ -169,7 +189,10 @@ function adminsPanel(onAddAdmin, categories) {
     el('h3', { text: 'Admins' }),
     el('p', { class: 'muted', text: 'Grant admin access by email. The person must have signed in at least once already.' }),
     el('div', { class: 'field' }, [emailInput, addBtn]),
-    field('Restrict to categories (leave all unchecked for a full admin)', el('div', {}, categoryChecks.map((c) => c.row))),
+    field('Category access', el('div', {}, [
+      el('label', { class: 'checkbox-row' }, [allCheckbox, el('strong', { text: 'All categories (full admin)' })]),
+      ...categoryChecks.map((c) => c.row),
+    ])),
   ]);
 }
 

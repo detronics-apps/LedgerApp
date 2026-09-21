@@ -102,13 +102,16 @@ service cloud.firestore {
         (isAdmin() && isRecategorizationOnly(resource.data, request.resource.data)) ||
         (isAdmin() && isValidationOnly(resource.data, request.resource.data))
       );
-      // An admin (full, or category-scoped for that entry's own category) may
-      // delete any entry - e.g. a mistaken or duplicate log - in addition to
-      // an employee deleting their own. This is a deliberate policy choice:
-      // the ledger's earlier "not even an admin can delete" rule traded away
-      // correctability for tamper-evidence, and this pilot wants the former.
-      allow delete: if isCompanyUser() &&
-        (resource.data.uid == request.auth.uid || isAdmin() || isCategoryAdminFor(resource.data.categoryId));
+      // A full admin ("All categories" when granting access) may delete any
+      // entry - e.g. a mistaken or duplicate log - in addition to an
+      // employee deleting their own. Deliberately NOT extended to
+      // category-scoped admins: deletion is destructive in a way editing
+      // isn't, so it's reserved for admins with access to every category,
+      // not just their own. This is also a deliberate policy choice on its
+      // own terms: the ledger's earlier "not even an admin can delete" rule
+      // traded away correctability for tamper-evidence, and this pilot
+      // wants the former.
+      allow delete: if isCompanyUser() && (resource.data.uid == request.auth.uid || isAdmin());
     }
 
     match /categories/{categoryId} {

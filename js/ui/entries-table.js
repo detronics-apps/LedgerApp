@@ -1,7 +1,7 @@
 import { el } from './dom.js';
 import { formatDate, formatPoints } from '../format.js';
 
-export function buildEntriesTable(entries, { showOwner = true, showPoints = true, onEdit = null, onDelete = null, canDelete = () => true, onRelog = null, anonymize = false } = {}) {
+export function buildEntriesTable(entries, { showOwner = true, showPoints = true, onEdit = null, onDelete = null, onRelog = null, anonymize = false } = {}) {
   if (entries.length === 0) {
     return el('p', { class: 'muted', text: 'Nothing logged yet.' });
   }
@@ -47,7 +47,7 @@ export function buildEntriesTable(entries, { showOwner = true, showPoints = true
           on: { click: () => onRelog(entry) },
         }) : null,
         onEdit ? el('button', { type: 'button', class: 'btn', text: 'Edit', on: { click: () => onEdit(entry) } }) : null,
-        onDelete && canDelete(entry) ? el('button', {
+        onDelete ? el('button', {
           type: 'button', class: 'btn btn-danger', text: 'Delete',
           on: { click: () => { if (confirm('Delete this entry? This cannot be undone.')) onDelete(entry); } },
         }) : null,

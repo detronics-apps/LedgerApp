@@ -34,7 +34,7 @@ function adminSections(isFullAdmin) {
         el('li', { text: 'Add a task the same way in the Tasks panel - pick which category it belongs to from the dropdown next to the name/description fields before clicking "Add task".' }),
         el('li', { text: 'To change an existing task\'s category, use the Category dropdown directly on its row, then click "Save".' }),
         el('li', { text: 'Use "Filter by category" above the Tasks table to narrow a long list down to one category.' }),
-        el('li', { text: '"Archive" hides a category/task from the log-entry form without deleting its history; "Delete" is only available once nothing has ever been logged against it.' }),
+        el('li', { text: '"Archive" hides a category/task from the log-entry form without deleting its history - its row gets a "Restore" button to bring it back any time. "Delete" is permanent and asks you to confirm first; it\'s only available once nothing has ever been logged against it (archive instead if it has history).' }),
       ]),
     ]),
     section('Admin: adding users and assigning passwords', [
@@ -53,8 +53,8 @@ function adminSections(isFullAdmin) {
       section('Admin: granting admin access', [
         el('p', {}, 'On "Manage Tasks & Categories", the Admins panel lets you grant access by email (the person must have signed in at least once already).'),
         el('ul', {}, [
-          el('li', { text: 'Leave every category checkbox unchecked to grant a full admin - they get every admin tab, including Settings and granting further admins.' }),
-          el('li', { text: 'Tick one or more categories instead to grant a category-scoped admin - they only see "Manage Tasks & Categories", and only their assigned categories/tasks appear there. They can\'t create brand-new categories or grant admin access to anyone else.' }),
+          el('li', { text: 'Tick "All categories" to grant a full admin - they get every admin tab (Settings, granting further admins, deleting any entry from the Company Ledger) and every category.' }),
+          el('li', { text: 'Tick one or more specific categories instead (not "All") to grant a category-scoped admin - they see Admin Dashboard, "Manage Tasks & Categories", and Leaderboard, each scoped to just their assigned categories. They can\'t create brand-new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category - deleting is reserved for full admins.' }),
           el('li', { text: 'There\'s no "remove admin" button - de-admin-ing someone is a manual step in the Firebase console (delete their doc from the admins collection).' }),
         ]),
       ]),
@@ -62,7 +62,9 @@ function adminSections(isFullAdmin) {
         el('p', {}, 'Points = Impact x Proof x Task weight x Category weight.'),
         el('ul', {}, [
           el('li', { text: 'Impact (1-5) and Proof (1-3) are fixed scales everyone uses the same way - the employee picks these when logging, and they aren\'t admin-adjustable per entry.' }),
-          el('li', { text: 'Task weight and Category weight ARE admin-adjustable - edit the "Weight" field on any row in "Manage Tasks & Categories" and click Save to make that task or category worth more or less. A weight of 1 means no change; 2 doubles the points for anything logged under it, and so on.' }),
+          el('li', { text: 'Task weight is admin-adjustable - edit the "Weight" field on a task\'s row in "Manage Tasks & Categories" and click Save to make that task worth more or less.' }),
+          el('li', { text: 'Category weight comes from a contribution type instead of a per-category number - pick Cultural, Operational, or Leadership on a category\'s row, and set what each type is worth on the "Settings" tab (default x1 / x1.5 / x2). Changing a type\'s weight there instantly changes every category assigned to it.' }),
+          el('li', { text: 'Weight and scoring changes are never retroactive: a task/category/type weight change only affects entries logged (or edited/relinked) after the change. Every entry stores its own points at the moment it\'s saved, so nothing already logged is rewritten.' }),
           el('li', { text: 'The other pilot rules (daily entry caps, weekly point caps, once-a-week limit on impact-5 entries, ledger anonymization, and management validation of high-scoring entries) are all toggled and tuned from the "Settings" tab. Turning any of these on updates what non-admins see on this How-to page automatically.' }),
         ]),
       ]),
@@ -100,6 +102,9 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       : [el('ul', {}, rules.map((r) => el('li', { text: r })))]),
     section('What happens to "Other" entries?', [
       el('p', {}, 'If what you did doesn\'t match any task on the list, log it under "Other - not listed" with a short description anyway - it still counts. An admin reviews these in the Custom Task Review queue and either adds it as a real task (so it\'s on the list for everyone next time) or links your entry to an existing task that already covers it.'),
+    ]),
+    section('If an admin changes how something is weighted, does that change what I already logged?', [
+      el('p', {}, 'No. A change like that only applies going forward - it never rewrites something you\'ve already submitted. Your existing entries keep exactly what they had at the time you logged them.'),
     ]),
     ...(isAdmin || isScopedAdmin ? adminSections(isAdmin) : []),
   ]);

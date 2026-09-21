@@ -15,7 +15,7 @@ import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './li
 import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 
-export const APP_VERSION = '0.4.0';
+export const APP_VERSION = '0.4.1';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -201,15 +201,18 @@ function renderMyLogs() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
   return buildEntriesTable(sortedByDateDesc(own), {
     showOwner: false,
-    onRelog: (entry) => { state.relogDraft = entry; state.activeTab = 'log'; renderView(); },
-    onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderView(); },
+    onRelog: (entry) => { state.relogDraft = entry; state.activeTab = 'log'; renderShell(); },
+    onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderShell(); },
     onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
   });
 }
 
 function renderLedger() {
   const canSeeIdentity = state.isAdmin || isScopedAdmin();
-  const showDeleteColumn = state.isAdmin || isScopedAdmin();
+  // Deletion is destructive in a way editing isn't, so it stays reserved for
+  // full ("All categories") admins - a category-scoped admin never sees it,
+  // even for their own category. Matches firestore.rules' delete rule.
+  const showDeleteColumn = state.isAdmin;
   const f = state.ledgerFilters;
 
   const categoryOptions = [{ value: 'all', label: 'All categories' }, ...state.categories.map((c) => ({ value: c.id, label: c.name }))];
@@ -246,7 +249,6 @@ function renderLedger() {
       anonymize: state.settings.anonymizeLedgerEnabled && !canSeeIdentity,
       showPoints: false,
       onDelete: showDeleteColumn ? (entry) => data.deleteEntry(entry.id).catch((err) => toast(err.message || 'Could not delete - try again.')) : null,
-      canDelete: (entry) => state.isAdmin || state.adminCategoryIds.includes(entry.categoryId),
     }),
   ]);
 }

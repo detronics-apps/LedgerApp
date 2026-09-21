@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.1
+- Deleting a logged entry is now reserved for full ("All categories")
+  admins only - a category-scoped admin no longer sees the Delete button
+  on the Company Ledger, even within their own category, since deletion
+  is destructive in a way editing isn't.
+- Granting admin access now has an explicit "All categories" checkbox
+  (locks out the individual category boxes while ticked) instead of the
+  old implicit "leave everything unchecked for full admin" convention.
+- Deleting a task or category now asks for confirmation first; its
+  Archive button reads "Restore" once archived.
+- How-to page: added an everyone-visible note that weight/scoring changes
+  are never retroactive, and expanded the admin section on Delete vs.
+  Archive and on how category weight now works (contribution types, not
+  a per-category number - this text had gone stale).
+- Fixed: the Relog and Edit buttons on My Logs switched the page to Log
+  Effort but left the nav bar's highlight on "My Logs" - same root cause
+  as the earlier nav-highlight bug (changing the active tab needs a full
+  shell re-render, not just the page content).
+
 ## 0.4.0
 - "Relog" button on My Logs: pre-fills a new Log Effort entry (dated today)
   from a past one, for fast repeat submissions.
