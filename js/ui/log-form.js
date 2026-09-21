@@ -109,7 +109,9 @@ export function buildLogForm({ categories, tasks, initialValues = null, onSubmit
     field('Category', categorySelect),
     taskFieldHost,
     field('When did you do it?', dateInput),
-    field('How much impact did you think it had?', pickerHost.impact),
+    field('How much impact did you think it had?', pickerHost.impact, {
+      info: "Reach alone isn't enough - it has to actually make a difference, not just touch a lot of people (e.g. swapping the fire-alarm batteries reaches the whole company but barely counts). Rough guide: 1 = helped one person with something small. 2 = helped a few people, or saved someone real time. 3 = changed how a team works, not just for a moment. 4 = a team or client noticeably better off, and it keeps paying off. 5 = changed something company-wide, in a lasting way.",
+    }),
     field('What proof do you have?', pickerHost.proof),
     field('Description', descriptionInput, {
       info: 'Write enough that future-you remembers exactly what this was, and when - handy if this entry ever gets flagged and you need to explain it.',

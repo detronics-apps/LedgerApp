@@ -3,7 +3,7 @@ export const IMPACT_LEVELS = [
   { value: 2, label: 'Noticeable help', description: 'Saved someone real time or unblocked a specific problem.' },
   { value: 3, label: 'Meaningful contribution', description: "Improved how a team or process works, not just one person's day." },
   { value: 4, label: 'Significant improvement', description: 'Measurably improved outcomes across a team or client, likely to keep paying off.' },
-  { value: 5, label: 'Company-shaping improvement', description: 'Changed how the company operates, wins work, or is perceived, company-wide.' },
+  { value: 5, label: 'Company-shaping improvement', description: 'Change how the company operates, do/get work, or is perceived. Company wide change.' },
 ];
 
 export const PROOF_LEVELS = [
