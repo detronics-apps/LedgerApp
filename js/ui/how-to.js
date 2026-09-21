@@ -97,6 +97,9 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Submit. You can see and edit your own entries any time under "My Logs".' }),
       ]),
     ]),
+    section('Doing the same thing again? Use "Relog".', [
+      el('p', {}, 'On "My Logs", every entry has a "Relog" button. It starts a new entry on the Log Effort page pre-filled from that one - same category, task, impact, proof, description and evidence - but dated today, so you can tweak whatever changed and submit in seconds instead of filling the form from scratch. Handy for anything you do daily or weekly.'),
+    ]),
     section('Logging rules', rules.length === 0
       ? [el('p', {}, 'No extra rules are active right now beyond the basics above - log what you did, as often as it happens.')]
       : [el('ul', {}, rules.map((r) => el('li', { text: r })))]),
