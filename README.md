@@ -119,6 +119,26 @@ anonymization would mean not storing names on entries at all and resolving
 them via a `users` lookup gated by the same setting - a bigger schema change
 than this pilot needed for its first version.
 
+**Flagging an entry for a second look.** Any company user can flag someone
+else's entry from the Company Ledger (reason + optional note), stored in its
+own `flags` collection so more than one person can independently flag the
+same entry - the Admin Dashboard's "Flagged entries" panel groups those into
+one row per entry with a headcount ("Flagged by 2") instead of duplicate
+rows, and an admin can move all of an entry's flags to Under review /
+Updated / Rejected at once. The whole point is catching honest mistakes
+together, not calling anyone out, so **who raised a flag is deliberately
+never shown to the entry's owner or to other employees** - only to admins,
+and to the person who raised it (their own status on "My Logs"). See
+`js/flags.js`.
+
+**Known limitation - a flag's existence and who raised it are hidden by
+this app's UI, not by the rules.** Same shape as the ledger-anonymization
+limitation above: `flags` documents are readable by any signed-in company
+user at the Firestore level (whole-document read/write, same as every other
+collection here), so a technical user reading Firestore directly could see
+who flagged what. The app's own screens are what keep this from reaching
+anyone but admins and the flag's own author.
+
 ## 3. Provisioning employee accounts
 
 There is no self-service signup - an admin creates every account by hand:
@@ -258,13 +278,12 @@ regular employee and an admin):
       `categories`/`tasks` write operations (try editing a task's weight
       from the browser console while signed in as a non-admin - it should
       be rejected by Firestore, not just hidden in the UI).
-- [ ] A signed-in employee cannot delete another employee's entry - **not
-      even an admin account can.** Signed in as the admin, attempt to
-      delete another employee's entry doc directly from the browser
-      console (not through the UI) and confirm Firestore rejects the
-      write. This is the deliberately tightened, no-exceptions delete rule
-      described above, and it deserves its own explicit check since admins
-      can do almost everything else.
+- [ ] A signed-in employee cannot delete another employee's entry, and a
+      category-scoped admin cannot either, even within their own category -
+      **only a full ("All categories") admin can.** Signed in as a regular
+      employee (or a category-scoped admin), attempt to delete another
+      employee's entry doc directly from the browser console (not through
+      the UI) and confirm Firestore rejects the write.
 - [ ] An admin sees the admin tabs, can add/edit/archive a category (setting
       its contribution type) or task (setting its own weight), can adjust
       the three contribution-type weights on Settings, and can promote a
@@ -287,10 +306,25 @@ regular employee and an admin):
       only (see "Known limitation" above) - this checklist confirms the UI
       behaves correctly, not that the caps survive a direct Firestore write.
 - [ ] On the Company Ledger, an admin can delete another employee's entry
-      (e.g. a duplicate), and a category-scoped admin can delete an entry in
-      their own category but the Delete button does not appear at all on an
-      entry outside it. A regular employee still cannot delete anyone else's
-      entry - only their own, from "My Logs".
+      (e.g. a duplicate); a category-scoped admin never sees a Delete button
+      at all, even in their own category. A regular employee still cannot
+      delete anyone else's entry - only their own, from "My Logs".
+- [ ] Company Ledger filters: a From/To date range, Category, and Task
+      narrow the table; "Turn filters off" shows everything again without
+      losing your selections, and "Clear filters" resets them; the Filters
+      panel collapses via its `<details>` summary.
+- [ ] Flagging: signed in as employee A, flag one of employee B's entries
+      with a reason and note - confirm the Flag button never appears on your
+      own entries, and disappears on that entry once you've flagged it
+      (until an admin resolves it). Signed in as employee C, flag the same
+      entry with a different reason - confirm this is a second, independent
+      flag (not an overwrite of A's). Neither A (the entry's owner) nor C
+      should see any flag indicator anywhere on the Company Ledger. Signed
+      in as an admin, confirm the Admin Dashboard's "Flagged entries" panel
+      shows that entry once with "2" in the flagged-by count and both
+      reasons listed, not two separate rows; set its status and confirm A
+      and C each see the new status on their own "My Logs" (still without
+      seeing each other's identity).
 
 ## Code layout
 
@@ -306,6 +340,7 @@ js/format.js                 pure: date/number/percent formatting
 js/stats.js                  pure: participation and breakdown aggregation
 js/limits.js                 pure: pilot-rule checks (daily/weekly caps) and contribution-type weight lookup - client-side only, see "Known limitation"
 js/csv.js                    pure: full-ledger CSV export formatting
+js/flags.js                  pure: flag reasons/statuses, labels, active-flag lookup
 js/firebase-config.js        Firebase app/auth/db init (public config)
 js/ui/dom.js                  small DOM helpers (vendored from the detronics-app skill)
 js/ui/auth.js                  sign-in/out, domain check, admin check

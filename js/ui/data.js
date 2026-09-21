@@ -37,6 +37,7 @@ export const listenEntries = (cb) => listen('entries', cb);
 export const listenCategories = (cb) => listen('categories', cb);
 export const listenTasks = (cb) => listen('tasks', cb);
 export const listenUsers = (cb) => listen('users', cb);
+export const listenFlags = (cb) => listen('flags', cb);
 
 export function listenSettings(cb) {
   return onSnapshot(doc(db, 'settings', 'global'), (snap) => {
@@ -99,4 +100,24 @@ export function relinkEntry(entry, category, task, categoryWeight) {
  * validated/validatedAt to change on this path (isValidationOnly). */
 export function validateEntry(entryId) {
   return updateDoc(doc(db, 'entries', entryId), { validated: true, validatedAt: serverTimestamp() });
+}
+
+/** A colleague flags someone else's entry for a second look (js/flags.js).
+ * Its own collection, not fields on the entry, so more than one person can
+ * independently flag the same entry - the doc id (one per person per entry)
+ * is what lets a resubmission overwrite only that person's own prior flag.
+ * Rules independently enforce it's not your own entry, and that any of your
+ * own prior flags on it were already resolved (isFlagResubmission). */
+export function submitFlag(entryId, categoryId, { reason, note, flaggedBy, flaggedByEmail }) {
+  return setDoc(doc(db, 'flags', `${entryId}_${flaggedBy}`), {
+    entryId, categoryId, reason, note: note || '',
+    flaggedBy, flaggedByEmail, status: 'open', createdAt: serverTimestamp(),
+  });
+}
+
+/** Admin moves a flag to 'under-review', 'updated', or 'rejected'. Rules
+ * independently only allow status to change on this path
+ * (isFlagStatusUpdate). */
+export function setFlagStatus(flagId, status) {
+  return updateDoc(doc(db, 'flags', flagId), { status });
 }

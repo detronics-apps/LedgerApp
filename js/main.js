@@ -14,8 +14,9 @@ import { computePoints } from './scoring.js';
 import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './limits.js';
 import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
+import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.4.1';
+export const APP_VERSION = '0.5.0';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -35,11 +36,13 @@ function applyTheme(theme) {
   else document.documentElement.setAttribute('data-theme', theme);
 }
 
+const DEFAULT_LEDGER_FILTERS = { enabled: true, dateStart: '', dateEnd: '', categoryId: 'all', taskId: 'all' };
+
 const state = {
   user: null, isAdmin: false, adminCategoryIds: [],
-  categories: [], tasks: [], entries: [], users: [],
+  categories: [], tasks: [], entries: [], users: [], flags: [],
   leaderboardCategoryId: 'all',
-  ledgerFilters: { date: '', categoryId: 'all', taskId: 'all' },
+  ledgerFilters: { ...DEFAULT_LEDGER_FILTERS },
   settings: DEFAULT_SETTINGS,
   activeTab: 'log',
   wrongDomainEmail: null,
@@ -134,6 +137,10 @@ function dashboardEntries() {
   return isScopedAdmin() ? state.entries.filter((e) => state.adminCategoryIds.includes(e.categoryId)) : state.entries;
 }
 
+function dashboardFlags() {
+  return isScopedAdmin() ? state.flags.filter((f) => state.adminCategoryIds.includes(f.categoryId)) : state.flags;
+}
+
 function activeCategories() { return state.categories.filter((c) => !c.archived); }
 function activeTasks() { return state.tasks.filter((t) => !t.archived); }
 
@@ -199,12 +206,37 @@ function renderLog() {
 
 function renderMyLogs() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
-  return buildEntriesTable(sortedByDateDesc(own), {
-    showOwner: false,
-    onRelog: (entry) => { state.relogDraft = entry; state.activeTab = 'log'; renderShell(); },
-    onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderShell(); },
-    onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
-  });
+  return el('div', {}, [
+    buildEntriesTable(sortedByDateDesc(own), {
+      showOwner: false,
+      onRelog: (entry) => { state.relogDraft = entry; state.activeTab = 'log'; renderShell(); },
+      onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderShell(); },
+      onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
+    }),
+    renderMyFlags(),
+  ].filter(Boolean));
+}
+
+function renderMyFlags() {
+  const mine = state.flags.filter((f) => f.flaggedBy === state.user.uid);
+  if (mine.length === 0) return null;
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: "Entries you've flagged" }),
+    el('p', { class: 'muted', text: 'Status updates here as an admin looks into these.' }),
+    el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+      el('thead', {}, el('tr', {}, ['Date', 'Category', 'Task', 'Reason', 'Status'].map((h) => el('th', { text: h })))),
+      el('tbody', {}, mine.map((flag) => {
+        const entry = state.entries.find((e) => e.id === flag.entryId);
+        return el('tr', {}, [
+          el('td', { text: entry ? formatDate(entry.date) : '' }),
+          el('td', { text: entry ? entry.categoryName : '(entry no longer exists)' }),
+          el('td', { text: entry ? (entry.isCustomTask ? (entry.customTaskName || 'Other') : entry.taskName) : '' }),
+          el('td', { text: flagReasonLabel(flag.reason) }),
+          el('td', { text: flagStatusLabel(flag.status) }),
+        ]);
+      })),
+    ])),
+  ]);
 }
 
 function renderLedger() {
@@ -220,26 +252,33 @@ function renderLedger() {
   const taskOptions = [{ value: 'all', label: 'All tasks' }, ...tasksForFilter.map((t) => ({ value: t.id, label: t.name }))];
   if (!taskOptions.some((o) => o.value === f.taskId)) f.taskId = 'all';
 
-  const filtered = state.entries.filter((e) =>
-    (!f.date || e.date === f.date) &&
+  const filtered = !f.enabled ? state.entries : state.entries.filter((e) =>
+    (!f.dateStart || e.date >= f.dateStart) &&
+    (!f.dateEnd || e.date <= f.dateEnd) &&
     (f.categoryId === 'all' || e.categoryId === f.categoryId) &&
     (f.taskId === 'all' || e.taskId === f.taskId));
 
-  const dateInput = el('input', { type: 'date', value: f.date, on: { change: (e) => { f.date = e.target.value; renderView(); } } });
-  const categorySelect = select(categoryOptions, f.categoryId, (value) => { f.categoryId = value; f.taskId = 'all'; renderView(); });
-  const taskSelect = select(taskOptions, f.taskId, (value) => { f.taskId = value; renderView(); });
+  const startInput = el('input', { type: 'date', value: f.dateStart, disabled: !f.enabled, on: { change: (e) => { f.dateStart = e.target.value; renderView(); } } });
+  const endInput = el('input', { type: 'date', value: f.dateEnd, disabled: !f.enabled, on: { change: (e) => { f.dateEnd = e.target.value; renderView(); } } });
+  const categorySelect = select(categoryOptions, f.categoryId, (value) => { f.categoryId = value; f.taskId = 'all'; renderView(); }, { disabled: !f.enabled });
+  const taskSelect = select(taskOptions, f.taskId, (value) => { f.taskId = value; renderView(); }, { disabled: !f.enabled });
+  const toggleBtn = el('button', {
+    type: 'button', class: 'btn', text: f.enabled ? 'Turn filters off' : 'Turn filters on',
+    on: { click: () => { f.enabled = !f.enabled; renderView(); } },
+  });
   const clearBtn = el('button', {
     type: 'button', class: 'btn', text: 'Clear filters',
-    on: { click: () => { state.ledgerFilters = { date: '', categoryId: 'all', taskId: 'all' }; renderView(); } },
+    on: { click: () => { state.ledgerFilters = { ...DEFAULT_LEDGER_FILTERS }; renderView(); } },
   });
 
   return el('div', {}, [
-    el('div', { class: 'panel' }, [
-      el('h3', { text: 'Filters' }),
-      field('Date', dateInput),
+    el('details', { class: 'panel explain', open: true }, [
+      el('summary', { text: 'Filters' }),
+      field('From', startInput),
+      field('To', endInput),
       field('Category', categorySelect),
       field('Task', taskSelect),
-      clearBtn,
+      el('div', { class: 'btn-row' }, [toggleBtn, clearBtn]),
     ]),
     buildEntriesTable(sortedByDateDesc(filtered), {
       // Nobody but an admin sees real names/emails unless anonymized identifiers
@@ -249,6 +288,11 @@ function renderLedger() {
       anonymize: state.settings.anonymizeLedgerEnabled && !canSeeIdentity,
       showPoints: false,
       onDelete: showDeleteColumn ? (entry) => data.deleteEntry(entry.id).catch((err) => toast(err.message || 'Could not delete - try again.')) : null,
+      onFlag: (entry, { reason, note }) => data.submitFlag(entry.id, entry.categoryId, { reason, note, flaggedBy: state.user.uid, flaggedByEmail: state.user.email })
+        .then(() => toast('Flag submitted - thanks for helping keep this fair.'))
+        .catch((err) => toast(err.message || 'Could not submit flag.')),
+      currentUid: state.user.uid,
+      hasMyActiveFlag: (entry) => hasActiveFlagFrom(state.flags, entry.id, state.user.uid),
     }),
   ]);
 }
@@ -305,9 +349,55 @@ function renderAdminDashboard() {
       el('h3', { text: 'By person' }),
       buildUserBreakdownTable(userBreakdown),
     ]),
+    renderFlaggedEntries(),
     renderNeedsValidation(entries),
     renderExportPanel(entries),
   ].filter(Boolean));
+}
+
+function renderFlaggedEntries() {
+  const activeFlags = dashboardFlags().filter((f) => f.status === 'open' || f.status === 'under-review');
+  const byEntry = new Map();
+  for (const flag of activeFlags) {
+    if (!byEntry.has(flag.entryId)) byEntry.set(flag.entryId, []);
+    byEntry.get(flag.entryId).push(flag);
+  }
+  const rows = [...byEntry.entries()]
+    .map(([entryId, entryFlags]) => ({ entry: state.entries.find((e) => e.id === entryId), entryFlags }))
+    .filter((r) => r.entry); // a flagged entry that's since been deleted has nothing left to show
+
+  const settableStatuses = FLAG_STATUSES.filter((s) => s.value !== 'open');
+
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: 'Flagged entries' }),
+    el('p', { class: 'muted', text: "Raised by colleagues asking for a second look - the point is catching honest mistakes together, not calling anyone out. Whoever raised it is never shown to the entry's owner." }),
+    rows.length === 0
+      ? el('p', { class: 'muted', text: 'Nothing flagged right now.' })
+      : el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
+          el('thead', {}, el('tr', {}, ['Date', 'Person', 'Task', 'Flagged by', 'Reasons', 'Notes', ''].map((h) => el('th', { text: h })))),
+          el('tbody', {}, rows.map(({ entry, entryFlags }) => {
+            const reasons = [...new Set(entryFlags.map((f) => flagReasonLabel(f.reason)))].join('; ');
+            const notes = entryFlags.map((f) => f.note).filter(Boolean).join('; ');
+            const statusSelect = select(settableStatuses, 'under-review', () => {});
+            const applyBtn = el('button', {
+              type: 'button', class: 'btn btn-primary', text: 'Update status',
+              on: {
+                click: () => Promise.all(entryFlags.map((f) => data.setFlagStatus(f.id, statusSelect.value)))
+                  .catch((err) => toast(err.message || 'Could not update.')),
+              },
+            });
+            return el('tr', {}, [
+              el('td', { text: formatDate(entry.date) }),
+              el('td', { text: entry.displayName }),
+              el('td', { text: entry.isCustomTask ? (entry.customTaskName || 'Other') : entry.taskName }),
+              el('td', { class: 'value', text: String(entryFlags.length) }),
+              el('td', { text: reasons }),
+              el('td', { text: notes }),
+              el('td', {}, el('div', { class: 'btn-row' }, [statusSelect, applyBtn])),
+            ]);
+          })),
+        ])),
+  ]);
 }
 
 function renderExportPanel(entries) {
@@ -495,6 +585,7 @@ function subscribeToData() {
   unsubscribers.push(data.listenTasks((tasks) => { state.tasks = tasks; renderView(); }));
   unsubscribers.push(data.listenEntries((entries) => { state.entries = entries; renderView(); }));
   unsubscribers.push(data.listenUsers((users) => { state.users = users; renderView(); }));
+  unsubscribers.push(data.listenFlags((flags) => { state.flags = flags; renderView(); }));
   unsubscribers.push(data.listenSettings((settings) => { state.settings = settings ? { ...DEFAULT_SETTINGS, ...settings } : DEFAULT_SETTINGS; renderView(); }));
 }
 
@@ -513,7 +604,7 @@ initAuth({
     unsubscribers.forEach((u) => u());
     unsubscribers = [];
     state.user = null; state.isAdmin = false; state.adminCategoryIds = [];
-    state.categories = []; state.tasks = []; state.entries = []; state.users = [];
+    state.categories = []; state.tasks = []; state.entries = []; state.users = []; state.flags = [];
     renderShell();
   },
   onWrongDomain: (email) => {

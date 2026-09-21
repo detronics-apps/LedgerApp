@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0
+- Company Ledger filters: date range (From/To) instead of a single exact
+  date, a "Turn filters off" toggle that keeps your selections while
+  showing everything, and the whole Filters panel now collapses.
+- New: flag an entry for a second look. Any entry that isn't your own gets
+  a "Flag" button on the Company Ledger (reason + optional note). More
+  than one person can independently flag the same entry - the Admin
+  Dashboard's "Flagged entries" panel groups these into one row per entry
+  with a headcount ("Flagged by 2") and every distinct reason/note, and an
+  admin can move all of an entry's flags to Under review / Updated /
+  Rejected at once. Whoever raised a flag is never shown to the entry's
+  owner or to other employees - only to admins, and to the person who
+  raised it (their own status on "My Logs"). New `flags` Firestore
+  collection and `js/flags.js`; rules redeployed.
+
 ## 0.4.1
 - Deleting a logged entry is now reserved for full ("All categories")
   admins only - a category-scoped admin no longer sees the Delete button

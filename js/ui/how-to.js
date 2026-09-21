@@ -72,6 +72,16 @@ function adminSections(isFullAdmin) {
   }
 
   sections.push(
+    section('Admin: reviewing flagged entries', [
+      el('p', {}, 'A "Flagged entries" panel on the Admin Dashboard lists every entry a colleague has flagged for a second look (see "Something looks off? Flag it." above) - one row per entry, not per flag.'),
+      el('ul', {}, [
+        el('li', { text: 'If more than one person flagged the same entry, that row shows a count ("Flagged by 2") instead of duplicate rows, with every distinct reason and note listed together.' }),
+        el('li', { text: 'Set the status to "Under review" while you look into it, or straight to "Updated" / "Rejected" once you\'ve decided - this applies to everyone\'s flag on that entry at once, and each person who raised one sees that status on their own "My Logs" page.' }),
+        el('li', { text: 'This app has no way for an admin to change someone else\'s impact/proof/description - if a flag is valid, ask the entry\'s owner (out of app, e.g. Slack) to correct it themselves from "My Logs", then set the flag to "Updated". If it\'s fine as logged, set it to "Rejected".' }),
+        el('li', { text: 'Who raised a flag is visible only here, to admins - never to the entry\'s owner or anyone else - so following up stays between you and them, not a public callout.' }),
+        el('li', { text: 'Once every flag on an entry is resolved (Updated or Rejected), it drops off this panel - it can be flagged again later if something new comes up.' }),
+      ]),
+    ]),
     section('Admin: reviewing "Other" (custom) task entries', [
       el('p', {}, 'Go to "Custom Task Review" to see every entry someone logged under "Other - not listed".'),
       el('ul', {}, [
@@ -108,6 +118,22 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
     ]),
     section('If an admin changes how something is weighted, does that change what I already logged?', [
       el('p', {}, 'No. A change like that only applies going forward - it never rewrites something you\'ve already submitted. Your existing entries keep exactly what they had at the time you logged them.'),
+    ]),
+    section('Something looks off? Flag it.', [
+      el('p', {}, 'This only works if we trust each other to catch mistakes, not to police each other. On "Company Ledger", any entry that isn\'t your own has a "Flag" button.'),
+      el('ol', {}, [
+        el('li', { text: 'Click "Flag" - a small form opens under that row.' }),
+        el('li', { text: 'Pick a reason: looks like a duplicate, impact rated too high or too low, proof rated too high or too low, or other.' }),
+        el('li', { text: 'Add an optional note (what made you look twice) and click "Submit flag".' }),
+      ]),
+      el('p', {}, 'What happens next:'),
+      el('ul', {}, [
+        el('li', { text: 'An admin sees it on their side and follows up with whoever logged it if it genuinely needs a second look - the point is catching honest mistakes together, not reporting someone.' }),
+        el('li', { text: 'Nobody sees that you flagged something except admins - not the entry\'s owner, not anyone else browsing the Company Ledger. It never shows as a badge or marker anywhere public.' }),
+        el('li', { text: 'You can check on anything you\'ve personally flagged in a small table at the bottom of "My Logs", showing its status: Open, Under review, Updated, or Rejected.' }),
+        el('li', { text: 'More than one person can flag the same entry independently - an admin sees how many people raised it, not a queue of duplicate reports.' }),
+        el('li', { text: 'You can flag the same entry again later if something new comes up, once your last flag on it has been resolved (Updated or Rejected) - not while one of yours is still open.' }),
+      ]),
     ]),
     ...(isAdmin || isScopedAdmin ? adminSections(isAdmin) : []),
   ]);

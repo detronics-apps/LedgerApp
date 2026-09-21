@@ -165,5 +165,49 @@ service cloud.firestore {
         request.resource.data.email == get(/databases/$(database)/documents/users/$(uid)).data.email;
       allow update, delete: if false;
     }
+
+    // One person can re-flag the same entry only once their own last flag on
+    // it was resolved (updated/rejected) - never on top of one of their own
+    // still-open ones. Different people each get their own independent flag
+    // (that's what lets the admin queue count "flagged by N people").
+    function isFlagResubmission(before, after) {
+      return before.entryId == after.entryId &&
+        before.categoryId == after.categoryId &&
+        before.flaggedBy == after.flaggedBy &&
+        after.status == 'open' &&
+        (before.status == 'updated' || before.status == 'rejected');
+    }
+
+    // An admin (full, or category-scoped for that flag's own category)
+    // moving a flag through its states - only status may change.
+    function isFlagStatusUpdate(before, after) {
+      return before.entryId == after.entryId &&
+        before.categoryId == after.categoryId &&
+        before.flaggedBy == after.flaggedBy &&
+        before.reason == after.reason &&
+        after.status in ['under-review', 'updated', 'rejected'];
+    }
+
+    // A colleague flagging someone else's entry for a second look (see
+    // js/flags.js) - "not to snitch on each other, but to help each other be
+    // fair and catch mistakes". Deliberately its own collection rather than
+    // fields on the entry: that's what lets more than one person flag the
+    // same entry independently, so the admin queue can show a headcount
+    // instead of a single overwritten flag. Every company user may read (the
+    // app's own UI is what keeps a flag's existence and who raised it from
+    // reaching anyone but admins and the person who raised it - see README
+    // "Known limitations").
+    match /flags/{flagId} {
+      allow read: if isCompanyUser();
+      allow create: if isCompanyUser() &&
+        request.resource.data.flaggedBy == request.auth.uid &&
+        request.resource.data.status == 'open' &&
+        get(/databases/$(database)/documents/entries/$(request.resource.data.entryId)).data.uid != request.auth.uid;
+      allow update: if isCompanyUser() && (
+        (resource.data.flaggedBy == request.auth.uid && isFlagResubmission(resource.data, request.resource.data)) ||
+        ((isAdmin() || isCategoryAdminFor(resource.data.categoryId)) && isFlagStatusUpdate(resource.data, request.resource.data))
+      );
+      allow delete: if false;
+    }
   }
 }
