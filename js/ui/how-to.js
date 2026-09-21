@@ -28,13 +28,13 @@ function activeRules(settings) {
     rules.push(`You can log up to ${settings.dailyEntryCap} ${settings.dailyEntryCap === 1 ? 'entry' : 'entries'} per day.`);
   }
   if (settings.fiveImpactOncePerWeekEnabled) {
-    rules.push('A "company-shaping" (impact 5) contribution can only be logged once per week.');
+    rules.push('You can only log one "company-shaping" (impact 5) entry per week.');
   }
   if (settings.weeklyPointsCapEnabled) {
     rules.push(`There's a cap of ${settings.weeklyPointsCap} points per week.`);
   }
   if (settings.managementValidationEnabled) {
-    rules.push(`Entries worth ${settings.managementValidationThreshold}+ points get reviewed by management before they're finalised.`);
+    rules.push(`Entries worth ${settings.managementValidationThreshold}+ points get reviewed by management before they count.`);
   }
   return rules;
 }
@@ -44,20 +44,20 @@ function adminSections(isFullAdmin) {
     section('Admin: adding and editing categories & tasks', [
       el('p', {}, 'Go to "Manage Tasks & Categories".'),
       el('ul', {}, [
-        el('li', { text: 'Add a category with the name/description fields at the bottom of the Categories panel, then "Add category".' }),
-        el('li', { text: 'Add a task the same way in the Tasks panel - pick which category it belongs to from the dropdown next to the name/description fields before clicking "Add task".' }),
-        el('li', { text: 'To change an existing task\'s category, use the Category dropdown directly on its row, then click "Save".' }),
+        el('li', { text: 'Add a category with the name/description fields at the bottom of the Categories panel, then click "Add category".' }),
+        el('li', { text: 'Add a task the same way, in the Tasks panel. Pick its category from the dropdown before clicking "Add task".' }),
+        el('li', { text: 'To change an existing task\'s category, use the Category dropdown on its row, then click "Save".' }),
         el('li', { text: 'Use "Filter by category" above the Tasks table to narrow a long list down to one category.' }),
-        el('li', { text: '"Archive" hides a category/task from the log-entry form without deleting its history - its row gets a "Restore" button to bring it back any time. "Delete" is permanent and asks you to confirm first; it\'s only available once nothing has ever been logged against it (archive instead if it has history).' }),
+        el('li', { text: '"Archive" hides a category or task from the log-entry form without deleting its history - click "Restore" to bring it back any time. "Delete" is permanent and asks you to confirm first; it only works once nothing has ever been logged against it (archive instead if it has history).' }),
       ]),
     ]),
     section('Admin: adding users and assigning passwords', [
-      el('p', {}, 'There\'s no self-service signup - every account is created by hand in the Firebase console (not in this app):'),
+      el('p', {}, 'There\'s no sign-up page - every account is created by hand in the Firebase console, not in this app:'),
       el('ol', {}, [
         el('li', { text: 'Firebase console -> Authentication -> Users -> "Add user".' }),
-        el('li', { text: 'Enter their @research-square.com email and set an initial password yourself - Firebase does not email it to them, so you share that password with them directly (in person, over chat, however your team normally shares a first-time password).' }),
-        el('li', { text: 'They sign in at the app with that email/password. Nothing else to set up - their profile is created automatically on first sign-in.' }),
-        el('li', { text: 'If someone forgets their password, an admin resets it from the same Authentication -> Users list in the Firebase console - there is no "forgot password" link in the app itself.' }),
+        el('li', { text: 'Enter their @research-square.com email and set a password yourself. Firebase won\'t email it to them, so tell them the password directly - in person, over chat, however your team normally shares a first-time password.' }),
+        el('li', { text: 'They sign in at the app with that email and password. Nothing else to set up - their profile is created automatically the first time they sign in.' }),
+        el('li', { text: 'If someone forgets their password, an admin resets it from the same Authentication -> Users list in the Firebase console. There\'s no "forgot password" link in the app itself.' }),
       ]),
     ]),
   ];
@@ -65,21 +65,21 @@ function adminSections(isFullAdmin) {
   if (isFullAdmin) {
     sections.push(
       section('Admin: granting admin access', [
-        el('p', {}, 'On "Manage Tasks & Categories", the Admins panel lets you grant access by email (the person must have signed in at least once already).'),
+        el('p', {}, 'On "Manage Tasks & Categories", the Admins panel lets you grant access by email. The person must have signed in at least once already.'),
         el('ul', {}, [
-          el('li', { text: 'Tick "All categories" to grant a full admin - they get every admin tab (Settings, granting further admins, deleting any entry from the Company Ledger) and every category.' }),
-          el('li', { text: 'Tick one or more specific categories instead (not "All") to grant a category-scoped admin - they see Admin Dashboard, "Manage Tasks & Categories", and Leaderboard, each scoped to just their assigned categories. They can\'t create brand-new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category - deleting is reserved for full admins.' }),
-          el('li', { text: 'The same panel lists everyone with admin access and their level - click "Revoke access" (with a confirm prompt) to remove anyone else\'s. You can\'t revoke your own, to avoid locking yourself out.' }),
+          el('li', { text: 'Tick "All categories" to make someone a full admin. They get every admin tab - Settings, granting other admins, deleting any entry from the Company Ledger - and every category.' }),
+          el('li', { text: 'Tick specific categories instead (not "All") to make someone a category-scoped admin. They see Admin Dashboard, "Manage Tasks & Categories", and Leaderboard, but only for their own categories. They can\'t create new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category.' }),
+          el('li', { text: 'The same panel lists everyone with admin access and their level. Click "Revoke access" to remove anyone else\'s - you\'ll be asked to confirm. You can\'t revoke your own, so you can\'t lock yourself out.' }),
         ]),
       ]),
       section('Admin: how scoring works and how to change it', [
         el('p', {}, 'Points = Impact x Proof x Task weight x Category weight.'),
         el('ul', {}, [
-          el('li', { text: 'Impact (1-5) and Proof (1-3) are fixed scales everyone uses the same way - the employee picks these when logging, and they aren\'t admin-adjustable per entry.' }),
-          el('li', { text: 'Task weight is admin-adjustable - edit the "Weight" field on a task\'s row in "Manage Tasks & Categories" and click Save to make that task worth more or less.' }),
-          el('li', { text: 'Category weight comes from a contribution type instead of a per-category number - pick Cultural, Operational, or Leadership on a category\'s row, and set what each type is worth on the "Settings" tab (default x1 / x1.5 / x2). Changing a type\'s weight there instantly changes every category assigned to it.' }),
-          el('li', { text: 'Weight and scoring changes are never retroactive: a task/category/type weight change only affects entries logged (or edited/relinked) after the change. Every entry stores its own points at the moment it\'s saved, so nothing already logged is rewritten.' }),
-          el('li', { text: 'The other pilot rules (daily entry caps, weekly point caps, once-a-week limit on impact-5 entries, ledger anonymization, and management validation of high-scoring entries) are all toggled and tuned from the "Settings" tab. Turning any of these on updates what non-admins see on this How-to page automatically.' }),
+          el('li', { text: 'Impact (1-5) and Proof (1-3) are fixed scales. Everyone uses the same one - the employee picks these when logging, and admins can\'t change them on a single entry.' }),
+          el('li', { text: 'Task weight can be changed: edit the "Weight" field on a task\'s row in "Manage Tasks & Categories" and click Save to make that task worth more or less.' }),
+          el('li', { text: 'Category weight comes from a contribution type, not a number you set per category. Pick Cultural, Operational, or Leadership on a category\'s row. Each type\'s own weight (default x1 / x1.5 / x2) is set on the "Settings" tab - change it there and every category of that type updates immediately.' }),
+          el('li', { text: 'Weight changes are never retroactive. They only affect entries logged, edited, or relinked after the change - each entry keeps the points it was given when it was saved.' }),
+          el('li', { text: 'The other pilot rules - daily entry caps, weekly point caps, a once-a-week limit on impact-5 entries, ledger anonymisation, and management validation of high scores - are all turned on and tuned from the "Settings" tab. Turning one on updates what everyone else sees on this How-to page automatically.' }),
         ]),
       ]),
     );
@@ -87,20 +87,20 @@ function adminSections(isFullAdmin) {
 
   sections.push(
     section('Admin: reviewing flagged entries', [
-      el('p', {}, 'A "Flagged entries" panel on the Admin Dashboard lists every entry a colleague has flagged for a second look (see "Something looks off? Flag it." above) - one row per entry, not per flag.'),
+      el('p', {}, 'The Admin Dashboard has a "Flagged entries" panel listing every entry someone has flagged for a second look (see "Something looks off? Flag it." above). It\'s one row per entry, not per flag.'),
       el('ul', {}, [
-        el('li', { text: 'If more than one person flagged the same entry, that row shows a count ("Flagged by 2") instead of duplicate rows, with every distinct reason and note listed together.' }),
-        el('li', { text: 'Set the status to "Under review" while you look into it, or straight to "Updated" / "Rejected" once you\'ve decided - this applies to everyone\'s flag on that entry at once, and each person who raised one sees that status on their own "My Logs" page.' }),
-        el('li', { text: 'This app has no way for an admin to change someone else\'s impact/proof/description - if a flag is valid, ask the entry\'s owner (out of app, e.g. Slack) to correct it themselves from "My Logs", then set the flag to "Updated". If it\'s fine as logged, set it to "Rejected".' }),
-        el('li', { text: 'Who raised a flag is visible only here, to admins - never to the entry\'s owner or anyone else - so following up stays between you and them, not a public callout.' }),
-        el('li', { text: 'Once every flag on an entry is resolved (Updated or Rejected), it drops off this panel - it can be flagged again later if something new comes up.' }),
+        el('li', { text: 'If more than one person flagged the same entry, you\'ll see a count ("Flagged by 2") instead of duplicate rows, with every reason and note listed together.' }),
+        el('li', { text: 'Set the status to "Under review" while you look into it, or straight to "Updated" or "Rejected" once you\'ve decided. This updates everyone\'s flag on that entry at once, and each person who flagged it sees the new status on their own "My Logs" page.' }),
+        el('li', { text: 'There\'s no way for an admin to change someone else\'s impact, proof, or description directly. If a flag looks valid, ask the entry\'s owner (e.g. on Slack) to fix it themselves from "My Logs", then set the flag to "Updated". If the entry is fine as it is, set it to "Rejected".' }),
+        el('li', { text: 'Who raised a flag is only ever visible here, to admins - never to the entry\'s owner or anyone else. Following up stays between you and them, not a public callout.' }),
+        el('li', { text: 'Once every flag on an entry is resolved (Updated or Rejected), it drops off this panel. It can be flagged again later if something new comes up.' }),
       ]),
     ]),
     section('Admin: reviewing "Other" (custom) task entries', [
       el('p', {}, 'Go to "Custom Task Review" to see every entry someone logged under "Other - not listed".'),
       el('ul', {}, [
-        el('li', { text: 'If it\'s a genuinely new kind of task, click "Promote" to turn it into a real task under its category - it\'ll then show up on the log-entry form for everyone.' }),
-        el('li', { text: 'If it actually matches a task that already exists (maybe worded differently), use "Link to existing" to pick the category and task it should count as instead - this recalculates its points using that task\'s weight, without changing anything the employee entered (their description, evidence, impact, proof, date, all stay exactly as logged).' }),
+        el('li', { text: 'If it\'s a genuinely new kind of task, click "Promote" to turn it into a real task under its category. It\'ll then show up on the log-entry form for everyone.' }),
+        el('li', { text: 'If it actually matches a task that already exists (just worded differently), use "Link to existing" to pick which one it should count as. This recalculates its points using that task\'s weight - everything the employee entered (description, evidence, impact, proof, date) stays exactly as logged.' }),
       ]),
     ]),
   );
@@ -122,44 +122,44 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       ]),
     ]),
     section('How do I judge impact fairly?', [
-      el('p', {}, "This only works if everyone's numbers mean roughly the same thing. Two people logging very different work should land on similar Impact ratings if what they actually achieved was similarly sized - that only happens if we're all applying the scale the same way."),
-      el('p', {}, el('strong', { text: "The trap: almost anything can be talked up into a big story." })),
-      el('p', {}, "Reach and drama are the two easiest ways scores get inflated without anyone meaning to game it:"),
+      el('p', {}, "This only works if everyone rates things the same way. Two people doing very different work, but achieving something similarly sized, should end up with similar Impact ratings."),
+      el('p', {}, el('strong', { text: "The trap: almost anything can be made to sound bigger than it is." })),
+      el('p', {}, "Two things make that easy to do without even meaning to:"),
       el('ul', {}, [
-        el('li', { text: '"This touched the whole company" - reach on its own doesn\'t make something bigger. Swapping the fire-alarm batteries reaches every single person in the building. It\'s still a five-minute task, not a company-shaping change.' }),
-        el('li', { text: '"This could have prevented a disaster" - a hypothetical worst case is not something that happened. Score the actual, realised effect of what you did, not the worst thing you can imagine would have gone wrong otherwise. Almost any task can be reframed as "preventing" something bad if you think hard enough - that reframing doesn\'t change what you actually did.' }),
+        el('li', { text: '"It touched the whole company" - reaching a lot of people doesn\'t make something bigger on its own. Changing the fire-alarm batteries reaches everyone in the building. It\'s still a five-minute task, not a company-shaping change.' }),
+        el('li', { text: '"It could have prevented a disaster" - a worst case you can imagine is not something that actually happened. Score what your work really achieved, not what might have gone wrong without it. Almost any task can be described this way if you try hard enough - that doesn\'t change what you actually did.' }),
       ]),
-      el('p', {}, el('strong', { text: "One more trap worth naming: time spent is not a proxy for impact either." })),
-      el('p', {}, "Spending longer on something doesn't make it more impactful, and working efficiently shouldn't score you lower. Rate what changed as a result, not how long it took."),
-      el('p', {}, el('strong', { text: "Reach is still a useful rough anchor once it's not the whole story:" })),
+      el('p', {}, el('strong', { text: "One more thing: how long something took doesn't tell you how much it mattered." })),
+      el('p', {}, "Taking longer doesn't make something more impactful, and working fast shouldn't score you lower. Rate what changed, not how long it took."),
+      el('p', {}, el('strong', { text: "Reach is still a useful rough guide, as long as it's not the only thing you look at:" })),
       el('ul', {}, [
         el('li', { text: '1 = helped one person with something small.' }),
         el('li', { text: '2 = helped a few people, or saved someone real time.' }),
         el('li', { text: '3 = changed how a team works, not just for a moment.' }),
-        el('li', { text: '4 = a team or client noticeably better off, and it keeps paying off.' }),
-        el('li', { text: '5 = changed something company-wide, in a lasting way.' }),
+        el('li', { text: '4 = a team or client is noticeably better off, and it keeps paying off.' }),
+        el('li', { text: '5 = changed something for the whole company, in a lasting way.' }),
       ]),
-      el('p', {}, el('strong', { text: 'A quick gut check before you submit:' })),
+      el('p', {}, el('strong', { text: 'A quick check before you submit:' })),
       el('ul', {}, [
-        el('li', { text: 'What actually changed because of this - not what theoretically could have, in the worst case?' }),
-        el('li', { text: 'If you described just the real outcome, plainly, with no hypotheticals - would a colleague agree with the level you picked?' }),
+        el('li', { text: 'What actually changed because of what you did - not what might have happened otherwise?' }),
+        el('li', { text: 'If you described just what really happened, plainly - would a colleague agree with the level you picked?' }),
       ]),
-      el('p', {}, "Nobody expects perfect precision here - it's a judgement call, and different people will land slightly differently on genuinely borderline cases. That's fine. What matters is rating the real thing you did, not the best story you could tell about it. If a rating still looks off to someone else, that's exactly what \"Flag it\" (below) is for - this doesn't all rest on getting every single entry perfectly calibrated up front."),
+      el('p', {}, "Nobody expects perfect precision here. It's a judgement call, and reasonable people will land differently on borderline cases - that's fine. What matters is rating what really happened, not the best story you could tell about it. If a rating still looks off to someone, that's what \"Flag it\" (below) is for."),
     ]),
     section('Doing the same thing again? Use "Relog".', [
-      el('p', {}, 'On "My Logs", every entry has a "Relog" button. It starts a new entry on the Log Effort page pre-filled from that one - same category, task, impact, proof, description and evidence - but dated today, so you can tweak whatever changed and submit in seconds instead of filling the form from scratch. Handy for anything you do daily or weekly.'),
+      el('p', {}, 'Every entry on "My Logs" has a "Relog" button. It starts a new entry pre-filled with the same category, task, impact, proof, description and evidence - but dated today. Change whatever\'s different and submit in seconds, instead of filling in the form from scratch. Handy for anything you do daily or weekly.'),
     ]),
     section('Logging rules', rules.length === 0
       ? [el('p', {}, 'No extra rules are active right now beyond the basics above - log what you did, as often as it happens.')]
       : [el('ul', {}, rules.map((r) => el('li', { text: r })))]),
     section('What happens to "Other" entries?', [
-      el('p', {}, 'If what you did doesn\'t match any task on the list, log it under "Other - not listed" with a short description anyway - it still counts. An admin reviews these in the Custom Task Review queue and either adds it as a real task (so it\'s on the list for everyone next time) or links your entry to an existing task that already covers it.'),
+      el('p', {}, 'If what you did doesn\'t match any task on the list, log it under "Other - not listed" anyway, with a short description - it still counts. An admin reviews these and either adds it as a real task (so it\'s on the list next time) or links your entry to a task that already covers it.'),
     ]),
     section('If an admin changes how something is weighted, does that change what I already logged?', [
-      el('p', {}, 'No. A change like that only applies going forward - it never rewrites something you\'ve already submitted. Your existing entries keep exactly what they had at the time you logged them.'),
+      el('p', {}, "No. A change like that only applies going forward. It never rewrites something you've already submitted - your entries keep the points they had when you logged them."),
     ]),
     section('Something looks off? Flag it.', [
-      el('p', {}, 'This only works if we trust each other to catch mistakes, not to police each other. On "Company Ledger", any entry that isn\'t your own has a "Flag" button.'),
+      el('p', {}, 'This only works if we trust each other to catch mistakes, not to police each other. Any entry that isn\'t yours has a "Flag" button on the Company Ledger.'),
       el('ol', {}, [
         el('li', { text: 'Click "Flag" - a small form opens under that row.' }),
         el('li', { text: 'Pick a reason: looks like a duplicate, impact rated too high or too low, proof rated too high or too low, or other.' }),
@@ -167,10 +167,10 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       ]),
       el('p', {}, 'What happens next:'),
       el('ul', {}, [
-        el('li', { text: 'An admin sees it on their side and follows up with whoever logged it if it genuinely needs a second look - the point is catching honest mistakes together, not reporting someone.' }),
-        el('li', { text: 'Nobody sees that you flagged something except admins - not the entry\'s owner, not anyone else browsing the Company Ledger. It never shows as a badge or marker anywhere public.' }),
-        el('li', { text: 'You can check on anything you\'ve personally flagged in a small table at the bottom of "My Logs", showing its status: Open, Under review, Updated, or Rejected.' }),
-        el('li', { text: 'More than one person can flag the same entry independently - an admin sees how many people raised it, not a queue of duplicate reports.' }),
+        el('li', { text: 'An admin sees it and follows up with whoever logged it, if it needs a second look. The point is catching honest mistakes together, not reporting someone.' }),
+        el('li', { text: 'Nobody sees that you flagged something except admins - not the entry\'s owner, not anyone else on the Company Ledger.' }),
+        el('li', { text: 'You can check the status of anything you\'ve flagged - Open, Under review, Updated, or Rejected - in a small table at the bottom of "My Logs".' }),
+        el('li', { text: 'More than one person can flag the same entry independently. An admin sees how many people raised it, not a queue of duplicate reports.' }),
         el('li', { text: 'You can flag the same entry again later if something new comes up, once your last flag on it has been resolved (Updated or Rejected) - not while one of yours is still open.' }),
       ]),
     ]),
