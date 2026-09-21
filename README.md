@@ -50,11 +50,12 @@ firebase deploy --only firestore:rules --project <your-project-id>
 This deploys `firestore.rules`, which enforces (server-side, not just in this
 app's JS):
 - every read/write requires sign-in with an `@research-square.com` address
-- a user may create/update only their own `entries` doc, and may **delete
-  only their own** `entries` doc - there is no admin override on delete.
-  This is deliberate: the pilot's whole point is preserving honest,
-  un-tampered raw behavioral data, so not even an admin can quietly remove
-  someone's logged entry.
+- a user may create/update/delete only their own `entries` doc, **or** an
+  admin may delete any entry (a full admin any entry, a category-scoped
+  admin only within their own categories) - e.g. to remove a mistaken or
+  duplicate log, from the Company Ledger page. This was originally a
+  no-exceptions "not even an admin can delete" rule for tamper-evidence;
+  it was deliberately loosened to let admins correct real mistakes.
 - any signed-in company user may read all `entries`, `categories`, `tasks`,
   and `users` (the full ledger and directory are intentionally open to
   everyone - see the design spec, section 2.B)
@@ -94,17 +95,15 @@ is immediately visible to the whole team, not hidden in a private total.
 This is worth hardening before this pilot's data is used for anything beyond
 the measurement-instrument purpose it's built for.
 
-**Known limitation - the optional pilot rules (daily/weekly caps, R&R
-exclusion) are enforced in this app's own JavaScript, not independently
-re-checked by the rules.** An admin can turn on a daily entry cap, a weekly
-points cap, a once-per-week limit on impact-5 entries, and an exclusion flag
-for people with a formal R&R role, from Admin > Settings. All of these are
-checked client-side before a submission is sent (`js/limits.js`) - a
-technical user could bypass them by calling Firestore directly. Two related
-pieces genuinely are rules-enforced: "management validation" (marking a
+**Known limitation - the optional pilot rules (daily/weekly caps) are
+enforced in this app's own JavaScript, not independently re-checked by the
+rules.** An admin can turn on a daily entry cap, a weekly points cap, and a
+once-per-week limit on impact-5 entries, from Admin > Settings. All of these
+are checked client-side before a submission is sent (`js/limits.js`) - a
+technical user could bypass them by calling Firestore directly. One related
+piece genuinely is rules-enforced: "management validation" (marking a
 high-scoring entry as validated) only allows an admin to change the
-`validated`/`validatedAt` fields, nothing else; and the R&R exclusion flag
-itself can only be toggled by an admin. Hardening the caps into real
+`validated`/`validatedAt` fields, nothing else. Hardening the caps into real
 server-side limits would need a maintained per-user counter document written
 transactionally alongside each entry (a known Firestore pattern, just more
 machinery than this pilot needed on day one) - worth doing before these
@@ -161,13 +160,17 @@ and un-deletable by any client.
 
 **Category-scoped admins:** when granting access, a full admin can tick one
 or more categories instead of leaving them all unchecked. That person then
-only sees the "Manage Tasks & Categories" tab (no dashboard, settings,
-custom-task review, or Admins panel), and only their assigned categories
-and tasks appear there - enforced both in the UI and in `firestore.rules`
-(`isCategoryAdminFor`). They can edit/archive/add tasks in their categories
-and edit their categories, but can never create a brand-new category or
-grant admin access to anyone else. Leaving every category unchecked grants
-a full admin, same as before.
+sees "Admin Dashboard" (itself scoped to just their categories - stats,
+participation, by-person breakdown, needs-validation, and CSV export all
+filter down to their entries only), "Manage Tasks & Categories" (also
+scoped), and "Leaderboard" (also scoped) - never Settings, Custom Task
+Review, or the Admins panel. They can edit/archive/add tasks in their
+categories, edit their categories, and delete an entry within their own
+categories from the Company Ledger, but can never create a brand-new
+category, delete an entry outside their categories, or grant admin access
+to anyone else - enforced both in the UI and in `firestore.rules`
+(`isCategoryAdminFor`). Leaving every category unchecked grants a full
+admin, same as before.
 
 ## 5. Seed the task/category list
 
@@ -277,14 +280,17 @@ regular employee and an admin):
       rule is enforced server-side and not just hidden in this app's JS.
 - [ ] Admin > Settings: turn on the daily entry cap (set to 1) and confirm a
       second submission the same day is blocked with a clear message; turn
-      it back off and confirm submissions work normally again. Flag someone
-      as R&R-excluded on the Admin Dashboard and confirm they can no longer
-      submit while it's on. Turn on management validation with a low
-      threshold, log a qualifying entry, and confirm it appears in "Needs
-      validation" and disappears once clicked "Validate". Remember: the
-      caps are enforced in this app's JS only (see "Known limitation"
-      above) - this checklist confirms the UI behaves correctly, not that
-      the caps survive a direct Firestore write.
+      it back off and confirm submissions work normally again. Turn on
+      management validation with a low threshold, log a qualifying entry,
+      and confirm it appears in "Needs validation" and disappears once
+      clicked "Validate". Remember: the caps are enforced in this app's JS
+      only (see "Known limitation" above) - this checklist confirms the UI
+      behaves correctly, not that the caps survive a direct Firestore write.
+- [ ] On the Company Ledger, an admin can delete another employee's entry
+      (e.g. a duplicate), and a category-scoped admin can delete an entry in
+      their own category but the Delete button does not appear at all on an
+      entry outside it. A regular employee still cannot delete anyone else's
+      entry - only their own, from "My Logs".
 
 ## Code layout
 
@@ -298,7 +304,8 @@ js/scoring.js                pure: points formula, impact/proof level text
 js/validation.js             pure: entry-draft validation
 js/format.js                 pure: date/number/percent formatting
 js/stats.js                  pure: participation and breakdown aggregation
-js/limits.js                 pure: pilot-rule checks (daily/weekly caps, R&R exclusion) - client-side only, see "Known limitation"
+js/limits.js                 pure: pilot-rule checks (daily/weekly caps) and contribution-type weight lookup - client-side only, see "Known limitation"
+js/csv.js                    pure: full-ledger CSV export formatting
 js/firebase-config.js        Firebase app/auth/db init (public config)
 js/ui/dom.js                  small DOM helpers (vendored from the detronics-app skill)
 js/ui/auth.js                  sign-in/out, domain check, admin check

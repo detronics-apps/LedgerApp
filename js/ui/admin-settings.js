@@ -44,8 +44,6 @@ export function buildSettingsView(settings, onUpdate) {
     toggleRow('Cap total points per week', null, settings.weeklyPointsCapEnabled, (v) => save({ weeklyPointsCapEnabled: v })),
     numberRow('Weekly point cap', settings.weeklyPointsCap, (v) => save({ weeklyPointsCap: v })),
 
-    toggleRow('Exclude formal R&R holders', 'People flagged as "excluded" (set on the Admin Dashboard\'s per-person table) can\'t log entries while this is on.', settings.rrExclusionEnabled, (v) => save({ rrExclusionEnabled: v })),
-
     toggleRow('Hide names in the Company Ledger for regular employees', 'Admins still see names everywhere. This hides the name in this app\'s own display only - see README "Known limitations".', settings.anonymizeLedgerEnabled, (v) => save({ anonymizeLedgerEnabled: v })),
 
     toggleRow('Flag high-scoring entries for management validation', null, settings.managementValidationEnabled, (v) => save({ managementValidationEnabled: v })),

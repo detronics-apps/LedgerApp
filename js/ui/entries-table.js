@@ -1,14 +1,15 @@
 import { el } from './dom.js';
 import { formatDate, formatPoints } from '../format.js';
 
-export function buildEntriesTable(entries, { showOwner = true, onEdit = null, onDelete = null, anonymize = false } = {}) {
+export function buildEntriesTable(entries, { showOwner = true, showPoints = true, onEdit = null, onDelete = null, canDelete = () => true, onRelog = null, anonymize = false } = {}) {
   if (entries.length === 0) {
     return el('p', { class: 'muted', text: 'Nothing logged yet.' });
   }
 
-  const headers = ['Date', 'Category', 'Task', 'Impact', 'Proof', 'Points', 'Description'];
+  const headers = ['Date', 'Category', 'Task', 'Impact', 'Proof', 'Description'];
+  if (showPoints) headers.splice(5, 0, 'Points');
   if (showOwner) headers.splice(1, 0, 'Person');
-  if (onEdit || onDelete) headers.push('');
+  if (onEdit || onDelete || onRelog) headers.push('');
 
   const rows = entries.map((entry) => {
     // Evidence can be a real link or just descriptive text ("ask Sam, she was
@@ -25,7 +26,7 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
       ]),
       el('td', { text: String(entry.impact) }),
       el('td', { text: String(entry.proof) }),
-      el('td', { class: 'value', text: formatPoints(entry.points) }),
+      ...(showPoints ? [el('td', { class: 'value', text: formatPoints(entry.points) })] : []),
       el('td', {}, [
         entry.description,
         !entry.evidenceUrl ? null
@@ -38,10 +39,15 @@ export function buildEntriesTable(entries, { showOwner = true, onEdit = null, on
       const personLabel = anonymize ? `Employee ${(entry.uid || '').slice(-4)}` : entry.displayName;
       cells.splice(1, 0, el('td', { text: personLabel }));
     }
-    if (onEdit || onDelete) {
+    if (onEdit || onDelete || onRelog) {
       cells.push(el('td', {}, [
+        onRelog ? el('button', {
+          type: 'button', class: 'btn', text: 'Relog',
+          title: 'Start a new entry pre-filled from this one, dated today.',
+          on: { click: () => onRelog(entry) },
+        }) : null,
         onEdit ? el('button', { type: 'button', class: 'btn', text: 'Edit', on: { click: () => onEdit(entry) } }) : null,
-        onDelete ? el('button', {
+        onDelete && canDelete(entry) ? el('button', {
           type: 'button', class: 'btn btn-danger', text: 'Delete',
           on: { click: () => { if (confirm('Delete this entry? This cannot be undone.')) onDelete(entry); } },
         }) : null,

@@ -24,8 +24,7 @@ service cloud.firestore {
 
     // A full admin: has an admins/{uid} doc with no categoryIds restriction
     // (missing, or an empty list). Full admins can touch everything -
-    // settings, validation, user exclusion, other admins - not just
-    // categories/tasks.
+    // settings, validation, other admins - not just categories/tasks.
     function isAdmin() {
       return isCompanyUser() &&
         exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
@@ -103,7 +102,13 @@ service cloud.firestore {
         (isAdmin() && isRecategorizationOnly(resource.data, request.resource.data)) ||
         (isAdmin() && isValidationOnly(resource.data, request.resource.data))
       );
-      allow delete: if isCompanyUser() && resource.data.uid == request.auth.uid;
+      // An admin (full, or category-scoped for that entry's own category) may
+      // delete any entry - e.g. a mistaken or duplicate log - in addition to
+      // an employee deleting their own. This is a deliberate policy choice:
+      // the ledger's earlier "not even an admin can delete" rule traded away
+      // correctability for tamper-evidence, and this pilot wants the former.
+      allow delete: if isCompanyUser() &&
+        (resource.data.uid == request.auth.uid || isAdmin() || isCategoryAdminFor(resource.data.categoryId));
     }
 
     match /categories/{categoryId} {
@@ -123,21 +128,12 @@ service cloud.firestore {
       allow delete: if isAdmin() || isCategoryAdminFor(resource.data.categoryId);
     }
 
-    // An admin toggling someone's R&R-exclusion flag (settings.rrExclusion):
-    // only `excludedFromLedger` may change - an admin still can't touch a
-    // user's own email/displayName via this path.
-    function isExclusionFlagOnly(before, after) {
-      return before.email == after.email && before.displayName == after.displayName;
-    }
-
     // Every company user can read the directory (names are already visible on
     // every ledger entry, so this adds no new exposure) but may only write
-    // their own profile doc - except an admin may flip the exclusion flag on
-    // someone else's doc (see isExclusionFlagOnly above).
+    // their own profile doc.
     match /users/{userId} {
       allow read: if isCompanyUser();
       allow create, update: if isCompanyUser() && request.auth.uid == userId;
-      allow update: if isAdmin() && isExclusionFlagOnly(resource.data, request.resource.data);
       allow delete: if false;
     }
 

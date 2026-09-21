@@ -8,14 +8,15 @@ function statCard(value, label) {
   ]);
 }
 
-function breakdownList(rows, nameKey) {
+function breakdownList(rows, nameKey, { hidePoints = false } = {}) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
+  const headers = hidePoints ? ['Name', 'Count'] : ['Name', 'Count', 'Points'];
   return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
-    el('thead', {}, el('tr', {}, [el('th', { text: 'Name' }), el('th', { text: 'Count' }), el('th', { text: 'Points' })])),
+    el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
     el('tbody', {}, rows.map((r) => el('tr', {}, [
       el('td', { text: r[nameKey] }),
       el('td', { text: String(r.count) }),
-      el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
+      ...(hidePoints ? [] : [el('td', { class: 'value', text: formatPoints(r.totalPoints) })]),
     ]))),
   ]));
 }
@@ -25,33 +26,24 @@ function distributionList(distribution) {
     el('li', { text: `${value}: ${count}` })));
 }
 
-export function buildUserBreakdownTable(rows, { onToggleExclusion = null, showRank = false } = {}) {
+export function buildUserBreakdownTable(rows, { showRank = false } = {}) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
-  const headers = [...(showRank ? ['#'] : []), 'Name', 'Email', 'Entries', 'Points', 'Last activity'];
-  if (onToggleExclusion) headers.push('Excluded from ledger');
+  // No separate "Name" column: displayName is just the sign-in email for these
+  // password accounts, so showing both would repeat the same value twice.
+  const headers = [...(showRank ? ['#'] : []), 'Email', 'Entries', 'Points', 'Last activity'];
   return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
     el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
-    el('tbody', {}, rows.map((r, i) => {
-      const cells = [
-        ...(showRank ? [el('td', { class: 'value', text: String(i + 1) })] : []),
-        el('td', { text: r.displayName }),
-        el('td', { text: r.email }),
-        el('td', { text: String(r.entryCount) }),
-        el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
-        el('td', { text: formatDate(r.lastActivity) }),
-      ];
-      if (onToggleExclusion) {
-        cells.push(el('td', {}, el('input', {
-          type: 'checkbox', checked: !!r.excludedFromLedger,
-          on: { change: (e) => onToggleExclusion(r.uid, e.target.checked) },
-        })));
-      }
-      return el('tr', {}, cells);
-    })),
+    el('tbody', {}, rows.map((r, i) => el('tr', {}, [
+      ...(showRank ? [el('td', { class: 'value', text: String(i + 1) })] : []),
+      el('td', { text: r.email || r.displayName }),
+      el('td', { text: String(r.entryCount) }),
+      el('td', { class: 'value', text: formatPoints(r.totalPoints) }),
+      el('td', { text: formatDate(r.lastActivity) }),
+    ]))),
   ]));
 }
 
-export function buildStatsView(summary, participation = null) {
+export function buildStatsView(summary, participation = null, { hidePoints = false } = {}) {
   const panels = [];
 
   if (participation) {
@@ -65,22 +57,24 @@ export function buildStatsView(summary, participation = null) {
   }
 
   panels.push(el('div', { class: 'panel' }, [
-    el('h3', { text: 'Points' }),
+    el('h3', { text: hidePoints ? 'Activity' : 'Points' }),
     statCard(String(summary.entryCount), 'Entries'),
-    statCard(formatPoints(summary.totalPoints), 'Total points'),
-    statCard(formatPoints(summary.meanPoints), 'Mean points / entry'),
-    statCard(formatPoints(summary.medianPoints), 'Median points / entry'),
+    ...(hidePoints ? [] : [
+      statCard(formatPoints(summary.totalPoints), 'Total points'),
+      statCard(formatPoints(summary.meanPoints), 'Mean points / entry'),
+      statCard(formatPoints(summary.medianPoints), 'Median points / entry'),
+    ]),
     statCard(formatPercent(summary.customTaskRate), '"Other" entries'),
   ]));
 
   panels.push(el('div', { class: 'panel' }, [
     el('h3', { text: 'By category' }),
-    breakdownList(summary.categoryBreakdown, 'categoryName'),
+    breakdownList(summary.categoryBreakdown, 'categoryName', { hidePoints }),
   ]));
 
   panels.push(el('div', { class: 'panel' }, [
     el('h3', { text: 'By task' }),
-    breakdownList(summary.taskBreakdown, 'taskName'),
+    breakdownList(summary.taskBreakdown, 'taskName', { hidePoints }),
   ]));
 
   panels.push(el('div', { class: 'panel' }, [

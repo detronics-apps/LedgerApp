@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0
+- "Relog" button on My Logs: pre-fills a new Log Effort entry (dated today)
+  from a past one, for fast repeat submissions.
+- Company Ledger: filters by Date, Category and Task; Points column removed.
+- Company Stats: all points columns/stat-cards removed (activity/category/
+  task counts and impact/proof distributions stay visible).
+- My Stats: shows the employee's own company-wide ranking position.
+- Leaderboard: dropped the redundant "Name" column (it was just the email
+  again) - Email is now the only identity column.
+- All admins (full and category-scoped) now reach the Admin Dashboard; a
+  scoped admin's copy (stats, by-person, needs-validation, CSV export) is
+  itself scoped to their own categories.
+- Removed the "Excluded from ledger" checkbox and the whole R&R-exclusion
+  pilot rule it belonged to (it had no other way to be set). In its place,
+  an admin can delete an entry directly from the Company Ledger (e.g. a
+  mistake or duplicate) - a full admin any entry, a category-scoped admin
+  only within their own categories. This replaces the ledger's earlier
+  no-exceptions "not even an admin can delete" rule.
+
 ## 0.3.0
 - Switched sign-in from Google to admin-provisioned email/password accounts
   (no self-service signup), matching a Microsoft/Outlook shop.

@@ -2,12 +2,9 @@
  * (see README "Known limitations") - these functions decide what the app
  * shows/blocks in its own UI, they are not a security boundary. */
 
-export function checkSubmissionLimits({ impact, prospectivePoints, isExcluded, settings, todayCount, weekPoints, weekUsedFiveImpact }) {
+export function checkSubmissionLimits({ impact, prospectivePoints, settings, todayCount, weekPoints, weekUsedFiveImpact }) {
   const errors = [];
 
-  if (settings.rrExclusionEnabled && isExcluded) {
-    errors.push("Your role already covers this as a formal responsibility - it can't also earn ledger points.");
-  }
   if (settings.dailyEntryCapEnabled && todayCount >= settings.dailyEntryCap) {
     errors.push(`You've reached today's limit of ${settings.dailyEntryCap} ${settings.dailyEntryCap === 1 ? 'entry' : 'entries'}.`);
   }
@@ -25,7 +22,6 @@ export const DEFAULT_SETTINGS = {
   dailyEntryCapEnabled: false, dailyEntryCap: 1,
   weeklyPointsCapEnabled: false, weeklyPointsCap: 39,
   fiveImpactOncePerWeekEnabled: false,
-  rrExclusionEnabled: false,
   anonymizeLedgerEnabled: false,
   managementValidationEnabled: false, managementValidationThreshold: 15,
   contributionWeights: { cultural: 1, operational: 1.5, leadership: 2 },

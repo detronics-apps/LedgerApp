@@ -15,7 +15,7 @@ import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './li
 import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 
-export const APP_VERSION = '0.3.0';
+export const APP_VERSION = '0.4.0';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -39,10 +39,12 @@ const state = {
   user: null, isAdmin: false, adminCategoryIds: [],
   categories: [], tasks: [], entries: [], users: [],
   leaderboardCategoryId: 'all',
+  ledgerFilters: { date: '', categoryId: 'all', taskId: 'all' },
   settings: DEFAULT_SETTINGS,
   activeTab: 'log',
   wrongDomainEmail: null,
   editingEntry: null,
+  relogDraft: null,
   authError: null,
   theme: loadTheme(),
 };
@@ -117,11 +119,19 @@ function tabsFor(state) {
   if (state.isAdmin) return [...EMPLOYEE_TABS, { sep: true }, ...ADMIN_TABS];
   if (isScopedAdmin()) {
     return [...EMPLOYEE_TABS, { sep: true },
+      { id: 'admin-dashboard', label: 'Admin Dashboard' },
       { id: 'admin-manage', label: 'Manage Tasks & Categories' },
       { id: 'leaderboard', label: 'Leaderboard' },
     ];
   }
   return EMPLOYEE_TABS;
+}
+
+/** Every admin (full or category-scoped) reaches the Admin Dashboard; a scoped
+ * admin's copy is itself scoped to their own categories - same filtering the
+ * Leaderboard already applies. */
+function dashboardEntries() {
+  return isScopedAdmin() ? state.entries.filter((e) => state.adminCategoryIds.includes(e.categoryId)) : state.entries;
 }
 
 function activeCategories() { return state.categories.filter((c) => !c.archived); }
@@ -146,9 +156,11 @@ function renderView() {
 
 function renderLog() {
   const editing = state.editingEntry;
+  const relog = !editing && state.relogDraft;
+  const initialValues = editing ? { ...editing } : relog ? { ...relog, date: new Date().toISOString().slice(0, 10) } : null;
   return buildLogForm({
     categories: activeCategories(), tasks: activeTasks(),
-    initialValues: editing ? { ...editing } : null,
+    initialValues,
     onCancel: editing ? () => { state.editingEntry = null; renderView(); } : null,
     onSubmit: (draft) => {
       const category = state.categories.find((c) => c.id === draft.categoryId);
@@ -158,9 +170,8 @@ function renderLog() {
       const prospectivePoints = computePoints(draft.impact, draft.proof, taskWeight, categoryWeight);
 
       if (!editing) {
-        const isExcluded = !!state.users.find((u) => u.id === state.user.uid)?.excludedFromLedger;
         const { allowed, errors } = checkSubmissionLimits({
-          impact: draft.impact, prospectivePoints, isExcluded, settings: state.settings,
+          impact: draft.impact, prospectivePoints, settings: state.settings,
           ...myRecentActivity(),
         });
         if (!allowed) return Promise.reject(new Error(errors[0]));
@@ -178,7 +189,8 @@ function renderLog() {
       };
       const write = editing ? data.updateEntry(editing.id, payload) : data.createEntry(payload);
       return write.then(() => {
-        if (editing) state.editingEntry = null;
+        state.editingEntry = null;
+        state.relogDraft = null;
         return { points: prospectivePoints };
       });
     },
@@ -189,6 +201,7 @@ function renderMyLogs() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
   return buildEntriesTable(sortedByDateDesc(own), {
     showOwner: false,
+    onRelog: (entry) => { state.relogDraft = entry; state.activeTab = 'log'; renderView(); },
     onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderView(); },
     onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
   });
@@ -196,29 +209,68 @@ function renderMyLogs() {
 
 function renderLedger() {
   const canSeeIdentity = state.isAdmin || isScopedAdmin();
-  return buildEntriesTable(sortedByDateDesc(state.entries), {
-    // Nobody but an admin sees real names/emails unless anonymized identifiers
-    // are turned on for everyone else (settings.anonymizeLedgerEnabled) - the
-    // column is hidden entirely otherwise, not just shown with real identity.
-    showOwner: canSeeIdentity || state.settings.anonymizeLedgerEnabled,
-    anonymize: state.settings.anonymizeLedgerEnabled && !canSeeIdentity,
+  const showDeleteColumn = state.isAdmin || isScopedAdmin();
+  const f = state.ledgerFilters;
+
+  const categoryOptions = [{ value: 'all', label: 'All categories' }, ...state.categories.map((c) => ({ value: c.id, label: c.name }))];
+  const tasksForFilter = f.categoryId === 'all' ? state.tasks : state.tasks.filter((t) => t.categoryId === f.categoryId);
+  const taskOptions = [{ value: 'all', label: 'All tasks' }, ...tasksForFilter.map((t) => ({ value: t.id, label: t.name }))];
+  if (!taskOptions.some((o) => o.value === f.taskId)) f.taskId = 'all';
+
+  const filtered = state.entries.filter((e) =>
+    (!f.date || e.date === f.date) &&
+    (f.categoryId === 'all' || e.categoryId === f.categoryId) &&
+    (f.taskId === 'all' || e.taskId === f.taskId));
+
+  const dateInput = el('input', { type: 'date', value: f.date, on: { change: (e) => { f.date = e.target.value; renderView(); } } });
+  const categorySelect = select(categoryOptions, f.categoryId, (value) => { f.categoryId = value; f.taskId = 'all'; renderView(); });
+  const taskSelect = select(taskOptions, f.taskId, (value) => { f.taskId = value; renderView(); });
+  const clearBtn = el('button', {
+    type: 'button', class: 'btn', text: 'Clear filters',
+    on: { click: () => { state.ledgerFilters = { date: '', categoryId: 'all', taskId: 'all' }; renderView(); } },
   });
+
+  return el('div', {}, [
+    el('div', { class: 'panel' }, [
+      el('h3', { text: 'Filters' }),
+      field('Date', dateInput),
+      field('Category', categorySelect),
+      field('Task', taskSelect),
+      clearBtn,
+    ]),
+    buildEntriesTable(sortedByDateDesc(filtered), {
+      // Nobody but an admin sees real names/emails unless anonymized identifiers
+      // are turned on for everyone else (settings.anonymizeLedgerEnabled) - the
+      // column is hidden entirely otherwise, not just shown with real identity.
+      showOwner: canSeeIdentity || state.settings.anonymizeLedgerEnabled,
+      anonymize: state.settings.anonymizeLedgerEnabled && !canSeeIdentity,
+      showPoints: false,
+      onDelete: showDeleteColumn ? (entry) => data.deleteEntry(entry.id).catch((err) => toast(err.message || 'Could not delete - try again.')) : null,
+      canDelete: (entry) => state.isAdmin || state.adminCategoryIds.includes(entry.categoryId),
+    }),
+  ]);
 }
 
 function renderMyStats() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
-  return buildStatsView(summarizeEntries(own));
+  const ranked = summarizeByUser(state.entries, state.users);
+  const rank = ranked.findIndex((r) => r.uid === state.user.uid) + 1;
+  const rankPanel = rank > 0 ? el('div', { class: 'panel' }, [
+    el('h3', { text: 'Your ranking' }),
+    el('p', {}, `You're #${rank} of ${ranked.length} people company-wide, based on total points.`),
+  ]) : null;
+  return el('div', {}, [rankPanel, buildStatsView(summarizeEntries(own))].filter(Boolean));
 }
 
 function renderCompanyStats() {
   const summary = summarizeEntries(state.entries);
   const participation = summarizeParticipation(state.entries, state.users.map((u) => u.id));
-  return buildStatsView(summary, participation);
+  return buildStatsView(summary, participation, { hidePoints: true });
 }
 
-function renderNeedsValidation() {
+function renderNeedsValidation(entries) {
   if (!state.settings.managementValidationEnabled) return null;
-  const flagged = state.entries.filter((e) => !e.validated && e.points >= state.settings.managementValidationThreshold);
+  const flagged = entries.filter((e) => !e.validated && e.points >= state.settings.managementValidationThreshold);
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Needs validation' }),
     el('p', { class: 'muted', text: `Entries worth ${state.settings.managementValidationThreshold}+ points, not yet validated.` }),
@@ -241,34 +293,30 @@ function renderNeedsValidation() {
 }
 
 function renderAdminDashboard() {
-  const summary = summarizeEntries(state.entries);
-  const participation = summarizeParticipation(state.entries, state.users.map((u) => u.id));
-  const userBreakdown = summarizeByUser(state.entries, state.users).map((row) => ({
-    ...row,
-    excludedFromLedger: !!state.users.find((u) => u.id === row.uid)?.excludedFromLedger,
-  }));
+  const entries = dashboardEntries();
+  const summary = summarizeEntries(entries);
+  const participation = summarizeParticipation(entries, state.users.map((u) => u.id));
+  const userBreakdown = summarizeByUser(entries, state.users);
   return el('div', {}, [
     buildStatsView(summary, participation),
     el('div', { class: 'panel' }, [
       el('h3', { text: 'By person' }),
-      buildUserBreakdownTable(userBreakdown, {
-        onToggleExclusion: (uid, excluded) => data.setUserExclusion(uid, excluded).catch((err) => toast(err.message || 'Could not update.')),
-      }),
+      buildUserBreakdownTable(userBreakdown),
     ]),
-    renderNeedsValidation(),
-    renderExportPanel(),
+    renderNeedsValidation(entries),
+    renderExportPanel(entries),
   ].filter(Boolean));
 }
 
-function renderExportPanel() {
+function renderExportPanel(entries) {
   return el('div', { class: 'panel' }, [
     el('h3', { text: 'Export' }),
-    el('p', { class: 'muted', text: `Download the entire company ledger (${state.entries.length} ${state.entries.length === 1 ? 'entry' : 'entries'}) as a CSV file.` }),
+    el('p', { class: 'muted', text: `Download ${isScopedAdmin() ? 'your categories’' : 'the entire company'} ledger (${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}) as a CSV file.` }),
     el('button', {
       type: 'button', class: 'btn btn-primary', text: 'Download CSV',
       on: {
         click: () => {
-          const csv = entriesToCsv(sortedByDateDesc(state.entries));
+          const csv = entriesToCsv(sortedByDateDesc(entries));
           download(new Blob([csv], { type: 'text/csv' }), `impact-ledger-export-${new Date().toISOString().slice(0, 10)}.csv`);
         },
       },

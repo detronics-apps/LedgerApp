@@ -19,9 +19,6 @@ function activeRules(settings) {
   if (settings.weeklyPointsCapEnabled) {
     rules.push(`There's a cap of ${settings.weeklyPointsCap} points per week.`);
   }
-  if (settings.rrExclusionEnabled) {
-    rules.push("If your role already has a formal responsibility for something, you can't also log it here - ask an admin if you're not sure.");
-  }
   if (settings.managementValidationEnabled) {
     rules.push(`Entries worth ${settings.managementValidationThreshold}+ points get reviewed by management before they're finalised.`);
   }
@@ -66,7 +63,7 @@ function adminSections(isFullAdmin) {
         el('ul', {}, [
           el('li', { text: 'Impact (1-5) and Proof (1-3) are fixed scales everyone uses the same way - the employee picks these when logging, and they aren\'t admin-adjustable per entry.' }),
           el('li', { text: 'Task weight and Category weight ARE admin-adjustable - edit the "Weight" field on any row in "Manage Tasks & Categories" and click Save to make that task or category worth more or less. A weight of 1 means no change; 2 doubles the points for anything logged under it, and so on.' }),
-          el('li', { text: 'The other pilot rules (daily entry caps, weekly point caps, once-a-week limit on impact-5 entries, R&R exclusion, ledger anonymization, and management validation of high-scoring entries) are all toggled and tuned from the "Settings" tab. Turning any of these on updates what non-admins see on this How-to page automatically.' }),
+          el('li', { text: 'The other pilot rules (daily entry caps, weekly point caps, once-a-week limit on impact-5 entries, ledger anonymization, and management validation of high-scoring entries) are all toggled and tuned from the "Settings" tab. Turning any of these on updates what non-admins see on this How-to page automatically.' }),
         ]),
       ]),
     );

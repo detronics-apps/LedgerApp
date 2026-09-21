@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from '../js/limits.js';
 
 const base = {
-  impact: 3, prospectivePoints: 6, isExcluded: false,
+  impact: 3, prospectivePoints: 6,
   settings: DEFAULT_SETTINGS, todayCount: 0, weekPoints: 0, weekUsedFiveImpact: false,
 };
 
@@ -34,16 +34,9 @@ test('weekly points cap blocks when the new entry would exceed it', () => {
   assert.equal(checkSubmissionLimits({ ...base, settings, weekPoints: 34, prospectivePoints: 6 }).allowed, false);
 });
 
-test('rrExclusion blocks an excluded person regardless of other settings', () => {
-  const settings = { ...DEFAULT_SETTINGS, rrExclusionEnabled: true };
-  const result = checkSubmissionLimits({ ...base, settings, isExcluded: true });
-  assert.equal(result.allowed, false);
-  assert.equal(result.errors.length, 1);
-});
-
 test('multiple violated limits are all reported', () => {
-  const settings = { ...DEFAULT_SETTINGS, dailyEntryCapEnabled: true, dailyEntryCap: 1, rrExclusionEnabled: true };
-  const result = checkSubmissionLimits({ ...base, settings, todayCount: 1, isExcluded: true });
+  const settings = { ...DEFAULT_SETTINGS, dailyEntryCapEnabled: true, dailyEntryCap: 1, weeklyPointsCapEnabled: true, weeklyPointsCap: 5 };
+  const result = checkSubmissionLimits({ ...base, settings, todayCount: 1, weekPoints: 5, prospectivePoints: 6 });
   assert.equal(result.allowed, false);
   assert.equal(result.errors.length, 2);
 });

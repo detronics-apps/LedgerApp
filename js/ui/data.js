@@ -94,14 +94,6 @@ export function relinkEntry(entry, category, task, categoryWeight) {
   });
 }
 
-/** Admin sets or clears someone's "formal R&R" exclusion flag (settings
- * .rrExclusionEnabled) - when set, this app's own submit flow blocks them
- * from logging entries. Rules independently only allow this exact field to
- * change (isExclusionFlagOnly). */
-export function setUserExclusion(uid, excludedFromLedger) {
-  return updateDoc(doc(db, 'users', uid), { excludedFromLedger });
-}
-
 /** Admin marks a high-scoring entry as validated (settings
  * .managementValidationEnabled). Rules independently only allow
  * validated/validatedAt to change on this path (isValidationOnly). */
