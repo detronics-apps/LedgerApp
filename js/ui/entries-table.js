@@ -85,10 +85,10 @@ export function buildEntriesTable(entries, {
         }) : null,
         onEdit ? el('button', { type: 'button', class: 'btn', text: 'Edit', on: { click: () => onEdit(entry) } }) : null,
         flagRow ? el('button', {
-          type: 'button', class: 'btn', text: 'Flag',
+          type: 'button', class: 'btn btn-icon', 'aria-label': 'Flag this entry for a second look',
           title: 'Ask for a second look on this entry - not an accusation, just a check.',
           on: { click: () => { flagRow.style.display = flagRow.style.display === 'none' ? 'table-row' : 'none'; } },
-        }) : null,
+        }, el('span', { 'aria-hidden': 'true', text: '⚑' })) : null,
         onDelete ? el('button', {
           type: 'button', class: 'btn btn-danger', text: 'Delete',
           on: { click: () => { if (confirm('Delete this entry? This cannot be undone.')) onDelete(entry); } },
