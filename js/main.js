@@ -1,4 +1,4 @@
-import { el, clear, toast, field, select } from './ui/dom.js';
+import { el, clear, toast, field, select, download } from './ui/dom.js';
 import { initAuth, signIn, signOutUser } from './ui/auth.js';
 import * as data from './ui/data.js';
 import { buildNav } from './ui/nav.js';
@@ -13,8 +13,9 @@ import { summarizeEntries, summarizeParticipation, summarizeByUser } from './sta
 import { computePoints } from './scoring.js';
 import { checkSubmissionLimits, DEFAULT_SETTINGS, categoryWeightFor } from './limits.js';
 import { formatDate } from './format.js';
+import { entriesToCsv } from './csv.js';
 
-export const APP_VERSION = '0.2.0';
+export const APP_VERSION = '0.3.0';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -255,7 +256,24 @@ function renderAdminDashboard() {
       }),
     ]),
     renderNeedsValidation(),
+    renderExportPanel(),
   ].filter(Boolean));
+}
+
+function renderExportPanel() {
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: 'Export' }),
+    el('p', { class: 'muted', text: `Download the entire company ledger (${state.entries.length} ${state.entries.length === 1 ? 'entry' : 'entries'}) as a CSV file.` }),
+    el('button', {
+      type: 'button', class: 'btn btn-primary', text: 'Download CSV',
+      on: {
+        click: () => {
+          const csv = entriesToCsv(sortedByDateDesc(state.entries));
+          download(new Blob([csv], { type: 'text/csv' }), `impact-ledger-export-${new Date().toISOString().slice(0, 10)}.csv`);
+        },
+      },
+    }),
+  ]);
 }
 
 function renderLeaderboard() {
