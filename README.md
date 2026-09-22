@@ -184,9 +184,9 @@ someone's level is a revoke followed by a fresh grant.
 or more categories instead of leaving them all unchecked. That person then
 sees "Admin Dashboard" (itself scoped to just their categories - stats,
 participation, by-person breakdown, needs-validation, and CSV export all
-filter down to their entries only), "Manage Tasks & Categories" (also
-scoped), and "Leaderboard" (also scoped) - never Settings, Custom Task
-Review, or the Admins panel. They can edit/archive/add tasks in their
+filter down to their entries only) and "Manage Tasks & Categories" (also
+scoped) - never Settings, Custom Task Review, or the Admins panel. They can
+edit/archive/add tasks in their
 categories, edit their categories, and delete an entry within their own
 categories from the Company Ledger, but can never create a brand-new
 category, delete an entry outside their categories, or grant admin access

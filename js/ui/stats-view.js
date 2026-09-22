@@ -26,15 +26,14 @@ function distributionList(distribution) {
     el('li', { text: `${value}: ${count}` })));
 }
 
-export function buildUserBreakdownTable(rows, { showRank = false } = {}) {
+export function buildUserBreakdownTable(rows) {
   if (rows.length === 0) return el('p', { class: 'muted', text: 'No data yet.' });
   // No separate "Name" column: displayName is just the sign-in email for these
   // password accounts, so showing both would repeat the same value twice.
-  const headers = [...(showRank ? ['#'] : []), 'Email', 'Entries', 'Points', 'Last activity'];
+  const headers = ['Email', 'Entries', 'Points', 'Last activity'];
   return el('div', { class: 'table-scroll' }, el('table', { class: 'table' }, [
     el('thead', {}, el('tr', {}, headers.map((h) => el('th', { text: h })))),
-    el('tbody', {}, rows.map((r, i) => el('tr', {}, [
-      ...(showRank ? [el('td', { class: 'value', text: String(i + 1) })] : []),
+    el('tbody', {}, rows.map((r) => el('tr', {}, [
       el('td', { text: r.email || r.displayName }),
       el('td', { text: String(r.entryCount) }),
       el('td', { class: 'value', text: formatPoints(r.totalPoints) }),

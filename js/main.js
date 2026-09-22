@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.5.6';
+export const APP_VERSION = '0.6.0';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -41,7 +41,6 @@ const DEFAULT_LEDGER_FILTERS = { enabled: true, dateStart: '', dateEnd: '', cate
 const state = {
   user: null, isAdmin: false, adminCategoryIds: [],
   categories: [], tasks: [], entries: [], users: [], flags: [], admins: [],
-  leaderboardCategoryId: 'all',
   ledgerFilters: { ...DEFAULT_LEDGER_FILTERS },
   settings: DEFAULT_SETTINGS,
   activeTab: 'log',
@@ -82,7 +81,6 @@ const EMPLOYEE_TABS = [
 const ADMIN_TABS = [
   { id: 'admin-dashboard', label: 'Admin Dashboard' },
   { id: 'admin-manage', label: 'Manage Tasks & Categories' },
-  { id: 'leaderboard', label: 'Leaderboard' },
   { id: 'admin-review', label: 'Custom Task Review' },
   { id: 'admin-settings', label: 'Settings' },
 ];
@@ -95,15 +93,15 @@ function tabsFor(state) {
     return [...EMPLOYEE_TABS, { sep: true },
       { id: 'admin-dashboard', label: 'Admin Dashboard' },
       { id: 'admin-manage', label: 'Manage Tasks & Categories' },
-      { id: 'leaderboard', label: 'Leaderboard' },
     ];
   }
   return EMPLOYEE_TABS;
 }
 
 /** Every admin (full or category-scoped) reaches the Admin Dashboard; a scoped
- * admin's copy is itself scoped to their own categories - same filtering the
- * Leaderboard already applies. */
+ * admin's copy is itself scoped to their own categories, including its
+ * "By person" breakdown - that's the app's one place to see who scores what
+ * in what category, deliberately not a separate ranked leaderboard. */
 function dashboardEntries() {
   return isScopedAdmin() ? state.entries.filter((e) => state.adminCategoryIds.includes(e.categoryId)) : state.entries;
 }
@@ -127,7 +125,6 @@ function renderView() {
   const view = { log: renderLog, 'my-logs': renderMyLogs, ledger: renderLedger,
     'my-stats': renderMyStats, 'company-stats': renderCompanyStats, 'how-to': () => buildHowTo(state.settings, { isAdmin: state.isAdmin, isScopedAdmin: isScopedAdmin() }),
     'admin-dashboard': renderAdminDashboard, 'admin-manage': renderAdminManage,
-    'leaderboard': renderLeaderboard,
     'admin-review': renderAdminReview, 'admin-settings': renderAdminSettings }[state.activeTab];
   dom.main.appendChild(view());
 }
@@ -270,13 +267,7 @@ function renderLedger() {
 
 function renderMyStats() {
   const own = state.entries.filter((e) => e.uid === state.user.uid);
-  const ranked = summarizeByUser(state.entries, state.users);
-  const rank = ranked.findIndex((r) => r.uid === state.user.uid) + 1;
-  const rankPanel = rank > 0 ? el('div', { class: 'panel' }, [
-    el('h3', { text: 'Your ranking' }),
-    el('p', {}, `You're #${rank} of ${ranked.length} people company-wide, based on total points.`),
-  ]) : null;
-  return el('div', {}, [rankPanel, buildStatsView(summarizeEntries(own))].filter(Boolean));
+  return buildStatsView(summarizeEntries(own));
 }
 
 function renderCompanyStats() {
@@ -384,39 +375,6 @@ function renderExportPanel(entries) {
         },
       },
     }),
-  ]);
-}
-
-function renderLeaderboard() {
-  const scoped = isScopedAdmin();
-  const availableCategories = scoped
-    ? state.categories.filter((c) => state.adminCategoryIds.includes(c.id))
-    : state.categories;
-  const options = [{ id: 'all', name: scoped ? 'All my categories' : 'All categories' }, ...availableCategories];
-  if (!options.some((o) => o.id === state.leaderboardCategoryId)) state.leaderboardCategoryId = 'all';
-
-  const scopedEntries = scoped ? state.entries.filter((e) => state.adminCategoryIds.includes(e.categoryId)) : state.entries;
-  const filteredEntries = state.leaderboardCategoryId === 'all'
-    ? scopedEntries
-    : scopedEntries.filter((e) => e.categoryId === state.leaderboardCategoryId);
-
-  const rows = summarizeByUser(filteredEntries, state.users);
-  const filterSelect = select(
-    options.map((o) => ({ value: o.id, label: o.name })),
-    state.leaderboardCategoryId,
-    (value) => { state.leaderboardCategoryId = value; renderView(); },
-  );
-  const selectedName = options.find((o) => o.id === state.leaderboardCategoryId)?.name ?? 'All categories';
-
-  return el('div', {}, [
-    el('div', { class: 'panel' }, [
-      el('h3', { text: 'Leaderboard' }),
-      field('Category', filterSelect),
-    ]),
-    el('div', { class: 'panel' }, [
-      el('h3', { text: `Top scorers - ${selectedName}` }),
-      buildUserBreakdownTable(rows, { showRank: true }),
-    ]),
   ]);
 }
 

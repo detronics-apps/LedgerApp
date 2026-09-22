@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0
+- Removed the competition aspect, per the app's original scope (this is a
+  measurement instrument, not a bonus/ranking tool): "My Stats" no longer
+  shows an employee's ranking position against everyone else, and the
+  standalone admin "Leaderboard" page is gone entirely. Employees still see
+  their own points/breakdown on My Stats - that stays, since the idea is
+  improving against yourself, not against colleagues. Admins can still see
+  who scores what, per category - the Admin Dashboard's existing "By
+  person" table already covers that (scoped to an admin's own categories
+  for category-scoped admins), so a separate ranked page wasn't needed.
+
 ## 0.5.6
 - Removed the "By task" breakdown from Company Stats - with 60+ tasks now
   in the list, that table could grow to a screen-length line-item dump for

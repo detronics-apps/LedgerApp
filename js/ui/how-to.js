@@ -132,7 +132,7 @@ function adminSections(isFullAdmin) {
         el('p', {}, 'On "Manage Tasks & Categories", the Admins panel lets you grant access by email. The person must have signed in at least once already.'),
         el('ul', {}, [
           el('li', { text: 'Tick "All categories" to make someone a full admin. They get every admin tab - Settings, granting other admins, deleting any entry from the Company Ledger - and every category.' }),
-          el('li', { text: 'Tick specific categories instead (not "All") to make someone a category-scoped admin. They see Admin Dashboard, "Manage Tasks & Categories", and Leaderboard, but only for their own categories. They can\'t create new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category.' }),
+          el('li', { text: 'Tick specific categories instead (not "All") to make someone a category-scoped admin. They see Admin Dashboard and "Manage Tasks & Categories", but only for their own categories. They can\'t create new categories, grant admin access to anyone else, reach Settings, or delete an entry from the Company Ledger, even in their own category.' }),
           el('li', { text: 'The same panel lists everyone with admin access and their level. Click "Revoke access" to remove anyone else\'s - you\'ll be asked to confirm. You can\'t revoke your own, so you can\'t lock yourself out.' }),
         ]),
       ]),
