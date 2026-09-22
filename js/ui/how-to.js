@@ -182,7 +182,7 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Pick the Category that best matches what you did, then the specific Task under it.' }),
         el('li', { text: 'Nothing fits? Choose "Other - not listed" and describe it in a few words - an admin reviews these and either adds a real task for it or links it to one that already exists.' }),
         el('li', { text: 'Pick the date, rate the Impact and the Proof, write a short description, and add an evidence link if you have one.' }),
-        el('li', { text: 'Submit. You can see and edit your own entries any time under "My Logs".' }),
+        el('li', { text: 'Submit. You can see and edit your own entries any time under "My Logs" - and download them all as a CSV file from the "Export" panel there.' }),
       ]),
     ]),
     section('What does each category actually cover?', [

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1
+- Any employee can now export their own logged entries as a CSV, from a new
+  "Export" panel on "My Logs" - previously CSV export was admin-only.
+
 ## 0.6.0
 - Removed the competition aspect, per the app's original scope (this is a
   measurement instrument, not a bonus/ranking tool): "My Stats" no longer

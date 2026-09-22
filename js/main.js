@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.6.0';
+export const APP_VERSION = '0.6.1';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -181,8 +181,26 @@ function renderMyLogs() {
       onEdit: (entry) => { state.editingEntry = entry; state.activeTab = 'log'; renderShell(); },
       onDelete: (entry) => data.deleteEntry(entry.id).catch(() => toast('Could not delete - try again.')),
     }),
+    renderMyLogsExportPanel(own),
     renderMyFlags(),
   ].filter(Boolean));
+}
+
+function renderMyLogsExportPanel(own) {
+  if (own.length === 0) return null;
+  return el('div', { class: 'panel' }, [
+    el('h3', { text: 'Export' }),
+    el('p', { class: 'muted', text: `Download your own logged entries (${own.length} ${own.length === 1 ? 'entry' : 'entries'}) as a CSV file.` }),
+    el('button', {
+      type: 'button', class: 'btn btn-primary', text: 'Download CSV',
+      on: {
+        click: () => {
+          const csv = entriesToCsv(sortedByDateDesc(own));
+          download(new Blob([csv], { type: 'text/csv' }), `my-impact-ledger-export-${new Date().toISOString().slice(0, 10)}.csv`);
+        },
+      },
+    }),
+  ]);
 }
 
 function renderMyFlags() {
