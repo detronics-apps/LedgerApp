@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.2
+- Fixed: on a wide entries table (My Logs, Company Ledger), the Relog/Edit/
+  Delete/Flag buttons could scroll out of view with no visible way back to
+  them. That action column is now pinned to the right edge of the table
+  while you scroll it sideways, so it's always reachable.
+- Your own CSV export (My Logs) no longer repeats your email in every row
+  under both "Person" and "Email" - those columns are the same value for a
+  password-sign-in account. It's now stated once at the top of the file
+  instead ("Export for: you@..."). The admin's company-wide export is
+  unchanged, since it covers multiple people and still needs per-row identity.
+- Reworded the three Proof levels around how much effort went into the
+  proof itself, not just whether it exists: #1 (Trust me) is purely verbal -
+  your word, or someone vouching for it out loud; #2 (A reference) is some
+  effort put into a record - an email, meeting minutes; #3 (The full record)
+  is effort captured in an actual document/presentation/tool others can see
+  and use. "A person who can vouch" moved from #2 to #1, where it belongs.
+
 ## 0.6.1
 - Any employee can now export their own logged entries as a CSV, from a new
   "Export" panel on "My Logs" - previously CSV export was admin-only.

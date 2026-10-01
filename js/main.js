@@ -16,7 +16,7 @@ import { formatDate } from './format.js';
 import { entriesToCsv } from './csv.js';
 import { FLAG_STATUSES, flagReasonLabel, flagStatusLabel, hasActiveFlagFrom } from './flags.js';
 
-export const APP_VERSION = '0.6.1';
+export const APP_VERSION = '0.6.2';
 
 const THEME_KEY = 'impact-ledger-theme';
 const THEME_ORDER = ['system', 'light', 'dark'];
@@ -195,7 +195,7 @@ function renderMyLogsExportPanel(own) {
       type: 'button', class: 'btn btn-primary', text: 'Download CSV',
       on: {
         click: () => {
-          const csv = entriesToCsv(sortedByDateDesc(own));
+          const csv = entriesToCsv(sortedByDateDesc(own), { ownerEmail: state.user.email });
           download(new Blob([csv], { type: 'text/csv' }), `my-impact-ledger-export-${new Date().toISOString().slice(0, 10)}.csv`);
         },
       },

@@ -35,3 +35,13 @@ test('validated entries are marked Yes', () => {
   const csv = entriesToCsv([{ ...entry, validated: true }]);
   assert.match(csv, /,Yes$/m);
 });
+
+test('a personal export (ownerEmail) states the email once and drops Person/Email columns', () => {
+  const csv = entriesToCsv([entry], { ownerEmail: 'jane@research-square.com' });
+  const lines = csv.split('\r\n');
+  assert.equal(lines[0], 'Export for: jane@research-square.com');
+  assert.equal(lines[1], '');
+  assert.equal(lines[2], 'Date,Category,Task,Impact,Proof,Points,Description,Evidence,Validated');
+  assert.equal(lines[3], '2026-09-21,Engineering Excellence,Fixed a bug,3,2,6,Fixed the flaky test.,,No');
+  assert.doesNotMatch(csv, /Jane Doe/);
+});

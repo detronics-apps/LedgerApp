@@ -7,9 +7,9 @@ export const IMPACT_LEVELS = [
 ];
 
 export const PROOF_LEVELS = [
-  { value: 1, label: 'Trust me', description: 'No evidence - just your word.' },
-  { value: 2, label: 'A reference', description: 'Something small but real - minutes of a meeting, or a person who can vouch for it.' },
-  { value: 3, label: 'The full record', description: 'A complete document that shows the impact - a training guide, a presentation, a written explanation, or a link to a page (e.g. OneNote) that lays it out.' },
+  { value: 1, label: 'Trust me', description: 'Verbal only - just your word, or a colleague who can vouch for it out loud.' },
+  { value: 2, label: 'A reference', description: 'Some effort went into recording it - an email, meeting minutes, or similar.' },
+  { value: 3, label: 'The full record', description: 'Effort captured in an actual document, presentation or tool that everyone can see and use - a training guide, a written explanation, or a link to a page (e.g. OneNote) that lays it out.' },
 ];
 
 /** points = impact x proof x taskWeight x categoryWeight; weights default to 1 for an unweighted task/category. */
