@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.5
+- How-to page: restored the full explanations in "Why can everyone see the
+  Company Ledger?" (0.6.4 had shortened them too much). Only the hard
+  words were swapped for plain ones; the reasoning is kept in full.
+
 ## 0.6.4
 - How-to page: new section "Why can everyone see the Company Ledger?" -
   why it is open (colleagues can spot mistakes, good work gets noticed,
