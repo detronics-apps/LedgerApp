@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.7
+- How-to page: "What is this tool for?" now ends with a clear commitment -
+  if the tool ever turns into something it should not be, we stop.
+
 ## 0.6.6
 - How-to page: "Why can everyone see the Company Ledger?" now also says that
   an open ledger means no single person decides how your work is seen, so

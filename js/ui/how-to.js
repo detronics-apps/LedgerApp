@@ -199,6 +199,8 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Not your performance review. It gives your manager something real to talk about, but it does not decide promotions on its own.' }),
         el('li', { text: 'Not a reason to overwork. The daily limit (if your admins have it switched on - see "Logging rules") is there so nobody piles everything onto a single day to look busy.' }),
       ]),
+      el('p', {}, el('strong', { text: 'If at any point this tool turns into something it should not be, we stop.' })),
+      el('p', {}, 'That includes becoming any of the things in the list above. This tool is only worth having while it does what it is here to do.'),
     ]),
     section('Why can everyone see the Company Ledger?', [
       el('ul', {}, [
