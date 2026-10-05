@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.4
+- How-to page: new section "Why can everyone see the Company Ledger?" -
+  why it is open (colleagues can spot mistakes, good work gets noticed,
+  you learn what counts, it keeps things honest) and what stays private
+  (points, names, who flagged, rankings). Plain wording on purpose.
+
 ## 0.6.3
 - How-to page: new first section, "What is this tool for? (and what it is
   not)". States the aim (the company can only thank and support effort it

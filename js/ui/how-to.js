@@ -200,6 +200,23 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
         el('li', { text: 'Not a reason to overwork. The daily limit (if your admins have it switched on - see "Logging rules") is there so nobody piles everything onto a single day to look busy.' }),
       ]),
     ]),
+    section('Why can everyone see the Company Ledger?', [
+      el('p', {}, 'Because it makes the whole thing work better, and fairer, for everyone. Here is why:'),
+      el('ul', {}, [
+        el('li', { text: 'Colleagues can spot mistakes. Nothing checks your entries automatically. If an entry looks wrong, a colleague who knows the story can flag it. They can only do that if they can see it.' }),
+        el('li', { text: 'Good work gets noticed. If someone helped you, you can see they logged it, and you can thank them. Effort that management missed can still be seen by the people around it.' }),
+        el('li', { text: 'You learn what counts. Seeing what others log helps you decide what to log yourself, and how big to rate it.' }),
+        el('li', { text: 'It keeps things honest. It is hard to make something sound bigger than it was when the people who were there can read it.' }),
+        el('li', { text: 'It is easier to trust. When everyone can see how things are logged, nobody has to wonder how the tool is being used.' }),
+      ]),
+      el('p', {}, el('strong', { text: 'What stays private, so it does not turn into a scoreboard:' })),
+      el('ul', {}, [
+        el('li', { text: 'Points. The ledger shows what was done, not how many points it earned.' }),
+        el('li', { text: 'Names. Other employees do not see who logged an entry.' }),
+        el('li', { text: 'Who flagged an entry. The person who logged it never sees that, and neither do other employees. Only admins can.' }),
+        el('li', { text: 'Rankings. There are none.' }),
+      ]),
+    ]),
     section('How do I log an entry?', [
       el('ol', {}, [
         el('li', { text: 'Go to "Log Effort".' }),
