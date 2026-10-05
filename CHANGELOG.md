@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.8
+- How-to page: "Why can everyone see the Company Ledger?" gained a reason
+  about knowledge spreading - seeing that someone already built an onboarding
+  notebook or a bolt calculator lets people ask about it, use it, or add to
+  it, instead of several people doing the same work in isolation.
+
 ## 0.6.7
 - How-to page: "What is this tool for?" now ends with a clear commitment -
   if the tool ever turns into something it should not be, we stop.
