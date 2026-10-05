@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.3
+- How-to page: new first section, "What is this tool for? (and what it is
+  not)". States the aim (the company can only thank and support effort it
+  knows about, so log your own), the mindset we want from people using it,
+  and a plain list of what the tool is not (not a bonus tool, competition,
+  timesheet, lie detector, performance review, etc.).
+
 ## 0.6.2
 - Fixed: on a wide entries table (My Logs, Company Ledger), the Relog/Edit/
   Delete/Flag buttons could scroll out of view with no visible way back to

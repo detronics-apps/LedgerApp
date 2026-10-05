@@ -176,6 +176,30 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
   const rules = activeRules(settings);
 
   return wireAccordion(el('div', {}, [
+    section('What is this tool for? (and what it is not)', [
+      el('p', {}, el('strong', { text: 'The aim: make sure the company knows what it does not know.' })),
+      el('p', {}, "A lot of useful work happens outside anyone's job description - helping a colleague, fixing something that was broken, writing something down so the next person doesn't have to ask. Management can't see most of it. And what nobody knows about, nobody can say thank you for, support, or build on."),
+      el('p', {}, "This tool is for you. It's how you get your extra effort seen. We want to be a company that helps people grow, builds them up, and says thanks where it's due - and we can only do that for things we know about."),
+      el('h4', { text: 'The mindset we want' }),
+      el('ul', {}, [
+        el('li', { text: 'Log it yourself. If you don\'t, nobody can be blamed for not noticing. Nobody else is going to do it for you.' }),
+        el('li', { text: 'Be honest and plain. Write down what actually happened. You don\'t need to make it sound bigger.' }),
+        el('li', { text: 'Compare yourself with yourself. Your score is there to show your own effort over time, not to measure you against a colleague.' }),
+        el('li', { text: 'Notice other people\'s effort too. If something good someone did is missing from the ledger, tell them to log it.' }),
+        el('li', { text: 'Log in small steps. A short entry now is better than a long one you never write.' }),
+      ]),
+      el('h4', { text: 'What this tool is not' }),
+      el('ul', {}, [
+        el('li', { text: 'Not a bonus or pay tool. Points are not money, and your score does not decide your salary.' }),
+        el('li', { text: 'Not a competition. There is no leaderboard and no ranking of employees.' }),
+        el('li', { text: 'Not a timesheet. Hours spent are not a measure of impact - a quick fix that saves a team a week can matter more than a long effort that changes little.' }),
+        el('li', { text: 'Not a replacement for tracking your normal work. Your regular project work stays where it is now. This is only for effort outside your normal duties.' }),
+        el('li', { text: 'Not a lie detector. Nothing checks your entries automatically. It relies on honesty, with flags and optional management validation as a safety net.' }),
+        el('li', { text: 'Not a way to catch people out. A flag is a request for a second look, not an accusation, and nobody can see who raised one except admins.' }),
+        el('li', { text: 'Not your performance review. It gives your manager something real to talk about, but it does not decide promotions on its own.' }),
+        el('li', { text: 'Not a reason to overwork. The daily limit (if your admins have it switched on - see "Logging rules") is there so nobody piles everything onto a single day to look busy.' }),
+      ]),
+    ]),
     section('How do I log an entry?', [
       el('ol', {}, [
         el('li', { text: 'Go to "Log Effort".' }),
