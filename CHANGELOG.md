@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.6
+- How-to page: "Why can everyone see the Company Ledger?" now also says that
+  an open ledger means no single person decides how your work is seen, so
+  you cannot get stuck under one person who does not like you.
+
 ## 0.6.5
 - How-to page: restored the full explanations in "Why can everyone see the
   Company Ledger?" (0.6.4 had shortened them too much). Only the hard

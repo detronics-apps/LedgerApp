@@ -202,7 +202,7 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
     ]),
     section('Why can everyone see the Company Ledger?', [
       el('ul', {}, [
-        el('li', { text: 'Colleagues do the checking. Nothing checks entries automatically, so the check has to come from the people around you. Anyone can flag an entry they think is off, but only if they can see it. If the ledger was private, the only check left would be an admin.' }),
+        el('li', { text: 'Colleagues do the checking. Nothing checks entries automatically, so the check has to come from the people around you. Anyone can flag an entry they think is off, but only if they can see it. If the ledger was private, the only check left would be an admin. It also means no single person decides how your work is seen. You cannot get stuck under one person who does not like you, because many people can see your entries, and not just one.' }),
         el('li', { text: 'Thanks needs someone to see it. The goal is to say thank you where it is due. If someone helped a colleague, that colleague should be able to see it was logged, and others can notice effort that management missed.' }),
         el('li', { text: 'It shows what the company values. Seeing what others log helps you judge your own entries fairly, and helps you find work you had not thought to log. It is the same problem as rating impact fairly, which is explained in "How do I judge impact fairly?".' }),
         el('li', { text: 'It makes it harder to make something sound bigger than it was. An entry like that sits in front of the people who know what really happened, so it is harder to get away with.' }),
