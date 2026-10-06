@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.9
+- How-to page: new section "Why this will only ever be a measuring tool".
+  Explains Goodhart's law (when a measure becomes a target, it stops being
+  a good measure) and commits that the tool is only used to gather data and
+  is never connected to any target, bonus, quota, or ranking.
+
 ## 0.6.8
 - How-to page: "Why can everyone see the Company Ledger?" gained a reason
   about knowledge spreading - seeing that someone already built an onboarding

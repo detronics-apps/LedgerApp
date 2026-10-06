@@ -202,6 +202,19 @@ export function buildHowTo(settings = DEFAULT_SETTINGS, { isAdmin = false, isSco
       el('p', {}, el('strong', { text: 'If at any point this tool turns into something it should not be, we stop.' })),
       el('p', {}, 'That includes becoming any of the things in the list above. This tool is only worth having while it does what it is here to do.'),
     ]),
+    section('Why this will only ever be a measuring tool', [
+      el('p', {}, el('strong', { text: "There's a rule called Goodhart's law: when a measure becomes a target, it stops being a good measure." })),
+      el('p', {}, "Here is what that means. Say engineers were told to check as many drawings as they can each day. The number of drawings checked would go up, but the checking would get rushed. The number now shows how fast people go, not how well the work is done. The measure stopped telling us the truth because people started aiming at it."),
+      el('p', {}, "The same would happen here. If points became a target, for example a goal to reach, a bonus to earn, or a place in a ranking, people would start writing entries to get the number up. Entries would sound bigger, and there would be more of them. The scores would rise, but they would no longer show the real effort. We would lose the one thing this tool is for: finding out what we do not know."),
+      el('p', {}, el('strong', { text: 'So the rule is simple: this tool is only used to gather data. It will never be connected to any target.' })),
+      el('ul', {}, [
+        el('li', { text: 'No bonus, pay, or promotion is worked out from your points.' }),
+        el('li', { text: 'No points goal or quota for anyone.' }),
+        el('li', { text: 'No ranking of people against each other.' }),
+        el('li', { text: 'The data is used to understand what effort happens, who is carrying extra, and where to say thank you and where to help.' }),
+      ]),
+      el('p', {}, 'If that ever changes, the tool has stopped doing its job, and we stop using it.'),
+    ]),
     section('Why can everyone see the Company Ledger?', [
       el('ul', {}, [
         el('li', { text: 'Colleagues do the checking. Nothing checks entries automatically, so the check has to come from the people around you. Anyone can flag an entry they think is off, but only if they can see it. If the ledger was private, the only check left would be an admin. It also means no single person decides how your work is seen. You cannot get stuck under one person who does not like you, because many people can see your entries, and not just one.' }),

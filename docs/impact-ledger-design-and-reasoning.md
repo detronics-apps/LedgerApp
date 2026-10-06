@@ -142,6 +142,17 @@ that would drown out the real goal, which is to see the effort.
 might log five favours that did not happen. If points are only a record, the
 only reason to log is that it did happen and you want it seen.
 
+**Goodhart's law is the reason this must stay true.** Goodhart's law says:
+when a measure becomes a target, it stops being a good measure. If engineers
+were told to check as many drawings as they can each day, the count would
+rise and the checking would get rushed, so the count would no longer show
+quality. The same would happen to points. If they became a goal, a bonus or a
+ranking, people would write entries to raise the number, and the number would
+stop showing real effort. So the tool is only ever used to gather data and is
+never connected to a target. This is also why the stop clause exists. The
+How-to page has a section on this, "Why this will only ever be a measuring
+tool".
+
 ### 4.2 No ranking, no leaderboard: you against yourself
 
 **Decided.** Employees do not see their position against colleagues, and
